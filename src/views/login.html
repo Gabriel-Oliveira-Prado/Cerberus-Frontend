@@ -1,0 +1,34 @@
+<div class="pagina-login fade-in">
+  <div class="login-imagem-area"></div>
+  <div class="login-formulario-area">
+    <div class="login-caixa w-100" style="max-width: 400px; margin: 0 auto;">
+      <div class="text-center mb-5">
+        <h1 class="h2 text-danger mb-1 fonte-titulo">Cerberus</h1>
+        <p class="text-muted small text-uppercase fw-bold">Guardião de Infraestrutura</p>
+      </div>
+      
+      <form id="formulario-login">
+        <div class="mb-3">
+          <label class="form-label small fw-semibold text-muted">E-mail</label>
+          <input type="email" id="email" class="form-control" placeholder="usuario@cerberus.com.br" required>
+        </div>
+        <div class="mb-4">
+          <label class="form-label small fw-semibold text-muted">Senha</label>
+          <input type="password" id="senha" class="form-control" placeholder="••••••••" required>
+        </div>
+        
+        <div class="d-flex align-items-center justify-content-between mb-4">
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="lembrarMim">
+            <label class="form-check-label small" for="lembrarMim">Lembre-me</label>
+          </div>
+          <button type="button" id="btn-recuperar" class="btn btn-link btn-sm p-0 text-danger text-decoration-none">Recuperar senha</button>
+        </div>
+        
+        <button type="submit" class="btn btn-primary w-100 py-3 mt-2">
+          Entrar
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

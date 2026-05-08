@@ -1,0 +1,107 @@
+<div class="row g-4 mb-4 fade-in">
+  <div class="col-md-3">
+    <div class="cartao h-100">
+      <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
+        <span class="icone-pontos"></span>
+      </div>
+      <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
+        <li><button class="dropdown-item small rounded" type="button">Ver Log</button></li>
+      </ul>
+      <div class="d-flex align-items-center mb-2">
+        <span class="icone-performance text-success me-2"></span>
+        <div class="text-muted small">Uptime do Banco</div>
+      </div>
+      <div class="h3 fw-bold text-success" id="dash-performance">--</div>
+      <div class="small text-muted mt-2">Sem interrupções</div>
+    </div>
+  </div>
+  
+  <div class="col-md-3">
+    <div class="cartao h-100">
+      <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
+        <span class="icone-pontos"></span>
+      </div>
+      <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
+        <li><button class="dropdown-item small rounded" type="button">Otimizar Memória</button></li>
+      </ul>
+      <div class="d-flex align-items-center mb-2">
+        <span class="icone-sucesso text-primary me-2"></span>
+        <div class="text-muted small">Cache Hit Ratio</div>
+      </div>
+      <div class="h3 fw-bold text-primary" id="dash-sucesso">--%</div>
+      <div class="small text-success mt-2">↑ 0.5% hoje</div>
+    </div>
+  </div>
+  
+  <div class="col-md-3">
+    <div class="cartao h-100">
+      <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
+        <span class="icone-pontos"></span>
+      </div>
+      <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
+        <li><button class="dropdown-item small rounded" type="button">Derrubar Ociosas</button></li>
+      </ul>
+      <div class="d-flex align-items-center mb-2">
+        <span class="icone-ativos text-danger me-2"></span>
+        <div class="text-muted small">Conexões Ativas</div>
+      </div>
+      <div class="h3 fw-bold text-danger"><span id="dash-servidores">--</span></div>
+      <div class="small text-muted mt-2">Max. configurado: 500</div>
+    </div>
+  </div>
+  
+  <div class="col-md-3">
+    <div class="cartao h-100">
+      <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
+        <span class="icone-pontos"></span>
+      </div>
+      <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
+        <li><button class="dropdown-item small rounded" type="button">Histórico</button></li>
+      </ul>
+      <div class="d-flex align-items-center mb-2">
+        <span class="icone-arquivos text-warning me-2"></span>
+        <div class="text-muted small">Backups Realizados</div>
+      </div>
+      <div class="h3 fw-bold text-warning" id="dash-backups">--</div>
+      <div class="small text-muted mt-2">Armazenamento: 4.2 TB</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 fade-in">
+  <div class="col-md-8">
+    <div class="cartao h-100">
+      <div class="menu-opcoes-cartao dropdown">
+        <div data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+          <span class="icone-pontos"></span>
+        </div>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2" style="min-width: 200px;">
+          <li><button class="dropdown-item small rounded mb-1" type="button">Exportar Dados</button></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><button class="dropdown-item small rounded btn-mudar-grafico" data-tipo="bar" type="button" title="Exibe dados em colunas verticais para comparação rápida">Gráfico de Barras</button></li>
+          <li><button class="dropdown-item small rounded btn-mudar-grafico" data-tipo="line" type="button" title="Exibe tendência de linha ao longo do tempo">Gráfico de Linhas</button></li>
+          <li><button class="dropdown-item small rounded btn-mudar-grafico" data-tipo="doughnut" type="button" title="Exibe em formato de rosca as proporções de cada item">Gráfico de Rosca</button></li>
+        </ul>
+      </div>
+      <h3 class="h5 mb-4">Volume de Consultas por Minuto (QPM)</h3>
+      <div style="height: 250px;">
+        <canvas id="graficoDistribuicao"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="cartao h-100">
+      <h3 class="h5 mb-4">Eventos do Banco de Dados</h3>
+      <div class="d-flex flex-column gap-3">
+        <div class="p-3 bg-danger bg-opacity-10 border-start border-danger border-3 rounded-end">
+          <div class="fw-bold small">Pico de Latência (I/O Wait)</div>
+          <div class="smaller text-muted" style="font-size: 0.75rem;">Operação pesada na tabela 'arquivos_log' elevou a latência para 210ms.</div>
+        </div>
+        <div class="p-3 bg-warning bg-opacity-10 border-start border-warning border-3 rounded-end">
+          <div class="fw-bold small">Deadlock Detectado</div>
+          <div class="smaller text-muted" style="font-size: 0.75rem;">Processo 1492 encerrado devido a conflito de transação mútua.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

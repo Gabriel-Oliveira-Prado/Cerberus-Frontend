@@ -1,0 +1,340 @@
+@import './variaveis.css';
+
+body {
+  font-family: var(--fonte-corpo);
+  background-color: var(--cor-principal);
+  color: var(--cor-texto-escuro);
+  margin: 0;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, .fonte-titulo {
+  font-family: var(--fonte-titulos);
+  font-weight: 700;
+}
+
+.painel-app {
+  display: flex;
+  min-height: 100vh;
+}
+
+.painel-conteudo-principal {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: var(--largura-barra-lateral);
+  transition: var(--transicao-suave);
+  min-height: 100vh;
+}
+
+.painel-conteudo-principal.expandido {
+  margin-left: var(--largura-barra-lateral-colapsada);
+}
+
+.painel-conteudo-principal.tela-cheia {
+  margin-left: 0;
+}
+
+.area-conteudo {
+  flex-grow: 1;
+  padding: 2rem;
+}
+
+/* Sidebar */
+.cerberus-barra-lateral {
+  background-color: var(--cor-secundaria);
+  color: white;
+  width: var(--largura-barra-lateral);
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  transition: var(--transicao-suave);
+  z-index: 1000;
+  overflow-x: hidden;
+}
+
+.cerberus-barra-lateral.colapsada {
+  width: var(--largura-barra-lateral-colapsada);
+}
+
+.cerberus-painel-lateral {
+  padding: 1.5rem;
+}
+
+.cerberus-marca {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
+}
+
+.cerberus-hexagono-marca svg {
+  width: 32px;
+  height: 32px;
+  fill: var(--cor-destaque);
+}
+
+.cerberus-titulo-marca {
+  font-size: 1.25rem;
+  margin: 0;
+  font-family: var(--fonte-titulos);
+  transition: opacity 0.3s;
+}
+
+.cerberus-barra-lateral.colapsada .cerberus-titulo-marca {
+  opacity: 0;
+  width: 0;
+  display: none;
+}
+
+.cerberus-nav-painel {
+  flex-grow: 1;
+}
+
+.cerberus-nav-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cerberus-nav-item {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  color: #94a3b8;
+  text-decoration: none;
+  transition: background-color 0.2s, color 0.2s;
+  position: relative;
+  cursor: pointer;
+}
+
+.cerberus-nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+.cerberus-nav-item.ativo {
+  background-color: var(--cor-destaque);
+  color: white;
+}
+
+.cerberus-nav-item svg.icone-nav {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 0.25rem;
+  stroke: currentColor;
+}
+
+.cerberus-nav-rotulo {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.cerberus-nav-descricao {
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+
+.cerberus-barra-lateral.colapsada .cerberus-nav-item {
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0;
+}
+
+.cerberus-barra-lateral.colapsada .cerberus-nav-rotulo,
+.cerberus-barra-lateral.colapsada .cerberus-nav-descricao {
+  display: none;
+}
+
+.cerberus-barra-lateral.colapsada .cerberus-nav-item svg.icone-nav {
+  margin-bottom: 0;
+}
+
+.cerberus-conta-painel {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.cerberus-rotulo-secao {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--cor-texto-mutado);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.cerberus-barra-lateral.colapsada .cerberus-rotulo-secao {
+  display: none;
+}
+
+.cerberus-conta-linha {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cerberus-avatar {
+  background-color: var(--cor-destaque);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.cerberus-conta-nome {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.cerberus-conta-cargo {
+  font-size: 0.75rem;
+  color: var(--cor-texto-mutado);
+}
+
+.cerberus-barra-lateral.colapsada .cerberus-conta-nome,
+.cerberus-barra-lateral.colapsada .cerberus-conta-cargo {
+  display: none;
+}
+
+.cerberus-conta-botao {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: var(--transicao-suave);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cerberus-conta-botao:hover {
+  background-color: rgba(255,255,255,0.2);
+}
+
+.cerberus-barra-lateral.colapsada .cerberus-conta-botao span {
+  display: none;
+}
+.cerberus-barra-lateral.colapsada .cerberus-conta-botao svg {
+  margin-right: 0 !important;
+}
+
+/* Footer */
+.rodape {
+  background-color: white;
+  border-top: 1px solid var(--cor-borda);
+  padding: 1.5rem 2rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--cor-texto-mutado);
+  margin-top: auto;
+}
+
+/* Header Toggle */
+.btn-alternar-menu {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--cor-texto-escuro);
+  cursor: pointer;
+}
+
+/* Mobile responsivity */
+@media (max-width: 768px) {
+  .cerberus-barra-lateral {
+    top: auto;
+    bottom: 0;
+    width: 100% !important;
+    height: 70px;
+    flex-direction: row;
+    padding: 0;
+    z-index: 1050;
+    justify-content: space-between;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  }
+  .cerberus-marca, .cerberus-rotulo-secao, .cerberus-conta-linha { 
+    display: none !important; 
+  }
+  .cerberus-nav-painel {
+    padding: 0;
+    display: flex;
+    flex-grow: 1;
+  }
+  .cerberus-conta-painel {
+    padding: 0;
+    display: flex;
+    border-top: none;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 0;
+    border-left: 1px solid rgba(255,255,255,0.1);
+  }
+  .cerberus-nav-lista {
+    flex-direction: row;
+    width: 100%;
+    margin: 0;
+    gap: 0;
+  }
+  .cerberus-nav-item {
+    flex: 1;
+    border-radius: 0;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0;
+  }
+  .cerberus-nav-item.ativo {
+    border-radius: 0;
+  }
+  .cerberus-nav-rotulo {
+    display: block !important;
+    font-size: 0.65rem;
+    margin-top: 4px;
+    text-align: center;
+  }
+  .cerberus-nav-descricao {
+    display: none !important;
+  }
+  .cerberus-conta-botao {
+    border: none;
+    background: transparent !important;
+    border-radius: 0;
+    height: 100%;
+    flex-direction: column;
+    padding: 0.5rem 1rem;
+    color: #94a3b8;
+  }
+  .cerberus-conta-botao:hover {
+    color: white;
+  }
+  .cerberus-conta-botao span {
+    display: block !important;
+    font-size: 0.65rem;
+    margin-top: 4px;
+    font-weight: 600;
+  }
+  .cerberus-conta-botao svg {
+    margin-right: 0 !important;
+  }
+  .painel-conteudo-principal {
+    margin-left: 0 !important;
+    margin-bottom: 70px;
+    min-height: calc(100vh - 70px);
+  }
+  .btn-alternar-menu {
+    display: none;
+  }
+}

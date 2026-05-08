@@ -1,0 +1,73 @@
+@import './variaveis.css';
+
+.pagina-login {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--cor-principal);
+}
+
+body.is-login-route .cerberus-barra-lateral,
+body.is-login-route .rodape,
+body.is-login-route header {
+  display: none !important;
+}
+
+body.is-login-route .painel-conteudo-principal {
+  margin-left: 0 !important;
+}
+
+body.is-login-route .area-conteudo {
+  padding: 0 !important;
+}
+
+.login-imagem-area {
+  flex: 0 0 55%;
+  background-image: url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=2034&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.login-imagem-area::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(220, 53, 69, 0.6) 100%);
+}
+
+.login-formulario-area {
+  flex: 0 0 45%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: white;
+}
+
+@media (max-width: 992px) {
+  .pagina-login {
+    position: relative;
+  }
+  .login-imagem-area {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    flex: none;
+    width: 100%;
+    z-index: 1;
+  }
+  .login-formulario-area {
+    position: relative;
+    z-index: 2;
+    flex: none;
+    width: 100%;
+    background-color: transparent;
+  }
+  .login-caixa {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    width: 100%;
+    max-width: 450px;
+  }
+}

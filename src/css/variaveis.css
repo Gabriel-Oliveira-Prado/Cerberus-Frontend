@@ -1,0 +1,14 @@
+:root {
+  --cor-principal: #f8fafc;
+  --cor-secundaria: #0f172a;
+  --cor-destaque: #dc3545;
+  --cor-texto-escuro: #1e293b;
+  --cor-texto-mutado: #64748b;
+  --cor-borda: #e2e8f0;
+  --cor-cartao: #ffffff;
+  --fonte-titulos: 'Outfit', sans-serif;
+  --fonte-corpo: 'Inter', sans-serif;
+  --largura-barra-lateral: 260px;
+  --largura-barra-lateral-colapsada: 80px;
+  --transicao-suave: all 0.3s ease;
+}

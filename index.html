@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cerberus - Painel</title>
+</head>
+<body>
+  <div class="painel-app">
+    <aside class="cerberus-barra-lateral">
+      <header class="cerberus-painel-lateral cerberus-marca">
+        <div class="cerberus-hexagono-marca" aria-hidden="true">
+          <svg viewBox="0 0 64 64" role="img"><path d="M32 7l21 12v26L32 57 11 45V19L32 7z"></path><path d="M20 24c0-3.1 5.4-5.6 12-5.6s12 2.5 12 5.6-5.4 5.6-12 5.6-12-2.5-12-5.6z"></path><path d="M20 24v12c0 3.1 5.4 5.6 12 5.6s12-2.5 12-5.6V24"></path></svg>
+        </div>
+        <h1 class="cerberus-titulo-marca">Cerberus</h1>
+      </header>
+      
+      <section class="cerberus-painel-lateral cerberus-nav-painel">
+        <div class="cerberus-nav-lista">
+          <a href="/dashboard" class="cerberus-nav-item" data-route>
+            <span id="icone-nav-dashboard"></span>
+            <span class="cerberus-nav-rotulo">Dashboard</span>
+            <span class="cerberus-nav-descricao">Visão geral operacional</span>
+          </a>
+          <a href="/backups" class="cerberus-nav-item" data-route>
+            <span id="icone-nav-backups"></span>
+            <span class="cerberus-nav-rotulo">Backups</span>
+            <span class="cerberus-nav-descricao">Jobs e integridade</span>
+          </a>
+          <a href="/servidores" class="cerberus-nav-item" data-route>
+            <span id="icone-nav-servidores"></span>
+            <span class="cerberus-nav-rotulo">Servidores</span>
+            <span class="cerberus-nav-descricao">Saúde da infraestrutura</span>
+          </a>
+        </div>
+      </section>
+      
+      <section class="cerberus-painel-lateral cerberus-conta-painel">
+        <p class="cerberus-rotulo-secao">Conta Operacional</p>
+        <div class="cerberus-conta-linha mb-3">
+          <div class="cerberus-avatar">GA</div>
+          <div>
+            <div class="cerberus-conta-nome">Gabriel A.</div>
+            <div class="cerberus-conta-cargo">Administrador</div>
+          </div>
+        </div>
+        <a href="/configuracoes" class="cerberus-conta-botao text-decoration-none" data-route>
+          <span id="icone-nav-config"></span>
+          <span>Configurações</span>
+        </a>
+      </section>
+    </aside>
+
+    <main class="painel-conteudo-principal">
+      <div class="area-conteudo">
+        <header class="d-flex justify-content-between align-items-center mb-5">
+          <div class="d-flex align-items-center gap-3">
+            <button id="btn-alternar-barra" class="btn-alternar-menu">
+              <span id="icone-menu-toggle"></span>
+            </button>
+            <h2 id="titulo-pagina" class="h3 m-0 fonte-titulo">Painel</h2>
+          </div>
+          <div class="badge bg-white text-dark border p-2 px-3 rounded-pill fw-normal shadow-sm">
+            <span class="text-success me-1">●</span> Sistema Online
+          </div>
+        </header>
+        
+        <div id="app-content"></div>
+      </div>
+      
+      <footer class="rodape">
+        <div class="container-fluid">
+          &copy; 2026 Cerberus Enterprise. Todos os direitos reservados.
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<div class="row g-4 fade-in">
+  <div class="col-md-4">
+    <div class="list-group shadow-sm rounded-4 overflow-hidden border-0 bg-white">
+      <button class="list-group-item list-group-item-action border-0 p-3 d-flex align-items-center gap-3 active bg-danger btn-tab-config" data-target="#tab-geral">
+        <span class="icone-engrenagem text-white"></span>
+        <span class="fw-semibold">Configurações Gerais</span>
+      </button>
+      <button class="list-group-item list-group-item-action border-0 p-3 d-flex align-items-center gap-3 text-muted btn-tab-config" data-target="#tab-perfil">
+        <span class="icone-perfil"></span>
+        <span class="fw-semibold">Editar Perfil</span>
+      </button>
+      <button class="list-group-item list-group-item-action border-0 p-3 d-flex align-items-center gap-3 text-muted btn-tab-config" data-target="#tab-senha">
+        <span class="icone-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+        <span class="fw-semibold">Alterar Senha</span>
+      </button>
+      <button class="list-group-item list-group-item-action border-0 p-3 d-flex align-items-center gap-3 text-muted btn-tab-config" data-target="#tab-notificacoes">
+        <span class="icone-sino"></span>
+        <span class="fw-semibold">Notificações</span>
+      </button>
+      <button class="list-group-item list-group-item-action border-0 p-3 d-flex align-items-center gap-3 text-danger mt-3" id="btn-sair-sistema">
+        <span class="icone-sair"></span>
+        <span class="fw-semibold">Sair do Sistema</span>
+      </button>
+    </div>
+  </div>
+  
+  <div class="col-md-8">
+    <div class="cartao h-100 d-flex flex-column">
+      <div class="flex-grow-1" id="config-content-area">
+        <div class="tab-pane-config" id="tab-geral">
+          <h3 class="h5 mb-4 border-bottom pb-2">Configurações Gerais</h3>
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">Nome do Sistema</label>
+            <input type="text" class="form-control" value="CERBERUS-ALPHA-01">
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">Idioma Padrão</label>
+            <select class="form-select">
+              <option selected>Português (Brasil)</option>
+              <option>English (US)</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="tab-pane-config d-none" id="tab-perfil">
+          <h3 class="h5 mb-4 border-bottom pb-2">Editar Perfil</h3>
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">Nome de Exibição</label>
+            <input type="text" class="form-control" value="Gabriel A.">
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">Cargo</label>
+            <input type="text" class="form-control" value="Administrador" disabled>
+          </div>
+        </div>
+
+        <div class="tab-pane-config d-none" id="tab-senha">
+          <h3 class="h5 mb-4 border-bottom pb-2">Alterar Senha</h3>
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">Senha Atual</label>
+            <input type="password" class="form-control" placeholder="••••••••">
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">Nova Senha</label>
+            <input type="password" class="form-control" placeholder="Mínimo 8 caracteres">
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">Confirmar Nova Senha</label>
+            <input type="password" class="form-control" placeholder="Mínimo 8 caracteres">
+          </div>
+        </div>
+
+        <div class="tab-pane-config d-none" id="tab-notificacoes">
+          <h3 class="h5 mb-4 border-bottom pb-2">Notificações</h3>
+          <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" role="switch" id="notif-email" checked>
+            <label class="form-check-label" for="notif-email">Receber Alertas Críticos por Email</label>
+          </div>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="notif-sms">
+            <label class="form-check-label" for="notif-sms">Alertas via SMS</label>
+          </div>
+        </div>
+
+      </div>
+      <div class="text-end mt-5 pt-3 border-top">
+        <button class="btn btn-primary" id="btn-salvar-config">Salvar Alterações</button>
+      </div>
+    </div>
+  </div>
+</div>
