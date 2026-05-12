@@ -1,5 +1,5 @@
 <div class="row g-4 mb-4 fade-in">
-  <div class="col-md-3">
+  <div class="col-12 col-sm-6 col-xl-3">
     <div class="cartao h-100">
       <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
         <span class="icone-pontos"></span>
@@ -16,7 +16,7 @@
     </div>
   </div>
   
-  <div class="col-md-3">
+  <div class="col-12 col-sm-6 col-xl-3">
     <div class="cartao h-100">
       <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
         <span class="icone-pontos"></span>
@@ -33,7 +33,7 @@
     </div>
   </div>
   
-  <div class="col-md-3">
+  <div class="col-12 col-sm-6 col-xl-3">
     <div class="cartao h-100">
       <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
         <span class="icone-pontos"></span>
@@ -50,7 +50,7 @@
     </div>
   </div>
   
-  <div class="col-md-3">
+  <div class="col-12 col-sm-6 col-xl-3">
     <div class="cartao h-100">
       <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
         <span class="icone-pontos"></span>
@@ -69,10 +69,11 @@
 </div>
 
 <div class="row g-4 fade-in">
-  <div class="col-md-8">
+  <div class="col-12 col-lg-8">
     <div class="cartao h-100">
-      <div class="menu-opcoes-cartao dropdown">
-        <div data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="h5 m-0">Volume de Consultas por Minuto (QPM)</h3>
+        <div class="menu-opcoes-cartao-relativo" data-bs-toggle="dropdown" aria-expanded="false">
           <span class="icone-pontos"></span>
         </div>
         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2" style="min-width: 200px;">
@@ -83,13 +84,12 @@
           <li><button class="dropdown-item small rounded btn-mudar-grafico" data-tipo="doughnut" type="button" title="Exibe em formato de rosca as proporções de cada item">Gráfico de Rosca</button></li>
         </ul>
       </div>
-      <h3 class="h5 mb-4">Volume de Consultas por Minuto (QPM)</h3>
       <div style="height: 250px;">
         <canvas id="graficoDistribuicao"></canvas>
       </div>
     </div>
   </div>
-  <div class="col-md-4">
+  <div class="col-12 col-lg-4">
     <div class="cartao h-100">
       <h3 class="h5 mb-4">Eventos do Banco de Dados</h3>
       <div class="d-flex flex-column gap-3">

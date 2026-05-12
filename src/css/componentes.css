@@ -3,11 +3,24 @@
 .cartao {
   background-color: var(--cor-cartao);
   border: 1px solid var(--cor-borda);
-  border-radius: 0.5rem;
+  border-radius: 1rem;
   padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
   position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
+
+.cartao:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .cartao {
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+  }
+}
+
 
 .menu-opcoes-cartao {
   position: absolute;
@@ -18,7 +31,25 @@
   z-index: 10;
 }
 
-.menu-opcoes-cartao svg {
+.menu-opcoes-cartao-relativo {
+  cursor: pointer;
+  color: var(--cor-texto-mutado);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.menu-opcoes-cartao-relativo:hover {
+  color: var(--cor-texto-escuro);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+
+.menu-opcoes-cartao-relativo svg {
   width: 20px;
   height: 20px;
 }

@@ -1,15 +1,17 @@
 <div class="row g-4 mb-5 fade-in">
-  <div class="col-md-4">
+  <div class="col-12 col-md-6 col-lg-4">
     <div class="cartao h-100">
-      <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
-        <span class="icone-pontos"></span>
-      </div>
-      <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-        <li><button class="dropdown-item small" type="button">Ver Métricas</button></li>
-      </ul>
-      <div class="d-flex justify-content-between align-items-start mb-3 cabecalho-cartao-servidor">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 cabecalho-cartao-servidor">
         <h4 class="h6 fw-bold m-0">SRV-DATABASE-01</h4>
-        <span class="text-success smaller bg-success-subtle px-2 py-1 rounded" style="font-size: 0.7rem;">● Ativo</span>
+        <div class="d-flex align-items-center gap-2">
+          <span class="text-success smaller bg-success-subtle px-2 py-1 rounded" style="font-size: 0.7rem;">● Ativo</span>
+          <div class="menu-opcoes-cartao-relativo" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="icone-pontos"></span>
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+            <li><button class="dropdown-item small" type="button">Ver Métricas</button></li>
+          </ul>
+        </div>
       </div>
       <div class="d-flex flex-column gap-2">
         <div class="d-flex justify-content-between small text-muted align-items-center">
@@ -30,17 +32,19 @@
     </div>
   </div>
   
-  <div class="col-md-4">
+  <div class="col-12 col-md-6 col-lg-4">
     <div class="cartao h-100">
-      <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
-        <span class="icone-pontos"></span>
-      </div>
-      <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-        <li><button class="dropdown-item small" type="button">Ver Métricas</button></li>
-      </ul>
-      <div class="d-flex justify-content-between align-items-start mb-3 cabecalho-cartao-servidor">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 cabecalho-cartao-servidor">
         <h4 class="h6 fw-bold m-0">SRV-STORAGE-02</h4>
-        <span class="text-success smaller bg-success-subtle px-2 py-1 rounded" style="font-size: 0.7rem;">● Ativo</span>
+        <div class="d-flex align-items-center gap-2">
+          <span class="text-success smaller bg-success-subtle px-2 py-1 rounded" style="font-size: 0.7rem;">● Ativo</span>
+          <div class="menu-opcoes-cartao-relativo" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="icone-pontos"></span>
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+            <li><button class="dropdown-item small" type="button">Ver Métricas</button></li>
+          </ul>
+        </div>
       </div>
       <div class="d-flex flex-column gap-2">
         <div class="d-flex justify-content-between small text-muted align-items-center">
@@ -54,17 +58,19 @@
     </div>
   </div>
 
-  <div class="col-md-4">
+  <div class="col-12 col-md-6 col-lg-4">
     <div class="cartao h-100">
-      <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
-        <span class="icone-pontos"></span>
-      </div>
-      <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-        <li><button class="dropdown-item small" type="button">Ver Métricas</button></li>
-      </ul>
-      <div class="d-flex justify-content-between align-items-start mb-3 cabecalho-cartao-servidor">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 cabecalho-cartao-servidor">
         <h4 class="h6 fw-bold m-0">SRV-WEBSERVICE-04</h4>
-        <span class="text-warning smaller bg-warning-subtle px-2 py-1 rounded" style="font-size: 0.7rem;">● Carga Alta</span>
+        <div class="d-flex align-items-center gap-2">
+          <span class="text-warning smaller bg-warning-subtle px-2 py-1 rounded" style="font-size: 0.7rem;">● Carga Alta</span>
+          <div class="menu-opcoes-cartao-relativo" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="icone-pontos"></span>
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+            <li><button class="dropdown-item small" type="button">Ver Métricas</button></li>
+          </ul>
+        </div>
       </div>
       <div class="d-flex flex-column gap-2">
         <div class="d-flex justify-content-between small text-muted align-items-center">
@@ -80,8 +86,13 @@
 </div>
 
 <div class="cartao fade-in">
-  <div class="menu-opcoes-cartao dropdown">
-    <div data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="h5 m-0 d-flex align-items-center gap-2">
+      <span class="icone-database text-danger"></span> 
+      Monitoramento do Banco de Dados 
+      <span class="badge bg-light text-dark fw-normal border ms-2 d-none d-sm-inline-block">PostgreSQL Principal</span>
+    </h3>
+    <div class="menu-opcoes-cartao-relativo" data-bs-toggle="dropdown" aria-expanded="false">
       <span class="icone-pontos"></span>
     </div>
     <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
@@ -90,18 +101,14 @@
     </ul>
   </div>
   
-  <h3 class="h5 mb-4 d-flex align-items-center gap-2">
-    <span class="icone-database text-danger"></span> Monitoramento do Banco de Dados <span class="badge bg-light text-dark fw-normal border ms-2">PostgreSQL Principal</span>
-  </h3>
-  
   <div class="row g-4 mb-4">
-    <div class="col-6 col-md-3">
+    <div class="col-6 col-lg-3">
       <div class="p-3 rounded border" style="background-color: rgba(248, 250, 252, 0.5);">
         <div class="small text-muted mb-1">Status Operacional</div>
         <div class="fw-bold text-success d-flex align-items-center gap-1">● Online <span class="smaller fw-normal text-muted ms-1">(15d 4h)</span></div>
       </div>
     </div>
-    <div class="col-6 col-md-3">
+    <div class="col-6 col-lg-3">
       <div class="p-3 rounded border" style="background-color: rgba(248, 250, 252, 0.5);">
         <div class="small text-muted mb-1">Conexões (Ativas/Ociosas)</div>
         <div class="fw-bold d-flex align-items-center gap-2">
@@ -110,7 +117,7 @@
         </div>
       </div>
     </div>
-    <div class="col-6 col-md-3">
+    <div class="col-6 col-lg-3">
       <div class="p-3 rounded border" style="background-color: rgba(248, 250, 252, 0.5);">
         <div class="small text-muted mb-1">Latência de Consulta</div>
         <div class="fw-bold text-warning d-flex align-items-baseline gap-1">
@@ -118,7 +125,7 @@
         </div>
       </div>
     </div>
-    <div class="col-6 col-md-3">
+    <div class="col-6 col-lg-3">
       <div class="p-3 rounded border" style="background-color: rgba(248, 250, 252, 0.5);">
         <div class="small text-muted mb-1">Cache Hit Ratio</div>
         <div class="fw-bold text-success">98.5%</div>
@@ -127,7 +134,7 @@
   </div>
 
   <div class="row g-4">
-    <div class="col-md-6">
+    <div class="col-12 col-lg-6">
       <h4 class="h6 mb-3 fw-bold text-muted">Consultas Mais Lentas (Slow Queries)</h4>
       <div class="table-responsive border rounded">
         <table class="table table-hover align-middle mb-0">
@@ -140,25 +147,25 @@
           </thead>
           <tbody>
             <tr>
-              <td><code class="small text-danger">SELECT * FROM logs WHERE...</code></td>
-              <td>1.2s</td>
-              <td>450/h</td>
+              <td data-label="Consulta"><code class="small text-danger">SELECT * FROM logs WHERE...</code></td>
+              <td data-label="Duração">1.2s</td>
+              <td data-label="Chamadas">450/h</td>
             </tr>
             <tr>
-              <td><code class="small text-warning">UPDATE users SET last_login...</code></td>
-              <td>0.8s</td>
-              <td>1200/h</td>
+              <td data-label="Consulta"><code class="small text-warning">UPDATE users SET last_login...</code></td>
+              <td data-label="Duração">0.8s</td>
+              <td data-label="Chamadas">1200/h</td>
             </tr>
             <tr>
-              <td><code class="small text-secondary">SELECT COUNT(*) FROM backups...</code></td>
-              <td>0.5s</td>
-              <td>85/h</td>
+              <td data-label="Consulta"><code class="small text-secondary">SELECT COUNT(*) FROM backups...</code></td>
+              <td data-label="Duração">0.5s</td>
+              <td data-label="Chamadas">85/h</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-12 col-lg-6">
       <h4 class="h6 mb-3 fw-bold text-muted">Estatísticas de Disco e I/O</h4>
       <div class="d-flex flex-column gap-3 p-3 rounded border">
         <div>
