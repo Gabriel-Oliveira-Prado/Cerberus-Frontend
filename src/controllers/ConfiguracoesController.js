@@ -70,7 +70,7 @@ export default class ConfiguracoesController {
           cancelButtonText: 'Cancelar'
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = '/login.html';
+            window.location.href = '/login';
           }
         });
       });

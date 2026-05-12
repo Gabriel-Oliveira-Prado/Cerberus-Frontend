@@ -120,6 +120,14 @@ h6,
   display: none;
 }
 
+@media (min-width: 769px) {
+  .cerberus-barra-lateral.colapsada .cerberus-marca {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
 .cerberus-nav-painel {
   flex-grow: 1;
 }
@@ -236,6 +244,15 @@ h6,
   display: none;
 }
 
+@media (min-width: 769px) {
+  .cerberus-barra-lateral.colapsada .cerberus-conta-linha {
+    justify-content: center;
+  }
+  .cerberus-barra-lateral.colapsada .cerberus-conta-linha > div:not(.cerberus-avatar) {
+    display: none;
+  }
+}
+
 .cerberus-conta-botao {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -311,118 +328,44 @@ h6,
 
 @media (max-width: 768px) {
   .cerberus-barra-lateral {
-    top: auto;
-    bottom: 0;
-    width: 100% !important;
-    height: 65px;
-    flex-direction: row;
-    padding: 0;
-    z-index: 1050;
-    justify-content: space-between;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-    border-radius: 20px 20px 0 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    left: -100%;
+    width: 260px !important;
+    transition: left 0.3s ease;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
   }
 
-  .cerberus-marca,
-  .cerberus-rotulo-secao,
-  .cerberus-conta-linha,
-  .cerberus-nav-descricao {
-    display: none !important;
+  .cerberus-barra-lateral.colapsada {
+    left: 0;
+    width: 260px !important;
   }
 
-  .cerberus-nav-painel {
-    padding: 0;
-    display: flex;
-    flex-grow: 1;
-  }
-
-  .cerberus-nav-lista {
-    flex-direction: row;
-    width: 100%;
-    margin: 0;
-    gap: 0;
-    height: 100%;
-  }
-
-  .cerberus-nav-item {
-    flex: 1;
-    border-radius: 0;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    height: 100%;
-    gap: 2px;
-  }
-
-  .cerberus-nav-item.ativo {
-    background-color: transparent;
-    color: var(--cor-destaque);
-  }
-
-  .cerberus-nav-item.ativo::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 30px;
-    height: 3px;
-    background-color: var(--cor-destaque);
-    border-radius: 0 0 4px 4px;
-  }
-
-  .cerberus-nav-rotulo {
+  /* Override desktop .colapsada styles to show everything on mobile */
+  .cerberus-barra-lateral.colapsada .cerberus-titulo-marca,
+  .cerberus-barra-lateral.colapsada .cerberus-nav-rotulo,
+  .cerberus-barra-lateral.colapsada .cerberus-nav-descricao,
+  .cerberus-barra-lateral.colapsada .cerberus-rotulo-secao,
+  .cerberus-barra-lateral.colapsada .cerberus-conta-nome,
+  .cerberus-barra-lateral.colapsada .cerberus-conta-cargo,
+  .cerberus-barra-lateral.colapsada .cerberus-conta-botao span {
     display: block !important;
-    font-size: 0.65rem;
-    font-weight: 700;
+    opacity: 1;
+    width: auto;
   }
 
-  .cerberus-nav-item svg {
-    margin-bottom: 0 !important;
-    width: 20px !important;
-    height: 20px !important;
+  .cerberus-barra-lateral.colapsada .cerberus-nav-item {
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 0.75rem 1rem;
   }
 
-  .cerberus-conta-painel {
-    padding: 0;
-    display: flex;
-    border-top: none;
-    align-items: center;
-    justify-content: center;
-    flex-grow: 0;
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
-    height: 100%;
-  }
-
-  .cerberus-conta-botao {
-    border: none;
-    background: transparent !important;
-    border-radius: 0;
-    height: 100%;
-    flex-direction: column;
-    padding: 0 1.25rem;
-    color: #94a3b8;
-    gap: 2px;
-  }
-
-  .cerberus-conta-botao span {
-    display: block !important;
-    font-size: 0.65rem;
-    font-weight: 700;
-  }
-
-  .cerberus-conta-botao svg {
-    margin-right: 0 !important;
-    width: 20px !important;
-    height: 20px !important;
+  .cerberus-barra-lateral.colapsada .cerberus-nav-item svg.icone-nav {
+    margin-bottom: 0.25rem;
   }
 
   /* Main content adjustments */
   .painel-conteudo-principal {
     margin-left: 0 !important;
-    margin-bottom: 65px;
-    min-height: calc(100vh - 65px);
+    min-height: 100vh;
   }
 
   .area-conteudo {
@@ -430,7 +373,7 @@ h6,
   }
 
   .btn-alternar-menu {
-    display: none;
+    display: flex !important;
   }
 
   header.mb-5 {
@@ -513,17 +456,4 @@ h6,
     color: var(--cor-texto-mutado);
   }
 }
-
-@media (max-width: 380px) {
-
-  .cerberus-nav-rotulo,
-  .cerberus-conta-botao span {
-    display: none !important;
-  }
-
-  .cerberus-nav-item svg,
-  .cerberus-conta-botao svg {
-    width: 24px !important;
-    height: 24px !important;
-  }
-}
+

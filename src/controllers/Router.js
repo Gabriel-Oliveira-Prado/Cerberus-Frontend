@@ -16,6 +16,11 @@ export class Router {
         e.preventDefault();
         const path = new URL(link.href).pathname;
         this.navigate(path);
+        
+        const barraLateral = document.querySelector('.cerberus-barra-lateral');
+        if (window.innerWidth <= 768 && barraLateral) {
+          barraLateral.classList.remove('colapsada');
+        }
       });
     });
 

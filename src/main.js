@@ -25,6 +25,14 @@ document.addEventListener('DOMContentLoaded', () => {
       barraLateral.classList.toggle('colapsada');
       conteudoPrincipal.classList.toggle('expandido');
     });
+
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 768 && barraLateral.classList.contains('colapsada')) {
+        if (!barraLateral.contains(e.target) && !btnAlternar.contains(e.target)) {
+          barraLateral.classList.remove('colapsada');
+        }
+      }
+    });
   }
 
   const router = new Router();
