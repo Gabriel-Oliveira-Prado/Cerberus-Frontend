@@ -3,7 +3,7 @@ import BackupsController from './BackupsController.js';
 import ServidoresController from './ServidoresController.js';
 import ConfiguracoesController from './ConfiguracoesController.js';
 import LoginController from './LoginController.js';
-
+import ConectarController from './ConectarController.js';
 export class Router {
   constructor() {
     this.appContent = document.getElementById('app-content');
@@ -71,6 +71,28 @@ export class Router {
   }
 
   async route(path) {
+    const isAuthenticated = sessionStorage.getItem('authenticated') === 'true';
+    const isConnected = sessionStorage.getItem('db_connected') === 'true';
+    
+    if (!isAuthenticated && path !== '/login') {
+      window.history.replaceState({}, '', '/login');
+      path = '/login';
+    } else if (isAuthenticated && !isConnected && path !== '/login' && path !== '/conectar') {
+      window.history.replaceState({}, '', '/conectar');
+      path = '/conectar';
+    }
+
+    const protegidas = document.querySelectorAll('.nav-protegida');
+    const navConectar = document.getElementById('nav-conectar');
+    
+    if (isConnected) {
+      protegidas.forEach(el => el.classList.remove('d-none'));
+      if (navConectar) navConectar.classList.add('d-none');
+    } else {
+      protegidas.forEach(el => el.classList.add('d-none'));
+      if (navConectar) navConectar.classList.remove('d-none');
+    }
+
     this.updateActiveNav(path);
     
     if (path === '/login') {
@@ -111,6 +133,13 @@ export class Router {
         html = await this.fetchView('servidores');
         this.appContent.innerHTML = html;
         controller = new ServidoresController();
+        break;
+      case '/conectar':
+        document.title = 'Cerberus - Conectar Banco';
+        if(this.tituloPagina) this.tituloPagina.textContent = 'Conectar Banco';
+        html = await this.fetchView('conectar');
+        this.appContent.innerHTML = html;
+        controller = new ConectarController();
         break;
       case '/configuracoes':
         document.title = 'Cerberus - Configurações';

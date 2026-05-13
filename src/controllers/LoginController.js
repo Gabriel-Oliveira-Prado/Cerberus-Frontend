@@ -19,6 +19,7 @@ export default class LoginController {
         btn.disabled = true;
 
         setTimeout(() => {
+          sessionStorage.setItem('authenticated', 'true');
           window.location.href = '/dashboard';
         }, 1500);
       });
