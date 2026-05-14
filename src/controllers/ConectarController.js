@@ -13,7 +13,7 @@ export default class ConectarController {
 
   async handleConnect(e) {
     e.preventDefault();
-    
+
     this.btn.disabled = true;
     this.btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Conectando...';
 
@@ -29,14 +29,14 @@ export default class ConectarController {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ host, database: name, port, user, password: pass })
       });
-      
+
       const data = await response.json();
 
       if (response.ok && data.success) {
         // Salva estado de conexão no sessionStorage
         sessionStorage.setItem('db_connected', 'true');
         sessionStorage.setItem('db_name', name);
-        
+
         // Redireciona para o dashboard
         const router = new Router();
         router.navigate('/dashboard');
