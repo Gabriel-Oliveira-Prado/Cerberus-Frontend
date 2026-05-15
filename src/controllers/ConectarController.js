@@ -24,7 +24,7 @@ export default class ConectarController {
     const pass = document.getElementById('db-pass').value;
 
     try {
-      const response = await fetch('http://localhost:3000/api/db/connect', {
+      const response = await fetch('https://cerberus-backend-eojx.onrender.com/api/db/connect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ host, database: name, port, user, password: pass })
