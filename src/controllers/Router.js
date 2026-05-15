@@ -62,7 +62,7 @@ export class Router {
 
   async fetchView(viewName) {
     try {
-      const response = await fetch(`/src/views/${viewName}.html`);
+      const response = await fetch(`/views/${viewName}.html`);
       if (!response.ok) throw new Error('View não encontrada');
       return await response.text();
     } catch (e) {
