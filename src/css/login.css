@@ -13,6 +13,7 @@ body.is-login-route .cerberus-barra-lateral,
 body.is-login-route .rodape,
 body.is-login-route header {
   display: none !important;
+  
 }
 
 body.is-login-route .painel-conteudo-principal {
@@ -53,9 +54,12 @@ body.is-login-route .area-conteudo {
   }
 
 
+  
+
 
 .img-acima-login {
-  width: 130px;}
+  width: 45px;
+  height: 45px; }
 
   .login-imagem-area {
     position: absolute;
