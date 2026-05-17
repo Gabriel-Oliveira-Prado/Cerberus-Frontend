@@ -6,6 +6,9 @@
   background-color: var(--cor-principal);
 }
 
+
+
+
 body.is-login-route .cerberus-barra-lateral,
 body.is-login-route .rodape,
 body.is-login-route header {
@@ -48,6 +51,12 @@ body.is-login-route .area-conteudo {
   .pagina-login {
     position: relative;
   }
+
+
+
+.img-acima-login {
+  width: 130px;}
+
   .login-imagem-area {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
