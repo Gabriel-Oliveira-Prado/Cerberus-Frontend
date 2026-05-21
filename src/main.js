@@ -21,15 +21,27 @@ document.addEventListener('DOMContentLoaded', () => {
   const conteudoPrincipal = document.querySelector('.painel-conteudo-principal');
 
   if (btnAlternar && barraLateral && conteudoPrincipal) {
+    const toggleMobileScroll = () => {
+      if (window.innerWidth <= 768) {
+        if (barraLateral.classList.contains('colapsada')) {
+          document.body.classList.add('sidebar-mobile-open');
+        } else {
+          document.body.classList.remove('sidebar-mobile-open');
+        }
+      }
+    };
+
     btnAlternar.addEventListener('click', () => {
       barraLateral.classList.toggle('colapsada');
       conteudoPrincipal.classList.toggle('expandido');
+      toggleMobileScroll();
     });
 
     document.addEventListener('click', (e) => {
       if (window.innerWidth <= 768 && barraLateral.classList.contains('colapsada')) {
         if (!barraLateral.contains(e.target) && !btnAlternar.contains(e.target)) {
           barraLateral.classList.remove('colapsada');
+          toggleMobileScroll();
         }
       }
     });

@@ -23,6 +23,7 @@ export class Router {
         const barraLateral = document.querySelector('.cerberus-barra-lateral');
         if (window.innerWidth <= 768 && barraLateral) {
           barraLateral.classList.remove('colapsada');
+          document.body.classList.remove('sidebar-mobile-open');
         }
       });
     });
