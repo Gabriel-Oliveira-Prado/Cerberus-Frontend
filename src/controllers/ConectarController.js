@@ -2,6 +2,7 @@ import { Router } from './Router.js';
 import Swal from 'sweetalert2';
 
 export default class ConectarController {
+  // Inicializa o controlador e configura referências do DOM e eventos
   async init() {
     this.form = document.getElementById('form-conectar-banco');
     this.btn = document.getElementById('btn-conectar');
@@ -11,12 +12,15 @@ export default class ConectarController {
     }
   }
 
+  // Processa a submissão do formulário de conexão com o banco de dados
   async handleConnect(e) {
     e.preventDefault();
 
+    // Feedback visual de carregamento
     this.btn.disabled = true;
     this.btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Conectando...';
 
+    // Coleta os dados informados no formulário
     const host = document.getElementById('db-host').value;
     const name = document.getElementById('db-name').value;
     const port = document.getElementById('db-port').value;
@@ -24,6 +28,7 @@ export default class ConectarController {
     const pass = document.getElementById('db-pass').value;
 
     try {
+      // Faz requisição à API para testar/estabelecer a conexão
       const response = await fetch('https://cerberus-backend-eojx.onrender.com/api/db/connect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

@@ -2,12 +2,14 @@ import Swal from 'sweetalert2';
 import { icones } from '../js/utils.js';
 
 export default class ConfiguracoesController {
+  // Inicializa as configurações, ícones e navegação em abas
   async init() {
     this.injectIcons();
     this.bindEvents();
     this.bindTabs();
   }
 
+  // Substitui os placeholders pelos ícones SVG
   injectIcons() {
     document.querySelectorAll('.icone-engrenagem').forEach(el => el.innerHTML = icones.engrenagem);
     document.querySelectorAll('.icone-perfil').forEach(el => el.innerHTML = icones.perfil);
@@ -15,6 +17,7 @@ export default class ConfiguracoesController {
     document.querySelectorAll('.icone-sair').forEach(el => el.innerHTML = icones.sair);
   }
 
+  // Configura o comportamento das abas na página de configurações
   bindTabs() {
     const btns = document.querySelectorAll('.btn-tab-config');
     const panes = document.querySelectorAll('.tab-pane-config');
@@ -41,6 +44,7 @@ export default class ConfiguracoesController {
     });
   }
 
+  // Associa os eventos aos botões principais de "Salvar" e "Sair do Sistema"
   bindEvents() {
     const btnSalvar = document.getElementById('btn-salvar-config');
     if (btnSalvar) {

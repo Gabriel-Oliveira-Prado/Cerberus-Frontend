@@ -4,11 +4,13 @@ import _ from 'lodash';
 import { icones } from '../js/utils.js';
 
 export default class DashboardController {
+  // Inicializa o dashboard e carrega os dados
   async init() {
     this.injectIcons();
     await this.loadData();
   }
 
+  // Injeta ícones SVG nos elementos correspondentes
   injectIcons() {
     document.querySelectorAll('.icone-pontos').forEach(el => el.innerHTML = icones.pontos);
     document.querySelectorAll('.icone-performance').forEach(el => el.innerHTML = icones.performance);
@@ -17,9 +19,11 @@ export default class DashboardController {
     document.querySelectorAll('.icone-arquivos').forEach(el => el.innerHTML = icones.arquivos);
   }
 
+  // Carrega as estatísticas (simuladas) e atualiza a interface
   async loadData() {
     let estatisticas = {};
     try {
+      // Simulação de resposta da API com métricas do banco de dados
       const respostaSimulada = {
         data: {
           uptime: '15d 4h',
@@ -39,11 +43,13 @@ export default class DashboardController {
       await new Promise(res => setTimeout(res, 500));
       estatisticas = respostaSimulada.data;
       
+      // Atualiza os cartões de estatísticas no DOM
       document.getElementById('dash-performance').textContent = estatisticas.uptime;
       document.getElementById('dash-sucesso').textContent = estatisticas.cacheHit + '%';
       document.getElementById('dash-servidores').textContent = estatisticas.conexoesAtivas;
       document.getElementById('dash-backups').textContent = estatisticas.totalBackups;
 
+      // Renderiza o gráfico inicial e adiciona os eventos para alterar o tipo de gráfico
       this.renderChart(estatisticas.historicoQPM, 'bar');
       this.bindChartEvents(estatisticas.historicoQPM);
       
@@ -52,6 +58,7 @@ export default class DashboardController {
     }
   }
 
+  // Renderiza o gráfico com base no histórico e tipo especificados usando Chart.js
   renderChart(historico, type) {
     const labelsGrafico = _.map(historico, 'tempo');
     const dadosGrafico = _.map(historico, 'qtd');
@@ -97,6 +104,7 @@ export default class DashboardController {
     }
   }
 
+  // Associa os eventos de clique aos botões de alternância de gráfico
   bindChartEvents(historico) {
     document.querySelectorAll('.btn-mudar-grafico').forEach(btn => {
       btn.addEventListener('click', (e) => {
