@@ -12,20 +12,52 @@ export default class LoginController {
     const btnRecuperar = document.getElementById('btn-recuperar');
 
     if (formLogin) {
-      formLogin.addEventListener('submit', (e) => {
+      formLogin.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         // Feedback visual de carregamento no botão
         const btn = formLogin.querySelector('button[type="submit"]');
         const conteudoOriginal = btn.innerHTML;
         btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Autenticando...';
         btn.disabled = true;
 
-        // Simulação de autenticação assíncrona
-        setTimeout(() => {
-          sessionStorage.setItem('authenticated', 'true');
-          window.location.href = '/dashboard';
-        }, 1500);
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('senha').value;
+
+        try {
+          const response = await fetch('http://127.0.0.1:5000/api/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            sessionStorage.setItem('authenticated', 'true');
+            window.location.href = '/dashboard';
+          } else {
+            Swal.fire({
+              title: 'Erro!',
+              text: data.message || 'Credenciais inválidas.',
+              icon: 'error',
+              confirmButtonColor: '#dc3545'
+            });
+          }
+        } catch (error) {
+          console.error('Erro no login:', error);
+          Swal.fire({
+            title: 'Erro de conexão!',
+            text: 'Não foi possível conectar ao servidor.',
+            icon: 'error',
+            confirmButtonColor: '#dc3545'
+          });
+        } finally {
+          btn.innerHTML = conteudoOriginal;
+          btn.disabled = false;
+        }
       });
     }
 

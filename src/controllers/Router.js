@@ -88,7 +88,7 @@ export class Router {
     if (!isAuthenticated && path !== '/login' && path !== '/cadastro') {
       window.history.replaceState({}, '', '/login');
       path = '/login';
-    } else if (isAuthenticated && !isConnected && path !== '/login' && path !== '/cadastro' && path !== '/conectar') {
+    } else if (isAuthenticated && !isConnected && path !== '/login' && path !== '/cadastro' && path !== '/conectar' && path !== '/configuracoes') {
       window.history.replaceState({}, '', '/conectar');
       path = '/conectar';
     }

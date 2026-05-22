@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"vite\" \"cd ../Cerberus-backend && node src/server.js\"",
+    "dev": "concurrently \"vite\" \"cd ../Cerberus-Backend && python -m src.main\"",
     "build": "vite build",
     "preview": "vite preview"
   },

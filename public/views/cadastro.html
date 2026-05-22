@@ -1,45 +1,40 @@
 <div class="container-fluid p-0">
-<div class="pagina-login fade-in">
-  <div class="login-imagem-area">
-    <link rel="shortcut icon" href="/logo-nova-cerberus.png" type="image/x-icon">
-  </div>
-  <div class="login-formulario-area">
-    <div class="login-caixa w-100" style="max-width: 400px; margin: 0 auto;">
-      <div class="text-center mb-4">
-        <img src="/logo-nova-cerberus.png" alt="Cerberus Logo" class="img-acima-login" >
-        <h1 class="h3 text-danger mb-1 fonte-titulo">Criar Conta</h1>
-        <p class="text-muted small fw-bold">Junte-se ao Cerberus</p>
+  <div class="pagina-login fade-in">
+    <div class="login-imagem-area">
+      <link rel="shortcut icon" href="/logo-nova-cerberus.png" type="image/x-icon">
+    </div>
+    <div class="login-formulario-area">
+      <div class="login-caixa w-100" style="max-width: 400px; margin: 0 auto;">
+        <div class="text-center mb-4">
+          <img src="/logo-nova-cerberus.png" alt="Cerberus Logo" class="img-acima-login">
+          <h1 class="h3 text-danger mb-1 fonte-titulo">Criar Conta</h1>
+          <p class="text-muted small fw-bold">Junte-se ao Cerberus</p>
+        </div>
+        <form id="formulario-cadastro">
+          <div class="mb-3">
+            <label class="form-label small fw-semibold text-muted">Nome</label>
+            <input type="text" id="nome" class="form-control" placeholder="Seu nome completo" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold text-muted">E-mail</label>
+            <input type="email" id="email" class="form-control" placeholder="usuario@cerberus.com.br" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold text-muted">Senha</label>
+            <input type="password" id="senha" class="form-control" placeholder="••••••••" required>
+          </div>
+          <div class="mb-4">
+            <label class="form-label small fw-semibold text-muted">Confirmar Senha</label>
+            <input type="password" id="confirmar-senha" class="form-control" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100 py-3 mt-2">Cadastrar</button>
+          <div class="text-center mt-4">
+            <span class="small text-muted">Já tem uma conta?</span>
+            <a href="/login" class="small fw-bold text-danger text-decoration-none" data-route>Fazer Login</a>
+          </div>
+        </form>
       </div>
-      
-      <form id="formulario-cadastro">
-        <div class="mb-3">
-          <label class="form-label small fw-semibold text-muted">Nome</label>
-          <input type="text" id="nome" class="form-control" placeholder="Seu nome completo" required>
-        </div>
-        <div class="mb-3">
-          <label class="form-label small fw-semibold text-muted">E-mail</label>
-          <input type="email" id="email" class="form-control" placeholder="usuario@cerberus.com.br" required>
-        </div>
-        <div class="mb-3">
-          <label class="form-label small fw-semibold text-muted">Senha</label>
-          <input type="password" id="senha" class="form-control" placeholder="••••••••" required>
-        </div>
-        <div class="mb-4">
-          <label class="form-label small fw-semibold text-muted">Confirmar Senha</label>
-          <input type="password" id="confirmar-senha" class="form-control" placeholder="••••••••" required>
-        </div>
-        
-        <button type="submit" class="btn btn-primary w-100 py-3 mt-2">
-          Cadastrar
-        </button>
-
-        <div class="text-center mt-4">
-          <span class="small text-muted">Já tem uma conta?</span>
-          <a href="/login" class="small fw-bold text-danger text-decoration-none" data-route>Fazer Login</a>
-        </div>
-      </form>
     </div>
   </div>
-</div>
 </div>
 <script src="../../src/js/register.js" defer></script>

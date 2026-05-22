@@ -60,12 +60,33 @@ export default class ConfiguracoesController {
       });
     }
 
-    const btnSair = document.getElementById('btn-sair-sistema');
-    if (btnSair) {
-      btnSair.addEventListener('click', () => {
+    const btnDesconectar = document.getElementById('btn-desconectar-banco');
+    if (btnDesconectar) {
+      btnDesconectar.addEventListener('click', () => {
         Swal.fire({
-          title: 'Sair do Sistema?',
-          text: 'Você precisará fazer login novamente.',
+          title: 'Desconectar do Banco?',
+          text: 'Você precisará informar as credenciais do banco novamente.',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#ffc107',
+          cancelButtonColor: '#6c757d',
+          confirmButtonText: 'Sim, desconectar!',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            sessionStorage.removeItem('db_connected');
+            window.location.href = '/conectar';
+          }
+        });
+      });
+    }
+
+    const btnSairConta = document.getElementById('btn-sair-conta');
+    if (btnSairConta) {
+      btnSairConta.addEventListener('click', () => {
+        Swal.fire({
+          title: 'Sair da Conta?',
+          text: 'Você será desconectado da plataforma Cerberus.',
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#dc3545',
@@ -74,6 +95,8 @@ export default class ConfiguracoesController {
           cancelButtonText: 'Cancelar'
         }).then((result) => {
           if (result.isConfirmed) {
+            sessionStorage.removeItem('authenticated');
+            sessionStorage.removeItem('db_connected');
             window.location.href = '/login';
           }
         });

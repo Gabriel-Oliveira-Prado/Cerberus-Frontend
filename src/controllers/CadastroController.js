@@ -11,9 +11,11 @@ export default class CadastroController {
     const formCadastro = document.getElementById('formulario-cadastro');
 
     if (formCadastro) {
-      formCadastro.addEventListener('submit', (e) => {
+      formCadastro.addEventListener('submit', async (e) => {
         e.preventDefault();
 
+        const nome = document.getElementById('nome').value;
+        const email = document.getElementById('email').value;
         const senha = document.getElementById('senha').value;
         const confirmarSenha = document.getElementById('confirmar-senha').value;
 
@@ -34,17 +36,46 @@ export default class CadastroController {
         btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Cadastrando...';
         btn.disabled = true;
 
-        // Simula uma requisição assíncrona de cadastro e redireciona após sucesso
-        setTimeout(() => {
-          Swal.fire({
-            title: 'Sucesso!',
-            text: 'Conta criada com sucesso! Faça login para continuar.',
-            icon: 'success',
-            confirmButtonColor: '#dc3545'
-          }).then(() => {
-            window.location.href = '/login';
+        try {
+          const response = await fetch('http://127.0.0.1:5000/api/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ nome, email, password: senha })
           });
-        }, 1500);
+
+          const data = await response.json();
+
+          if (response.ok) {
+            Swal.fire({
+              title: 'Sucesso!',
+              text: 'Conta criada com sucesso! Faça login para continuar.',
+              icon: 'success',
+              confirmButtonColor: '#dc3545'
+            }).then(() => {
+              window.location.href = '/login';
+            });
+          } else {
+            Swal.fire({
+              title: 'Erro!',
+              text: data.message || 'Não foi possível realizar o cadastro.',
+              icon: 'error',
+              confirmButtonColor: '#dc3545'
+            });
+          }
+        } catch (error) {
+          console.error('Erro no cadastro:', error);
+          Swal.fire({
+            title: 'Erro de conexão!',
+            text: 'Não foi possível conectar ao servidor.',
+            icon: 'error',
+            confirmButtonColor: '#dc3545'
+          });
+        } finally {
+          btn.innerHTML = conteudoOriginal;
+          btn.disabled = false;
+        }
       });
     }
   }
