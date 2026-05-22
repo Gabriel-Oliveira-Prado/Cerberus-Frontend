@@ -40,10 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // 6. Trata o retorno com base no status que definimos no backend
             if (resultado.success) {
                 alert("Sucesso: " + resultado.message);
-                
-                // Redireciona para o seu dashboard visual
-                // Nota: Ajuste o caminho relativo se a estrutura exigir subir níveis (ex: '../views/dashboard.html')
-                window.location.href = 'dashboard.html'; 
+
+                window.location.href = '../../public/views/conectar.html'; 
             } else {
                 // Exibe a mensagem de erro vinda do Python ("Credenciais inválidas!")
                 alert("Erro: " + resultado.message);
