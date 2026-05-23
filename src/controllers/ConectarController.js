@@ -22,17 +22,17 @@ export default class ConectarController {
 
     // Coleta os dados informados no formulário
     const host = document.getElementById('db-host').value;
-    const name = document.getElementById('db-name').value;
+    const dbname = document.getElementById('db-name').value;
     const port = document.getElementById('db-port').value;
-    const user = document.getElementById('db-user').value;
-    const pass = document.getElementById('db-pass').value;
+    const dbuser = document.getElementById('db-user').value;
+    const dbpassword = document.getElementById('db-pass').value;
 
     try {
       // Faz requisição à API para testar/estabelecer a conexão
-      const response = await fetch('https://cerberus-backend-eojx.onrender.com/api/db/connect', {
+      const response = await fetch('http://127.0.0.1:5000/api/conectar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ host, database: name, port, user, password: pass })
+        body: JSON.stringify({ host, database: dbname, port, user: dbuser, password: dbpassword })
       });
 
       const data = await response.json();
@@ -40,7 +40,7 @@ export default class ConectarController {
       if (response.ok && data.success) {
         // Salva estado de conexão no sessionStorage
         sessionStorage.setItem('db_connected', 'true');
-        sessionStorage.setItem('db_name', name);
+        sessionStorage.setItem('db_name', dbname);
 
         // Redireciona para o dashboard
         const router = new Router();
