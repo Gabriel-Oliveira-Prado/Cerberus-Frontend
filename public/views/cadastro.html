@@ -13,19 +13,20 @@
         <form id="formulario-cadastro">
           <div class="mb-3">
             <label class="form-label small fw-semibold text-muted">Nome</label>
-            <input type="text" id="nome" class="form-control" placeholder="Seu nome completo" required>
+            <input type="text" id="nome" class="form-control" placeholder="Seu nome completo" maxlength="100" required>
           </div>
           <div class="mb-3">
             <label class="form-label small fw-semibold text-muted">E-mail</label>
-            <input type="email" id="email" class="form-control" placeholder="usuario@cerberus.com.br" required>
+            <input type="email" id="email" class="form-control" placeholder="usuario@cerberus.com.br" maxlength="150" required>
           </div>
           <div class="mb-3">
             <label class="form-label small fw-semibold text-muted">Senha</label>
-            <input type="password" id="senha" class="form-control" placeholder="••••••••" required>
+            <input type="password" id="senha" class="form-control" placeholder="••••••••" maxlength="100" required>
+            <small class="text-muted d-block mt-1" id="senha-feedback" style="font-size: 0.75rem;">Mín. 8 caracteres, 1 maiúscula, 1 minúscula e 1 número.</small>
           </div>
           <div class="mb-4">
             <label class="form-label small fw-semibold text-muted">Confirmar Senha</label>
-            <input type="password" id="confirmar-senha" class="form-control" placeholder="••••••••" required>
+            <input type="password" id="confirmar-senha" class="form-control" placeholder="••••••••" maxlength="100" required>
           </div>
           <button type="submit" class="btn btn-primary w-100 py-3 mt-2">Cadastrar</button>
           <div class="text-center mt-4">

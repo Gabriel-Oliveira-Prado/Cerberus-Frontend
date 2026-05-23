@@ -7,6 +7,27 @@ export default class ConfiguracoesController {
     this.injectIcons();
     this.bindEvents();
     this.bindTabs();
+    await this.carregarDadosPerfil();
+  }
+
+  // Busca o nome real do usuário para preencher o input
+  async carregarDadosPerfil() {
+    try {
+      const baseUrl = `http://${window.location.hostname}:5000`;
+      const response = await fetch(`${baseUrl}/api/verify`, {
+        method: 'GET',
+        credentials: 'include'
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const inputNome = document.getElementById('input-nome-exibicao');
+        if (inputNome && data.nome) {
+          inputNome.value = data.nome;
+        }
+      }
+    } catch (e) {
+      console.error("Erro ao carregar dados do perfil", e);
+    }
   }
 
   // Substitui os placeholders pelos ícones SVG
@@ -48,15 +69,50 @@ export default class ConfiguracoesController {
   bindEvents() {
     const btnSalvar = document.getElementById('btn-salvar-config');
     if (btnSalvar) {
-      btnSalvar.addEventListener('click', () => {
-        Swal.fire({
-          title: 'Sucesso!',
-          text: 'As configurações foram salvas.',
-          icon: 'success',
-          confirmButtonColor: '#dc3545',
-          timer: 2000,
-          showConfirmButton: false
-        });
+      btnSalvar.addEventListener('click', async () => {
+        const novoNome = document.getElementById('input-nome-exibicao')?.value;
+        
+        // Verifica se o painel Perfil está visível para só salvar ele por enquanto (ou salva sempre)
+        if (!novoNome) return;
+
+        const conteudoOriginal = btnSalvar.innerHTML;
+        btnSalvar.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Salvando...';
+        btnSalvar.disabled = true;
+
+        try {
+          const baseUrl = `http://${window.location.hostname}:5000`;
+          const response = await fetch(`${baseUrl}/api/user/update`, {
+            method: 'PUT',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ nome: novoNome })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            Swal.fire({
+              title: 'Sucesso!',
+              text: 'Perfil atualizado com sucesso. Recarregando dados...',
+              icon: 'success',
+              confirmButtonColor: '#dc3545',
+              timer: 2000,
+              showConfirmButton: false
+            }).then(() => {
+              // Recarrega a página inteira ou apenas dispara checkAuthStatus
+              window.location.reload();
+            });
+          } else {
+            Swal.fire('Erro!', data.message || 'Erro ao atualizar perfil', 'error');
+          }
+        } catch (e) {
+          Swal.fire('Erro de conexão!', 'Não foi possível salvar', 'error');
+        } finally {
+          btnSalvar.innerHTML = conteudoOriginal;
+          btnSalvar.disabled = false;
+        }
       });
     }
 

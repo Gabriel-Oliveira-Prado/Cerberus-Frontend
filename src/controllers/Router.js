@@ -35,7 +35,9 @@ export class Router {
   }
 
   // Inicializa o roteador definindo a rota inicial
-  init() {
+  async init() {
+    await this.checkAuthStatus();
+
     const path = window.location.pathname === '/' || window.location.pathname === '/index.html'
       ? '/dashboard'
       : window.location.pathname;
@@ -45,6 +47,53 @@ export class Router {
     }
 
     this.route(path);
+  }
+
+  // Verifica o status de autenticação via backend
+  async checkAuthStatus() {
+    try {
+      const baseUrl = `http://${window.location.hostname}:5000`;
+      const response = await fetch(`${baseUrl}/api/verify`, {
+        method: 'GET',
+        credentials: 'include'
+      });
+      if (response.ok) {
+        const data = await response.json();
+        sessionStorage.setItem('authenticated', 'true');
+        
+        // Atualiza a interface da barra lateral (nome, email e avatar)
+        const nomeEl = document.getElementById('cerberus-usuario-nome');
+        const emailEl = document.getElementById('cerberus-usuario-email');
+        const avatarEl = document.getElementById('cerberus-usuario-avatar');
+        
+        if (nomeEl && emailEl && avatarEl && data.nome && data.email) {
+          // Adiciona o valor completo como title para mostrar ao passar o mouse
+          nomeEl.title = data.nome;
+          emailEl.title = data.email;
+
+          // Limite de caracteres em JS para garantir
+          const maxLength = 20;
+          const nomeCurto = data.nome.length > maxLength ? data.nome.substring(0, maxLength) + '...' : data.nome;
+          const emailCurto = data.email.length > maxLength ? data.email.substring(0, maxLength) + '...' : data.email;
+
+          nomeEl.textContent = nomeCurto;
+          emailEl.textContent = emailCurto;
+          
+          // Gera iniciais do nome (ex: "Gabriel Augusto" -> "GA")
+          const palavras = data.nome.trim().split(' ').filter(p => p.length > 0);
+          let iniciais = palavras[0][0];
+          if (palavras.length > 1) {
+            iniciais += palavras[palavras.length - 1][0];
+          }
+          avatarEl.textContent = iniciais.toUpperCase();
+        }
+      } else {
+        sessionStorage.removeItem('authenticated');
+      }
+    } catch (error) {
+      console.error('Erro ao verificar autenticação:', error);
+      sessionStorage.removeItem('authenticated');
+    }
   }
 
   // Adiciona a rota ao histórico e invoca o controlador de rotas

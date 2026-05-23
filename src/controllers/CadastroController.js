@@ -14,10 +14,55 @@ export default class CadastroController {
       formCadastro.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const nome = document.getElementById('nome').value;
-        const email = document.getElementById('email').value;
+        // Sanitização básica contra XSS client-side
+        const escapeHTML = (str) => str.replace(/[&<>'"]/g, 
+          tag => ({
+              '&': '&amp;',
+              '<': '&lt;',
+              '>': '&gt;',
+              "'": '&#39;',
+              '"': '&quot;'
+          }[tag]));
+
+        const nome = escapeHTML(document.getElementById('nome').value.trim());
+        const email = escapeHTML(document.getElementById('email').value.trim());
         const senha = document.getElementById('senha').value;
         const confirmarSenha = document.getElementById('confirmar-senha').value;
+
+        // Verificação de limites
+        if (nome.length > 100 || email.length > 150) {
+          Swal.fire({
+            title: 'Erro!',
+            text: 'Os campos excedem o tamanho máximo permitido.',
+            icon: 'error',
+            confirmButtonColor: '#dc3545'
+          });
+          return;
+        }
+
+        // Validação de formato de e-mail
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          Swal.fire({
+            title: 'E-mail inválido!',
+            text: 'Por favor, insira um e-mail em um formato válido.',
+            icon: 'warning',
+            confirmButtonColor: '#dc3545'
+          });
+          return;
+        }
+
+        // Validação estrita de força de senha
+        const senhaForteRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        if (!senhaForteRegex.test(senha)) {
+          Swal.fire({
+            title: 'Senha Fraca',
+            text: 'A senha deve ter no mínimo 8 caracteres, contendo pelo menos uma letra maiúscula, uma minúscula e um número.',
+            icon: 'warning',
+            confirmButtonColor: '#dc3545'
+          });
+          return;
+        }
 
         // Validação simples: verifica se as senhas informadas são iguais
         if (senha !== confirmarSenha) {
@@ -37,8 +82,10 @@ export default class CadastroController {
         btn.disabled = true;
 
         try {
-          const response = await fetch('http://127.0.0.1:5000/api/register', {
+          const baseUrl = `http://${window.location.hostname}:5000`;
+          const response = await fetch(`${baseUrl}/api/register`, {
             method: 'POST',
+            credentials: 'include',
             headers: {
               'Content-Type': 'application/json'
             },

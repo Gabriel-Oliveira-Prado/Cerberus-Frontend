@@ -21,12 +21,28 @@ export default class LoginController {
         btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Autenticando...';
         btn.disabled = true;
 
-        const email = document.getElementById('email').value;
+        const email = document.getElementById('email').value.trim();
         const password = document.getElementById('senha').value;
 
+        // Validação de formato de e-mail usando Regex
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          Swal.fire({
+            title: 'E-mail inválido!',
+            text: 'Por favor, insira um e-mail em um formato válido.',
+            icon: 'warning',
+            confirmButtonColor: '#dc3545'
+          });
+          btn.innerHTML = conteudoOriginal;
+          btn.disabled = false;
+          return;
+        }
+
         try {
-          const response = await fetch('http://127.0.0.1:5000/api/login', {
+          const baseUrl = `http://${window.location.hostname}:5000`;
+          const response = await fetch(`${baseUrl}/api/login`, {
             method: 'POST',
+            credentials: 'include',
             headers: {
               'Content-Type': 'application/json'
             },
