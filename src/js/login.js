@@ -1,7 +1,7 @@
 // Aguarda todo o HTML da página carregar antes de rodar o script
 document.addEventListener('DOMContentLoaded', () => {
     
-    // 1. Captura o formulário pelo ID (certifique-se de que no HTML está: <form id="formulario-login">)
+    // 1. Captura o formulário pelo ID
     const loginForm = document.getElementById('formulario-login');
 
     if (!loginForm) {

@@ -76,9 +76,14 @@
           </div>
           <div class="tab-pane-config d-none" id="tab-perfil">
             <h3 class="h5 mb-4 border-bottom pb-2">Editar Perfil</h3>
+            <form id="form-editar-perfil">
             <div class="mb-3">
               <label class="form-label small fw-bold text-muted">Nome de Exibição</label>
+<<<<<<< HEAD
               <input type="text" class="form-control" id="input-nome-exibicao" value="Carregando...">
+=======
+              <input type="text" id="nome-exibicao" class="form-control" value="Gabriel A.">
+>>>>>>> 3fda806206ecf6cfa51e363265dc6bc62986ce82
             </div>
             <div class="mb-3">
               <label class="form-label small fw-bold text-muted">Tipo de conta</label>
@@ -89,15 +94,15 @@
             <h3 class="h5 mb-4 border-bottom pb-2">Alterar Senha</h3>
             <div class="mb-3">
               <label class="form-label small fw-bold text-muted">Senha Atual</label>
-              <input type="password" class="form-control" placeholder="••••••••">
+              <input type="password" id="senha-atual" class="form-control" placeholder="••••••••">
             </div>
             <div class="mb-3">
               <label class="form-label small fw-bold text-muted">Nova Senha</label>
-              <input type="password" class="form-control" placeholder="Mínimo 8 caracteres">
+              <input type="password" id="nova-senha" class="form-control" placeholder="Mínimo 8 caracteres">
             </div>
             <div class="mb-3">
               <label class="form-label small fw-bold text-muted">Confirmar Nova Senha</label>
-              <input type="password" class="form-control" placeholder="Mínimo 8 caracteres">
+              <input type="password" id="confirmar-nova-senha" class="form-control" placeholder="Mínimo 8 caracteres">
             </div>
           </div>
           <div class="tab-pane-config d-none" id="tab-notificacoes">
@@ -113,9 +118,12 @@
           </div>
         </div>
         <div class="text-end mt-5 pt-3 border-top">
-          <button class="btn btn-primary" id="btn-salvar-config">Salvar Alterações</button>
+          <button type= "submit" class="btn btn-primary" id="btn-salvar-config">Salvar Alterações</button>
+          </form>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<script src="../../src/js/configuracoes.js"></script>
