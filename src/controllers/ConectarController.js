@@ -27,12 +27,20 @@ export default class ConectarController {
     const dbuser = document.getElementById('db-user').value;
     const dbpassword = document.getElementById('db-pass').value;
 
+    const dadosFormulario = {
+            host: db_hostValue,
+            port: db_portValue,
+            dbname: db_nameValue,
+            dbuser: db_userValue,
+            dbpassword: db_passValue
+        };
+
     try {
       // Faz requisição à API para testar/estabelecer a conexão
       const response = await fetch('http://127.0.0.1:5000/api/conectar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ host, database: dbname, port, user: dbuser, password: dbpassword })
+        body: JSON.stringify({ dadosFormulario })
       });
 
       const data = await response.json();
