@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // 5. Envia o objeto transformado em texto JSON para a rota do Flask
-            const resposta = await fetch('http://127.0.0.1:5000/api/alterar-usuario', {
+            const resposta = await fetch(`http://${window.location.hostname}:5000/api/alterar-usuario`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json' // Avisa ao Flask que o corpo é um JSON

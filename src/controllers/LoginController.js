@@ -1,4 +1,5 @@
 import Swal from 'sweetalert2';
+import { BASE_URL } from '../config/api.js';
 
 export default class LoginController {
   // Inicializa o controlador e configura os eventos da página de login
@@ -39,8 +40,7 @@ export default class LoginController {
         }
 
         try {
-          const baseUrl = `http://${window.location.hostname}:5000`;
-          const response = await fetch(`${baseUrl}/api/login`, {
+          const response = await fetch(`${BASE_URL}/api/login`, {
             method: 'POST',
             credentials: 'include',
             headers: {

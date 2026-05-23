@@ -5,6 +5,7 @@ import ConfiguracoesController from './ConfiguracoesController.js';
 import LoginController from './LoginController.js';
 import ConectarController from './ConectarController.js';
 import CadastroController from './CadastroController.js';
+import { BASE_URL } from '../config/api.js';
 export class Router {
   constructor() {
     // Referências aos elementos principais da interface
@@ -52,8 +53,7 @@ export class Router {
   // Verifica o status de autenticação via backend
   async checkAuthStatus() {
     try {
-      const baseUrl = `http://${window.location.hostname}:5000`;
-      const response = await fetch(`${baseUrl}/api/verify`, {
+      const response = await fetch(`${BASE_URL}/api/verify`, {
         method: 'GET',
         credentials: 'include'
       });

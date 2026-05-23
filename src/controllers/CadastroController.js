@@ -1,4 +1,5 @@
 import Swal from 'sweetalert2';
+import { BASE_URL } from '../config/api.js';
 
 export default class CadastroController {
   // Inicializa o controlador e configura os eventos da página
@@ -82,8 +83,7 @@ export default class CadastroController {
         btn.disabled = true;
 
         try {
-          const baseUrl = `http://${window.location.hostname}:5000`;
-          const response = await fetch(`${baseUrl}/api/register`, {
+          const response = await fetch(`${BASE_URL}/api/register`, {
             method: 'POST',
             credentials: 'include',
             headers: {

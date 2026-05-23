@@ -1,5 +1,6 @@
 import { Router } from './Router.js';
 import Swal from 'sweetalert2';
+import { BASE_URL } from '../config/api.js';
 
 export default class ConectarController {
   // Inicializa o controlador e configura referências do DOM e eventos
@@ -37,7 +38,7 @@ export default class ConectarController {
 
     try {
       // Faz requisição à API para testar/estabelecer a conexão
-      const response = await fetch('http://127.0.0.1:5000/api/conectar', {
+      const response = await fetch(`${BASE_URL}/api/conectar`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ dadosFormulario })

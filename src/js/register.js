@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // 5. Envia o JSON para a rota de registro que você já tem no Flask
-            const resposta = await fetch('http://127.0.0.1:5000/api/register', {
+            const resposta = await fetch(`http://${window.location.hostname}:5000/api/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

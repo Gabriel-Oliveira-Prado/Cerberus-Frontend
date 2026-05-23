@@ -1,5 +1,6 @@
 import Swal from 'sweetalert2';
 import { icones } from '../js/utils.js';
+import { BASE_URL } from '../config/api.js';
 
 export default class ConfiguracoesController {
   // Inicializa as configurações, ícones e navegação em abas
@@ -13,8 +14,7 @@ export default class ConfiguracoesController {
   // Busca o nome real do usuário para preencher o input
   async carregarDadosPerfil() {
     try {
-      const baseUrl = `http://${window.location.hostname}:5000`;
-      const response = await fetch(`${baseUrl}/api/verify`, {
+      const response = await fetch(`${BASE_URL}/api/verify`, {
         method: 'GET',
         credentials: 'include'
       });
@@ -80,8 +80,7 @@ export default class ConfiguracoesController {
         btnSalvar.disabled = true;
 
         try {
-          const baseUrl = `http://${window.location.hostname}:5000`;
-          const response = await fetch(`${baseUrl}/api/user/update`, {
+          const response = await fetch(`${BASE_URL}/api/user/update`, {
             method: 'PUT',
             credentials: 'include',
             headers: {
@@ -153,8 +152,7 @@ export default class ConfiguracoesController {
           if (result.isConfirmed) {
             // Chama a API de logout no backend para apagar os Cookies JWT de forma segura
             try {
-              const baseUrl = `http://${window.location.hostname}:5000`;
-              await fetch(`${baseUrl}/api/logout`, {
+              await fetch(`${BASE_URL}/api/logout`, {
                 method: 'POST',
                 credentials: 'include'
               });
