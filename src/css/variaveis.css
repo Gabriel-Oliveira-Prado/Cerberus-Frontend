@@ -12,3 +12,13 @@
   --largura-barra-lateral-colapsada: 80px;
   --transicao-suave: all 0.3s ease;
 }
+
+[data-bs-theme="dark"] {
+  --cor-principal: #0b111e;
+  --cor-secundaria: #070b12;
+  --cor-texto-escuro: #f8fafc;
+  --cor-texto-mutado: #94a3b8;
+  --cor-borda: #1e293b;
+  --cor-cartao: #0f172a;
+}
+

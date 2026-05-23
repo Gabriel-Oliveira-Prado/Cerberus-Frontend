@@ -10,6 +10,22 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <script>
+    (function() {
+      const cookies = document.cookie.split(';');
+      let theme = 'light';
+      for (let i = 0; i < cookies.length; i++) {
+        const c = cookies[i].trim();
+        if (c.startsWith('modo-escuro=')) {
+          if (c.substring('modo-escuro='.length) === 'true') {
+            theme = 'dark';
+          }
+          break;
+        }
+      }
+      document.documentElement.setAttribute('data-bs-theme', theme);
+    })();
+  </script>
 </head>
 
 <body>
