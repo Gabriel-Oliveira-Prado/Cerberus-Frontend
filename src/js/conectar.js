@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 : 'https://cerberus-backend-eojx.onrender.com';
             const resposta = await fetch(`${baseUrl}/api/conectar`, {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json' // Avisa ao Flask que o corpo é um JSON
                 },

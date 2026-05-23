@@ -15,10 +15,18 @@
 
 [data-bs-theme="dark"] {
   --cor-principal: #0b111e;
-  --cor-secundaria: #070b12;
+  --cor-secundaria: #0f172a; /* Mantém a sidebar com a cor original */
   --cor-texto-escuro: #f8fafc;
   --cor-texto-mutado: #94a3b8;
   --cor-borda: #1e293b;
   --cor-cartao: #0f172a;
 }
+
+#badge-sistema-online {
+  background-color: var(--cor-cartao) !important;
+  color: var(--cor-texto-escuro) !important;
+  border-color: var(--cor-borda) !important;
+  transition: var(--transicao-suave);
+}
+
 

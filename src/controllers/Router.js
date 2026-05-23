@@ -153,6 +153,17 @@ export class Router {
       if (navConectar) navConectar.classList.remove('d-none');
     }
 
+    // Controla a exibição do badge de Sistema Online (apenas quando conectado e fora de conectar/configurações/auth)
+    const badge = document.getElementById('badge-sistema-online');
+    if (badge) {
+      if (isConnected && path !== '/conectar' && path !== '/configuracoes' && path !== '/login' && path !== '/cadastro') {
+        badge.classList.remove('d-none');
+      } else {
+        badge.classList.add('d-none');
+      }
+    }
+
+
     this.updateActiveNav(path);
 
     // Configura layout específico para páginas de login/cadastro ou exibe skeleton de carregamento

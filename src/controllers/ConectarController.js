@@ -40,8 +40,9 @@ export default class ConectarController {
       // Faz requisição à API para testar/estabelecer a conexão
       const response = await fetch(`${BASE_URL}/api/conectar`, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ dadosFormulario })
+        body: JSON.stringify(dadosFormulario)
       });
 
       const data = await response.json();
@@ -55,7 +56,7 @@ export default class ConectarController {
         const router = new Router();
         router.navigate('/dashboard');
       } else {
-        throw new Error(data.error || 'Falha de autenticação ou host não encontrado.');
+        throw new Error(data.message || 'Falha de autenticação ou host não encontrado.');
       }
     } catch (error) {
       Swal.fire({
