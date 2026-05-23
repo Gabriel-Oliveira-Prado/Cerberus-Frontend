@@ -104,8 +104,8 @@ export default class ConfiguracoesController {
     }
   }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
+bindEvents() ;{
+  document.addEventListener('DOMContentLoaded', () => {
     
     // 1. Captura o formulário pelo ID
     const loginForm = document.getElementById('form-editar-perfil');
@@ -167,3 +167,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+}
