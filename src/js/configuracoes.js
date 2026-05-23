@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.hostname.startsWith('172.');
             const baseUrl = isLocalhost 
                 ? `http://${window.location.hostname}:5000`
-                : 'https://cerberus-backend.onrender.com';
+                : 'https://cerberus-backend-eojx.onrender.com';
             const resposta = await fetch(`${baseUrl}/api/alterar-usuario`, {
                 method: 'POST',
                 headers: {

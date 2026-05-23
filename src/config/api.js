@@ -16,5 +16,5 @@ const isLocalhost =
 
 export const BASE_URL = isLocalhost 
   ? `http://${window.location.hostname}:${API_PORT}`
-  : (import.meta.env.VITE_API_URL || 'https://cerberus-backend.onrender.com');
+  : (import.meta.env.VITE_API_URL || 'https://cerberus-backend-eojx.onrender.com');
 
