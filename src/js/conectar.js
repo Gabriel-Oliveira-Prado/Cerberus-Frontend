@@ -32,7 +32,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // 5. Envia o objeto transformado em texto JSON para a rota do Flask
-            const resposta = await fetch(`http://${window.location.hostname}:5000/api/conectar`, {
+            const isLocalhost = 
+                window.location.hostname === 'localhost' || 
+                window.location.hostname === '127.0.0.1' || 
+                window.location.hostname.startsWith('192.168.') ||
+                window.location.hostname.startsWith('10.') ||
+                window.location.hostname.startsWith('172.');
+            const baseUrl = isLocalhost 
+                ? `http://${window.location.hostname}:5000`
+                : 'https://cerberus-backend.onrender.com';
+            const resposta = await fetch(`${baseUrl}/api/conectar`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json' // Avisa ao Flask que o corpo é um JSON

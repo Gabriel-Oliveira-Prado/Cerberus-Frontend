@@ -27,7 +27,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // 5. Envia o JSON para a rota de registro que você já tem no Flask
-            const resposta = await fetch(`http://${window.location.hostname}:5000/api/register`, {
+            const isLocalhost = 
+                window.location.hostname === 'localhost' || 
+                window.location.hostname === '127.0.0.1' || 
+                window.location.hostname.startsWith('192.168.') ||
+                window.location.hostname.startsWith('10.') ||
+                window.location.hostname.startsWith('172.');
+            const baseUrl = isLocalhost 
+                ? `http://${window.location.hostname}:5000`
+                : 'https://cerberus-backend.onrender.com';
+            const resposta = await fetch(`${baseUrl}/api/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
