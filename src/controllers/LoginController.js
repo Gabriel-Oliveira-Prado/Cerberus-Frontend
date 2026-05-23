@@ -7,11 +7,11 @@ export default class LoginController {
   }
 
   // Associa os eventos aos elementos do DOM (formulário e botão de recuperar senha)
-   = document.getElementById('formulario-login');
+  bindEvents() {
+    const formLogin = document.getElementById('formulario-login');
     const btnRecuperar = document.getElementById('btn-recuperar');
 
-    if (formLogin) {bindEvents() {
-    const formLogin
+    if (formLogin) {
       formLogin.addEventListener('submit', async (e) => {
         e.preventDefault();
 
