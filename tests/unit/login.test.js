@@ -22,13 +22,13 @@ describe('LoginController Unit Tests', () => {
     // Reset mocks and DOM
     jest.clearAllMocks();
     sessionStorage.clear();
-    
+
     Object.defineProperty(window.location, 'href', {
       value: 'http://localhost/',
       writable: true,
       configurable: true
     });
-    
+
     document.body.innerHTML = `
       <form id="formulario-login">
         <input id="email" type="email" />
@@ -144,7 +144,7 @@ describe('LoginController Unit Tests', () => {
     }));
 
     await new Promise(process.nextTick);
-    
+
     expect(Swal.fire).toHaveBeenLastCalledWith(expect.objectContaining({
       title: 'Enviado!',
       icon: 'success'
