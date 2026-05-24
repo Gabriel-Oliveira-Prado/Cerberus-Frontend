@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2';
 import Chart from 'chart.js/auto';
 import _ from 'lodash';
 import { io } from 'socket.io-client';
@@ -131,6 +132,39 @@ export default class DashboardController {
 
     this.renderChart(inicialQPM, this.currentChartType);
     this.bindChartEvents(inicialQPM);
+    this.bindStressTestEvent();
+  }
+
+  bindStressTestEvent() {
+    const btnStress = document.getElementById('btn-stress-test');
+    if (btnStress) {
+      btnStress.addEventListener('click', async () => {
+        const originalText = btnStress.innerHTML;
+        btnStress.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Disparando...';
+        btnStress.disabled = true;
+
+        try {
+          const res = await fetch(`${BASE_URL}/api/stress-test`, { method: 'POST', credentials: 'include' });
+          const data = await res.json();
+          if(data.success) {
+            Swal.fire({
+              title: 'Tiroteio Finalizado!',
+              text: '500 queries foram disparadas no banco. Aguarde alguns segundos para ver o gráfico subir (QPM atualiza a cada minuto).',
+              icon: 'success',
+              timer: 3000,
+              showConfirmButton: false
+            });
+          } else {
+            Swal.fire('Erro', data.message || 'Falha no teste', 'error');
+          }
+        } catch(e) {
+          Swal.fire('Erro', 'Erro de conexão no teste de estresse.', 'error');
+        } finally {
+          btnStress.innerHTML = originalText;
+          btnStress.disabled = false;
+        }
+      });
+    }
   }
 
   // Renderiza o gráfico com base no histórico e tipo especificados usando Chart.js

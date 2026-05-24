@@ -5,9 +5,28 @@
         <span class="icone-database-estrutura text-danger"></span>
         Modelagem Física do Banco de Dados
       </h3>
-      <button id="btn-atualizar-estrutura" class="btn btn-primary btn-sm px-3">
-        Atualizar Diagrama
-      </button>
+      <div class="d-flex align-items-center gap-2">
+        <button id="btn-atualizar-estrutura" class="btn btn-primary btn-sm px-3">
+          Atualizar Diagrama
+        </button>
+        <div class="dropdown">
+          <button class="btn btn-light btn-sm px-2 text-muted" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Opções">
+            <span class="icone-pontos-verticais" style="font-size: 1.2rem;">&#8942;</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+            <li>
+              <a class="dropdown-item d-flex align-items-center gap-2" href="#" id="btn-ver-total-tabelas">
+                Ver Total de Tabelas
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center gap-2" href="#" id="btn-exportar-mermaid">
+                Exportar Código (Mermaid)
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
     <p class="text-muted small">
       Diagrama Entidade-Relacionamento (DER) gerado dinamicamente a partir do banco de dados conectado (exibe dados fictícios se nenhuma conexão estiver ativa).
