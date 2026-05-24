@@ -240,9 +240,15 @@ export default class ConfiguracoesController {
           cancelButtonColor: '#6c757d',
           confirmButtonText: 'Sim, desconectar!',
           cancelButtonText: 'Cancelar'
-        }).then((result) => {
+        }).then(async (result) => {
           if (result.isConfirmed) {
+            try {
+              await fetch(`${BASE_URL}/api/database/disconnect`, { method: 'DELETE', credentials: 'include' });
+            } catch(e) {
+              console.error('Erro ao desconectar no backend', e);
+            }
             sessionStorage.removeItem('db_connected');
+            sessionStorage.removeItem('db_name');
             window.location.href = '/conectar';
           }
         });

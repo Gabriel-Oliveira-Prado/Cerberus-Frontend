@@ -42,7 +42,7 @@
         </ul>
         <div class="d-flex align-items-center mb-2">
           <span class="icone-ativos text-danger me-2"></span>
-          <div class="text-muted small">Conexões Ativas</div>
+          <div class="text-muted small">Total de Conexões</div>
         </div>
         <div class="h3 fw-bold text-danger"><span id="dash-servidores">--</span></div>
         <div class="small text-muted mt-2" id="dash-servidores-sub">Max: --</div>
@@ -74,6 +74,7 @@
             <span class="icone-pontos"></span>
           </div>
           <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2" style="min-width: 200px;">
+            <li><button class="dropdown-item small rounded mb-1 text-danger fw-semibold" type="button" id="btn-stress-test" title="Dispara 500 queries para forçar o pico no gráfico">Disparar Teste de Estresse</button></li>
             <li><button class="dropdown-item small rounded mb-1" type="button">Exportar Dados</button></li>
             <li>
               <hr class="dropdown-divider">

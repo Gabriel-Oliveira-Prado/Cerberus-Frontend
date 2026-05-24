@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   setIcon('icone-nav-dashboard', icones.dashboard);
   setIcon('icone-nav-backups', icones.backups);
-  setIcon('icone-nav-servidores', icones.servidores);
+  setIcon('icone-nav-seguranca', icones.escudo);
   setIcon('icone-nav-estrutura', icones.estrutura);
   setIcon('icone-nav-config', icones.engrenagem);
   setIcon('icone-menu-toggle', icones.menu);

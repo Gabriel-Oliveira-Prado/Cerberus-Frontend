@@ -53,7 +53,13 @@ export default class LoginController {
 
           if (response.ok) {
             sessionStorage.setItem('authenticated', 'true');
-            window.location.href = '/dashboard';
+            if (data.nome && data.email) {
+              sessionStorage.setItem('user_nome', data.nome);
+              sessionStorage.setItem('user_email', data.email);
+            }
+            // Usa o roteamento SPA ao invés de recarregar a página toda
+            window.history.pushState({}, '', '/dashboard');
+            window.dispatchEvent(new PopStateEvent('popstate'));
           } else {
             Swal.fire({
               title: 'Erro!',

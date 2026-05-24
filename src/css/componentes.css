@@ -88,3 +88,45 @@
     transform: translateX(100%);
   }
 }
+
+/* Global Loader Inline para evitar Flash (FOUC) */
+.global-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #0f172a; /* Azul escuro/preto do Cerberus */
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+.global-loader.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+.global-loader-spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top: 4px solid #dc3545; /* Vermelho Cerberus */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1.5rem;
+}
+.global-loader-texto {
+  font-family: 'Outfit', sans-serif;
+  font-weight: bold;
+  color: #f8fafc; /* Texto branco */
+  font-size: 1.25rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+

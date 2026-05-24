@@ -1,6 +1,6 @@
 import DashboardController from './DashboardController.js';
 import BackupsController from './BackupsController.js';
-import ServidoresController from './ServidoresController.js';
+import SegurancaController from './SegurancaController.js';
 import ConfiguracoesController from './ConfiguracoesController.js';
 import LoginController from './LoginController.js';
 import ConectarController from './ConectarController.js';
@@ -51,8 +51,35 @@ export class Router {
     this.route(path);
   }
 
+  // Atualiza a interface da barra lateral (nome, email e avatar)
+  renderProfile(nome, email) {
+    if (!nome || !email) return;
+    const nomeEl = document.getElementById('cerberus-usuario-nome');
+    const emailEl = document.getElementById('cerberus-usuario-email');
+    const avatarEl = document.getElementById('cerberus-usuario-avatar');
+    if (nomeEl && emailEl && avatarEl) {
+      nomeEl.title = nome;
+      emailEl.title = email;
+      const maxLength = 20;
+      nomeEl.textContent = nome.length > maxLength ? nome.substring(0, maxLength) + '...' : nome;
+      emailEl.textContent = email.length > maxLength ? email.substring(0, maxLength) + '...' : email;
+      
+      const palavras = nome.trim().split(' ').filter(p => p.length > 0);
+      let iniciais = palavras[0][0];
+      if (palavras.length > 1) iniciais += palavras[palavras.length - 1][0];
+      avatarEl.textContent = iniciais.toUpperCase();
+    }
+  }
+
   // Verifica o status de autenticação via backend
   async checkAuthStatus() {
+    // Carrega do cache instantaneamente para evitar tela de 'Carregando...'
+    const cachedNome = sessionStorage.getItem('user_nome');
+    const cachedEmail = sessionStorage.getItem('user_email');
+    if (cachedNome && cachedEmail) {
+      this.renderProfile(cachedNome, cachedEmail);
+    }
+
     try {
       const response = await fetch(`${BASE_URL}/api/verify`, {
         method: 'GET',
@@ -69,31 +96,10 @@ export class Router {
           sessionStorage.removeItem('db_name');
         }
         
-        // Atualiza a interface da barra lateral (nome, email e avatar)
-        const nomeEl = document.getElementById('cerberus-usuario-nome');
-        const emailEl = document.getElementById('cerberus-usuario-email');
-        const avatarEl = document.getElementById('cerberus-usuario-avatar');
-        
-        if (nomeEl && emailEl && avatarEl && data.nome && data.email) {
-          // Adiciona o valor completo como title para mostrar ao passar o mouse
-          nomeEl.title = data.nome;
-          emailEl.title = data.email;
-
-          // Limite de caracteres em JS para garantir
-          const maxLength = 20;
-          const nomeCurto = data.nome.length > maxLength ? data.nome.substring(0, maxLength) + '...' : data.nome;
-          const emailCurto = data.email.length > maxLength ? data.email.substring(0, maxLength) + '...' : data.email;
-
-          nomeEl.textContent = nomeCurto;
-          emailEl.textContent = emailCurto;
-          
-          // Gera iniciais do nome (ex: "Gabriel Augusto" -> "GA")
-          const palavras = data.nome.trim().split(' ').filter(p => p.length > 0);
-          let iniciais = palavras[0][0];
-          if (palavras.length > 1) {
-            iniciais += palavras[palavras.length - 1][0];
-          }
-          avatarEl.textContent = iniciais.toUpperCase();
+        if (data.nome && data.email) {
+          sessionStorage.setItem('user_nome', data.nome);
+          sessionStorage.setItem('user_email', data.email);
+          this.renderProfile(data.nome, data.email);
         }
       } else {
         sessionStorage.removeItem('authenticated');
@@ -142,6 +148,9 @@ export class Router {
 
   // Lida com o roteamento, gerenciamento de estados (auth/db) e renderização das views
   async route(path) {
+    const globalLoader = document.getElementById('global-loader');
+    if (globalLoader) globalLoader.classList.remove('hidden');
+
     const isAuthenticated = sessionStorage.getItem('authenticated') === 'true';
     const isConnected = sessionStorage.getItem('db_connected') === 'true';
 
@@ -217,12 +226,12 @@ export class Router {
         this.appContent.innerHTML = html;
         controller = new BackupsController();
         break;
-      case '/servidores':
-        document.title = 'Cerberus - Monitoramento';
-        if (this.tituloPagina) this.tituloPagina.textContent = 'Infraestrutura do Banco';
-        html = await this.fetchView('servidores');
+      case '/seguranca':
+        document.title = 'Cerberus - Segurança e Sessões';
+        if (this.tituloPagina) this.tituloPagina.textContent = 'Segurança e Sessões';
+        html = await this.fetchView('seguranca');
         this.appContent.innerHTML = html;
-        controller = new ServidoresController();
+        controller = new SegurancaController();
         break;
       case '/conectar':
         document.title = 'Cerberus - Conectar Banco';
@@ -262,6 +271,10 @@ export class Router {
 
     if (controller) {
       await controller.init();
+    }
+
+    if (globalLoader) {
+      setTimeout(() => globalLoader.classList.add('hidden'), 300);
     }
   }
 }

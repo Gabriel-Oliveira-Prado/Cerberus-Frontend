@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 export default class EstruturaController {
   async init() {
     this.injectIcons();
+    this.erMarkupCache = "";
     await this.fetchSchemaAndRender();
     this.bindEvents();
   }
@@ -34,6 +35,8 @@ export default class EstruturaController {
       const data = response.data;
 
       if (data.success) {
+        this.totalTables = data.tables.length;
+
         let erMarkup = "erDiagram\n";
         
         data.tables.forEach(table => {
@@ -50,6 +53,7 @@ export default class EstruturaController {
           erMarkup += `  ${rel.from_table} ||--o{ ${rel.to_table} : "relaciona"\n`;
         });
 
+        this.erMarkupCache = erMarkup;
         container.innerHTML = `<pre class="mermaid" id="mermaid-svg-target" style="background-color: transparent; text-align: center; margin: 0; padding: 0;">${erMarkup}</pre>`;
 
         if (window.mermaid) {
@@ -93,6 +97,40 @@ export default class EstruturaController {
           confirmButtonColor: '#dc3545',
           timer: 2000
         });
+      });
+    }
+
+    const btnVerTotal = document.getElementById('btn-ver-total-tabelas');
+    if (btnVerTotal) {
+      btnVerTotal.addEventListener('click', (e) => {
+        e.preventDefault();
+        Swal.fire({
+          title: 'Total de Tabelas',
+          text: `Seu banco de dados possui atualmente ${this.totalTables || 0} tabelas.`,
+          icon: 'info',
+          confirmButtonColor: '#dc3545'
+        });
+      });
+    }
+
+    const btnExportar = document.getElementById('btn-exportar-mermaid');
+    if (btnExportar) {
+      btnExportar.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (!this.erMarkupCache) {
+          Swal.fire('Erro', 'Nenhum diagrama gerado para exportar.', 'error');
+          return;
+        }
+        
+        const blob = new Blob([this.erMarkupCache], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'cerberus_diagrama.mmd';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
       });
     }
   }
