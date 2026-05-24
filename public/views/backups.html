@@ -1,20 +1,54 @@
 <div class="container-fluid pt-4">
+  <!-- Status de Integridade -->
   <div class="cartao mb-4 fade-in">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h3 class="h5 m-0">Status de Integridade</h3>
       <div class="d-flex align-items-center gap-2">
-        <button id="btn-verificar" class="btn btn-primary btn-sm px-3 d-none d-sm-block">Executar Verificação</button>
-        <div class="menu-opcoes-cartao-relativo" data-bs-toggle="dropdown" aria-expanded="false">
-          <span class="icone-pontos"></span>
+        <button
+          id="btn-verificar"
+          class="btn btn-primary btn-sm px-3 d-none d-sm-block"
+        >
+          Executar Verificação
+        </button>
+        <div class="dropdown">
+          <div
+            class="menu-opcoes-cartao-relativo"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            style="cursor: pointer"
+          >
+            <span class="icone-pontos"></span>
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+            <li>
+              <button
+                id="menu-exportar-log"
+                class="dropdown-item small"
+                type="button"
+              >
+                <i class="bi bi-download me-2"></i>Exportar Log
+              </button>
+            </li>
+            <li><hr class="dropdown-divider my-1" /></li>
+            <li>
+              <button
+                id="menu-detalhes-integridade"
+                class="dropdown-item small"
+                type="button"
+              >
+                <i class="bi bi-info-circle me-2"></i>Ver Detalhes
+              </button>
+            </li>
+          </ul>
         </div>
-        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-          <li><button class="dropdown-item small" type="button">Exportar Log</button></li>
-          <li><button class="dropdown-item small" type="button">Detalhes</button></li>
-        </ul>
       </div>
     </div>
-    <button id="btn-verificar-mobile" class="btn btn-primary btn-sm w-100 mb-4 d-block d-sm-none">Executar
-      Verificação</button>
+    <button
+      id="btn-verificar-mobile"
+      class="btn btn-primary btn-sm w-100 mb-4 d-block d-sm-none"
+    >
+      Executar Verificação
+    </button>
     <div class="table-responsive">
       <table class="table table-hover align-middle">
         <thead class="bg-light">
@@ -26,23 +60,53 @@
             <th class="border-0 text-end">Ações</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="integrity-tbody">
           <tr>
-            <td colspan="5" class="text-center text-muted py-4">Aguardando dados reais...</td>
+            <td colspan="5" class="text-center text-muted py-4">
+              Clique em "Executar Verificação" para checar a integridade do
+              banco.
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
+
+  <!-- Histórico de Backups -->
   <div class="cartao fade-in mb-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h3 class="h5 m-0">Histórico de Backups Antigos</h3>
-      <div class="menu-opcoes-cartao-relativo" data-bs-toggle="dropdown" aria-expanded="false">
-        <span class="icone-pontos"></span>
+      <h3 class="h5 m-0">Histórico de Backups</h3>
+      <div class="dropdown">
+        <div
+          class="menu-opcoes-cartao-relativo"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+          style="cursor: pointer"
+        >
+          <span class="icone-pontos"></span>
+        </div>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+          <li>
+            <button
+              id="menu-exportar-csv"
+              class="dropdown-item small"
+              type="button"
+            >
+              <i class="bi bi-filetype-csv me-2"></i>Exportar CSV
+            </button>
+          </li>
+          <li><hr class="dropdown-divider my-1" /></li>
+          <li>
+            <button
+              id="menu-novo-backup"
+              class="dropdown-item small"
+              type="button"
+            >
+              <i class="bi bi-cloud-upload me-2"></i>Novo Backup
+            </button>
+          </li>
+        </ul>
       </div>
-      <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-        <li><button class="dropdown-item small" type="button">Exportar CSV</button></li>
-      </ul>
     </div>
     <div class="table-responsive">
       <table class="table table-hover align-middle border rounded">
@@ -57,25 +121,61 @@
         </thead>
         <tbody id="backups-table-body">
           <tr>
-            <td colspan="5" class="text-center text-muted py-4">Aguardando dados reais...</td>
+            <td colspan="5" class="text-center text-muted py-4">
+              Carregando backups...
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
+
+  <!-- Log de Eventos -->
   <div class="cartao fade-in">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h3 class="h5 m-0">Log de Eventos</h3>
-      <div class="menu-opcoes-cartao-relativo" data-bs-toggle="dropdown" aria-expanded="false">
-        <span class="icone-pontos"></span>
+      <div class="dropdown">
+        <div
+          class="menu-opcoes-cartao-relativo"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+          style="cursor: pointer"
+        >
+          <span class="icone-pontos"></span>
+        </div>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+          <li>
+            <button
+              id="menu-copiar-log"
+              class="dropdown-item small"
+              type="button"
+            >
+              <i class="bi bi-clipboard me-2"></i>Copiar Log
+            </button>
+          </li>
+          <li><hr class="dropdown-divider my-1" /></li>
+          <li>
+            <button
+              id="menu-limpar-log"
+              class="dropdown-item small text-danger"
+              type="button"
+            >
+              <i class="bi bi-trash me-2"></i>Limpar Log
+            </button>
+          </li>
+        </ul>
       </div>
-      <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-        <li><button class="dropdown-item small" type="button">Limpar Log</button></li>
-      </ul>
     </div>
-    <div class="d-flex flex-column gap-2 font-monospace" id="backups-log-container"
-      style="font-size: 0.85rem; overflow-wrap: break-word; word-break: break-word;">
-      <div class="text-muted">Aguardando dados...</div>
+    <div
+      class="d-flex flex-column gap-2 font-monospace"
+      id="backups-log-container"
+      style="
+        font-size: 0.85rem;
+        overflow-wrap: break-word;
+        word-break: break-word;
+      "
+    >
+      <div class="text-muted">Aguardando eventos do banco de dados...</div>
     </div>
   </div>
 </div>
