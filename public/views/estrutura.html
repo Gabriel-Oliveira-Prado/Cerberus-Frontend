@@ -1,0 +1,23 @@
+<div class="container-fluid pt-4">
+  <div class="cartao fade-in mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h3 class="h5 m-0 d-flex align-items-center gap-2">
+        <span class="icone-database-estrutura text-danger"></span>
+        Modelagem Física do Banco de Dados
+      </h3>
+      <button id="btn-atualizar-estrutura" class="btn btn-primary btn-sm px-3">
+        Atualizar Diagrama
+      </button>
+    </div>
+    <p class="text-muted small">
+      Diagrama Entidade-Relacionamento (DER) gerado dinamicamente a partir do banco de dados conectado (exibe dados fictícios se nenhuma conexão estiver ativa).
+    </p>
+
+    <!-- Div where Mermaid diagram will be rendered -->
+    <div id="mermaid-diagram-container" class="border rounded p-4 text-center bg-white shadow-sm d-flex align-items-center justify-content-center" style="overflow-x: auto; min-height: 450px; width: 100%;">
+      <div class="text-muted spinner-border text-danger" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+    </div>
+  </div>
+</div>

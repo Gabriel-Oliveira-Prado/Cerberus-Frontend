@@ -66,6 +66,11 @@
             <span class="cerberus-nav-rotulo">Servidores</span>
             <span class="cerberus-nav-descricao">Saúde da infraestrutura</span>
           </a>
+          <a href="/estrutura" class="cerberus-nav-item nav-protegida" data-route>
+            <span id="icone-nav-estrutura"></span>
+            <span class="cerberus-nav-rotulo">Estrutura</span>
+            <span class="cerberus-nav-descricao">Diagrama ER do banco</span>
+          </a>
         </div>
       </section>
       <section class="cerberus-painel-lateral cerberus-conta-painel">
@@ -105,6 +110,12 @@
       </footer>
     </main>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    if (typeof mermaid !== 'undefined') {
+      mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+    }
+  </script>
   <script type="module" src="/src/main.js"></script>
 </body>
 

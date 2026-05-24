@@ -3,10 +3,9 @@
     <div class="col-12 col-md-6 col-lg-4">
       <div class="cartao h-100">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 cabecalho-cartao-servidor">
-          <h4 class="h6 fw-bold m-0">SRV-DATABASE-01</h4>
+          <h4 class="h6 fw-bold m-0">Servidor do Banco de Dados (Host)</h4>
           <div class="d-flex align-items-center gap-2">
-            <span class="text-success smaller bg-success-subtle px-2 py-1 rounded" style="font-size: 0.7rem;">●
-              Ativo</span>
+            <span class="text-success smaller bg-success-subtle px-2 py-1 rounded" style="font-size: 0.7rem;">● Ativo</span>
             <div class="menu-opcoes-cartao-relativo" data-bs-toggle="dropdown" aria-expanded="false">
               <span class="icone-pontos"></span>
             </div>
@@ -18,17 +17,17 @@
         <div class="d-flex flex-column gap-2">
           <div class="d-flex justify-content-between small text-muted align-items-center">
             <span class="d-flex align-items-center gap-1"><span class="icone-cpu text-danger"></span> CPU</span>
-            <span>24%</span>
+            <span id="srv1-cpu-text">--%</span>
           </div>
           <div class="progress" style="height: 6px;">
-            <div class="progress-bar bg-danger" style="width: 24%"></div>
+            <div id="srv1-cpu-bar" class="progress-bar bg-danger" style="width: 0%"></div>
           </div>
           <div class="d-flex justify-content-between small text-muted mt-2 align-items-center">
             <span class="d-flex align-items-center gap-1"><span class="icone-memoria text-danger"></span> Memória</span>
-            <span>8.4 GB / 32 GB</span>
+            <span id="srv1-mem-text">-- / --</span>
           </div>
           <div class="progress" style="height: 6px;">
-            <div class="progress-bar bg-danger" style="width: 26%"></div>
+            <div id="srv1-mem-bar" class="progress-bar bg-danger" style="width: 0%"></div>
           </div>
         </div>
       </div>
@@ -37,10 +36,9 @@
     <div class="col-12 col-md-6 col-lg-4">
       <div class="cartao h-100">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 cabecalho-cartao-servidor">
-          <h4 class="h6 fw-bold m-0">SRV-STORAGE-02</h4>
+          <h4 class="h6 fw-bold m-0">Servidor de Armazenamento (Disco)</h4>
           <div class="d-flex align-items-center gap-2">
-            <span class="text-success smaller bg-success-subtle px-2 py-1 rounded" style="font-size: 0.7rem;">●
-              Ativo</span>
+            <span class="text-success smaller bg-success-subtle px-2 py-1 rounded" style="font-size: 0.7rem;">● Ativo</span>
             <div class="menu-opcoes-cartao-relativo" data-bs-toggle="dropdown" aria-expanded="false">
               <span class="icone-pontos"></span>
             </div>
@@ -51,12 +49,11 @@
         </div>
         <div class="d-flex flex-column gap-2">
           <div class="d-flex justify-content-between small text-muted align-items-center">
-            <span class="d-flex align-items-center gap-1"><span class="icone-disco text-danger"></span> Uso de
-              Disco</span>
-            <span>78%</span>
+            <span class="d-flex align-items-center gap-1"><span class="icone-disco text-danger"></span> Uso de Disco</span>
+            <span id="srv2-disk-text">--%</span>
           </div>
           <div class="progress" style="height: 6px;">
-            <div class="progress-bar bg-danger" style="width: 78%"></div>
+            <div id="srv2-disk-bar" class="progress-bar bg-danger" style="width: 0%"></div>
           </div>
         </div>
       </div>
@@ -65,10 +62,9 @@
     <div class="col-12 col-md-6 col-lg-4">
       <div class="cartao h-100">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 cabecalho-cartao-servidor">
-          <h4 class="h6 fw-bold m-0">SRV-WEBSERVICE-04</h4>
+          <h4 class="h6 fw-bold m-0">Servidor de Aplicação (Backend)</h4>
           <div class="d-flex align-items-center gap-2">
-            <span class="text-warning smaller bg-warning-subtle px-2 py-1 rounded" style="font-size: 0.7rem;">● Carga
-              Alta</span>
+            <span id="srv4-badge" class="text-warning smaller bg-warning-subtle px-2 py-1 rounded" style="font-size: 0.7rem;">● Carga Alta</span>
             <div class="menu-opcoes-cartao-relativo" data-bs-toggle="dropdown" aria-expanded="false">
               <span class="icone-pontos"></span>
             </div>
@@ -80,10 +76,10 @@
         <div class="d-flex flex-column gap-2">
           <div class="d-flex justify-content-between small text-muted align-items-center">
             <span class="d-flex align-items-center gap-1"><span class="icone-cpu text-warning"></span> CPU</span>
-            <span>92%</span>
+            <span id="srv4-cpu-text">--%</span>
           </div>
           <div class="progress" style="height: 6px;">
-            <div class="progress-bar bg-warning" style="width: 92%"></div>
+            <div id="srv4-cpu-bar" class="progress-bar bg-warning" style="width: 0%"></div>
           </div>
         </div>
       </div>
@@ -95,8 +91,7 @@
       <h3 class="h5 m-0 d-flex align-items-center gap-2">
         <span class="icone-database text-danger"></span>
         Monitoramento do Banco de Dados
-        <span class="badge bg-light text-dark fw-normal border ms-2 d-none d-sm-inline-block">PostgreSQL
-          Principal</span>
+        <span class="badge bg-light text-dark fw-normal border ms-2 d-none d-sm-inline-block" id="db-badge-name">Carregando...</span>
       </h3>
       <div class="menu-opcoes-cartao-relativo" data-bs-toggle="dropdown" aria-expanded="false">
         <span class="icone-pontos"></span>
@@ -109,37 +104,32 @@
 
     <div class="row g-4 mb-4">
       <div class="col-6 col-lg-3">
-        <div class="p-3 rounded border h-100 d-flex flex-column justify-content-between"
-          style="background-color: rgba(248, 250, 252, 0.5);">
+        <div class="p-3 rounded border h-100 d-flex flex-column justify-content-between" style="background-color: rgba(248, 250, 252, 0.5);">
           <div class="small text-muted mb-1">Status Operacional</div>
-          <div class="fw-bold text-success d-flex align-items-center gap-1">● Online <span
-              class="smaller fw-normal text-muted ms-1">(15d 4h)</span></div>
+          <div id="db-status-text" class="fw-bold text-success d-flex align-items-center gap-1">--</div>
         </div>
       </div>
       <div class="col-6 col-lg-3">
-        <div class="p-3 rounded border h-100 d-flex flex-column justify-content-between"
-          style="background-color: rgba(248, 250, 252, 0.5);">
-          <div class="small text-muted mb-1">Conexões (Ativas/Ociosas)</div>
+        <div class="p-3 rounded border h-100 d-flex flex-column justify-content-between" style="background-color: rgba(248, 250, 252, 0.5);">
+          <div class="small text-muted mb-1">Conexões (Ativas)</div>
           <div class="fw-bold d-flex align-items-center gap-2">
-            <span>142</span>
-            <span class="text-muted fw-normal small">/ 35</span>
+            <span id="db-conns-text">--</span>
+            <span class="text-muted fw-normal small">/ <span id="db-conns-max">--</span> max</span>
           </div>
         </div>
       </div>
       <div class="col-6 col-lg-3">
-        <div class="p-3 rounded border h-100 d-flex flex-column justify-content-between"
-          style="background-color: rgba(248, 250, 252, 0.5);">
+        <div class="p-3 rounded border h-100 d-flex flex-column justify-content-between" style="background-color: rgba(248, 250, 252, 0.5);">
           <div class="small text-muted mb-1">Latência de Consulta</div>
           <div class="fw-bold text-warning d-flex align-items-baseline gap-1 flex-wrap">
-            12ms <span class="smaller text-muted fw-normal ms-1">(P99: 45ms)</span>
+            <span id="db-latency-text">--</span> <span class="smaller text-muted fw-normal ms-1">(P99: <span id="db-latency-p99-text">--</span>)</span>
           </div>
         </div>
       </div>
       <div class="col-6 col-lg-3">
-        <div class="p-3 rounded border h-100 d-flex flex-column justify-content-between"
-          style="background-color: rgba(248, 250, 252, 0.5);">
-          <div class="small text-muted mb-1">Cache Hit Ratio</div>
-          <div class="fw-bold text-success">98.5%</div>
+        <div class="p-3 rounded border h-100 d-flex flex-column justify-content-between" style="background-color: rgba(248, 250, 252, 0.5);">
+          <div class="small text-muted mb-1">Disk</div>
+          <div id="db-disk-text" class="fw-bold text-success">--</div>
         </div>
       </div>
     </div>
@@ -156,21 +146,9 @@
                 <th class="border-0">Chamadas</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="slow-queries-table-body">
               <tr>
-                <td data-label="Consulta"><code class="small text-danger">SELECT * FROM logs WHERE...</code></td>
-                <td data-label="Duração">1.2s</td>
-                <td data-label="Chamadas">450/h</td>
-              </tr>
-              <tr>
-                <td data-label="Consulta"><code class="small text-warning">UPDATE users SET last_login...</code></td>
-                <td data-label="Duração">0.8s</td>
-                <td data-label="Chamadas">1200/h</td>
-              </tr>
-              <tr>
-                <td data-label="Consulta"><code class="small text-secondary">SELECT COUNT(*) FROM backups...</code></td>
-                <td data-label="Duração">0.5s</td>
-                <td data-label="Chamadas">85/h</td>
+                <td colspan="3" class="text-center text-muted small py-3">Carregando dados reais...</td>
               </tr>
             </tbody>
           </table>
@@ -181,21 +159,21 @@
         <div class="d-flex flex-column gap-3 p-3 rounded border">
           <div>
             <div class="d-flex justify-content-between small text-muted mb-1">
-              <span>Uso de Volume (PG_DATA)</span>
-              <span>245 GB / 500 GB (49%)</span>
+              <span>Espaço em Disco Local</span>
+              <span id="disk-volume-text">-- GB / -- GB (--%)</span>
             </div>
             <div class="progress" style="height: 8px;">
-              <div class="progress-bar bg-primary" style="width: 49%"></div>
+              <div id="disk-volume-bar" class="progress-bar bg-primary" style="width: 0%"></div>
             </div>
           </div>
           <div>
             <div class="d-flex justify-content-between small text-muted mb-1">
-              <span>Read/Write I/O throughput</span>
-              <span>12 MB/s / 4 MB/s</span>
+              <span>Taxa de Leitura / Escrita (I/O)</span>
+              <span id="io-throughput-text">-- MB/s / -- MB/s</span>
             </div>
             <div class="progress" style="height: 8px;">
-              <div class="progress-bar bg-success" style="width: 75%"></div>
-              <div class="progress-bar bg-warning" style="width: 25%"></div>
+              <div id="io-read-bar" class="progress-bar bg-success" style="width: 0%"></div>
+              <div id="io-write-bar" class="progress-bar bg-warning" style="width: 0%"></div>
             </div>
           </div>
         </div>

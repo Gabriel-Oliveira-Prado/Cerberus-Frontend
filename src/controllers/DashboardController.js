@@ -1,61 +1,136 @@
 import Chart from 'chart.js/auto';
 import _ from 'lodash';
-
+import { io } from 'socket.io-client';
+import { BASE_URL } from '../config/api.js';
 import { icones } from '../js/utils.js';
 
 export default class DashboardController {
-  // Inicializa o dashboard e carrega os dados
   async init() {
     this.injectIcons();
-    await this.loadData();
+    this.currentChartType = 'bar';
+    this.connectSocket();
+    await this.loadInitialData();
   }
 
-  // Injeta ícones SVG nos elementos correspondentes
   injectIcons() {
     document.querySelectorAll('.icone-pontos').forEach(el => el.innerHTML = icones.pontos);
     document.querySelectorAll('.icone-performance').forEach(el => el.innerHTML = icones.performance);
-    document.querySelectorAll('.icone-sucesso').forEach(el => el.innerHTML = icones.sucesso);
+    document.querySelectorAll('.icone-disco-card').forEach(el => el.innerHTML = icones.database);
     document.querySelectorAll('.icone-ativos').forEach(el => el.innerHTML = icones.ativos);
     document.querySelectorAll('.icone-arquivos').forEach(el => el.innerHTML = icones.arquivos);
   }
 
-  // Carrega as estatísticas (simuladas) e atualiza a interface
-  async loadData() {
-    let estatisticas = {};
-    try {
-      // Simulação de resposta da API com métricas do banco de dados
-      const respostaSimulada = {
-        data: {
-          uptime: '15d 4h',
-          cacheHit: 98.4,
-          conexoesAtivas: 142,
-          totalBackups: 1284,
-          historicoQPM: [
-            { tempo: '10:00', qtd: 4500 },
-            { tempo: '10:15', qtd: 3200 },
-            { tempo: '10:30', qtd: 5000 },
-            { tempo: '10:45', qtd: 8200 },
-            { tempo: '11:00', qtd: 4100 }
-          ]
-        }
-      };
-      
-      await new Promise(res => setTimeout(res, 500));
-      estatisticas = respostaSimulada.data;
-      
-      // Atualiza os cartões de estatísticas no DOM
-      document.getElementById('dash-performance').textContent = estatisticas.uptime;
-      document.getElementById('dash-sucesso').textContent = estatisticas.cacheHit + '%';
-      document.getElementById('dash-servidores').textContent = estatisticas.conexoesAtivas;
-      document.getElementById('dash-backups').textContent = estatisticas.totalBackups;
+  connectSocket() {
+    this.socket = io(BASE_URL, { withCredentials: true, transports: ['polling'] });
+    
+    this.socket.on('connect', () => {
+      console.log('Dashboard connected to backend WebSockets');
+    });
 
-      // Renderiza o gráfico inicial e adiciona os eventos para alterar o tipo de gráfico
-      this.renderChart(estatisticas.historicoQPM, 'bar');
-      this.bindChartEvents(estatisticas.historicoQPM);
-      
-    } catch (erro) {
-      console.error(erro);
-    }
+    this.socket.on('metrics_update', (data) => {
+      // Atualiza os cartões de estatísticas no DOM dinamicamente
+      const perfEl = document.getElementById('dash-performance');
+      if (perfEl) perfEl.textContent = data.uptime;
+
+      const perfSubEl = document.getElementById('dash-performance-sub');
+      if (perfSubEl && data.db_version) perfSubEl.textContent = data.db_version;
+
+      const discoEl = document.getElementById('dash-disco');
+      if (discoEl) discoEl.textContent = data.db_size;
+
+      const connEl = document.getElementById('dash-servidores');
+      if (connEl) connEl.textContent = data.conns;
+
+      const connSubEl = document.getElementById('dash-servidores-sub');
+      if (connSubEl) connSubEl.textContent = `Max: ${data.max_conns || 100}`;
+
+      const backupsEl = document.getElementById('dash-backups');
+      if (backupsEl) backupsEl.textContent = data.backups_count;
+
+      const backupsSubEl = document.getElementById('dash-backups-sub');
+      if (backupsSubEl) backupsSubEl.textContent = `Espaço: ${data.backups_size || '0.00 KB'}`;
+
+      // Popula os eventos do banco de dados dinamicamente com base no histórico de eventos reais do backend
+      const eventsContainer = document.getElementById('database-events-container');
+      if (eventsContainer) {
+        eventsContainer.innerHTML = '';
+        if (data.event_history && data.event_history.length > 0) {
+          // Exibe do mais recente para o mais antigo no container lateral do dashboard
+          const reversedEvents = [...data.event_history].reverse();
+          reversedEvents.forEach(ev => {
+            const evDiv = document.createElement('div');
+            
+            let borderClass = 'border-primary';
+            let bgClass = 'bg-primary';
+            let title = 'Informação';
+            let cleanMsg = ev.message;
+            
+            if (ev.message.startsWith('SUCESSO:')) {
+              borderClass = 'border-success';
+              bgClass = 'bg-success';
+              title = 'Sucesso';
+              cleanMsg = ev.message.replace('SUCESSO:', '').trim();
+            } else if (ev.message.startsWith('INFO:')) {
+              borderClass = 'border-info';
+              bgClass = 'bg-info';
+              title = 'Info';
+              cleanMsg = ev.message.replace('INFO:', '').trim();
+            } else if (ev.message.startsWith('AVISO:')) {
+              borderClass = 'border-warning';
+              bgClass = 'bg-warning';
+              title = 'Aviso';
+              cleanMsg = ev.message.replace('AVISO:', '').trim();
+            } else if (ev.message.startsWith('ERRO:')) {
+              borderClass = 'border-danger';
+              bgClass = 'bg-danger';
+              title = 'Erro';
+              cleanMsg = ev.message.replace('ERRO:', '').trim();
+            }
+            
+            evDiv.className = `p-3 ${bgClass} bg-opacity-10 border-start ${borderClass} border-3 rounded-end`;
+            evDiv.innerHTML = `
+              <div class="fw-bold small d-flex justify-content-between">
+                <span>${title}</span>
+                <span class="text-muted smaller fw-normal" style="font-size: 0.7rem;">${ev.time}</span>
+              </div>
+              <div class="smaller text-muted mt-1" style="font-size: 0.75rem;">${cleanMsg}</div>
+            `;
+            eventsContainer.appendChild(evDiv);
+          });
+        } else {
+          eventsContainer.innerHTML = `
+            <div class="p-3 bg-secondary bg-opacity-10 border-start border-secondary border-3 rounded-end">
+              <div class="fw-bold small">Nenhum Evento</div>
+              <div class="smaller text-muted" style="font-size: 0.75rem;">Aguardando novos eventos do banco...</div>
+            </div>
+          `;
+        }
+      }
+
+      // Renderiza o gráfico dinamicamente com base no QPM atual
+      this.renderChart(data.qpm, this.currentChartType);
+      this.bindChartEvents(data.qpm);
+    });
+  }
+
+  async loadInitialData() {
+    // Exibe dados estáticos iniciais enquanto aguarda a primeira emissão do Socket.IO
+    const inicialQPM = [
+      { tempo: '--', qtd: 0 },
+      { tempo: '--', qtd: 0 },
+      { tempo: '--', qtd: 0 },
+      { tempo: '--', qtd: 0 },
+      { tempo: '--', qtd: 0 }
+    ];
+
+    document.getElementById('dash-performance').textContent = '--';
+    const discoEl = document.getElementById('dash-disco');
+    if (discoEl) discoEl.textContent = '--';
+    document.getElementById('dash-servidores').textContent = '--';
+    document.getElementById('dash-backups').textContent = '--';
+
+    this.renderChart(inicialQPM, this.currentChartType);
+    this.bindChartEvents(inicialQPM);
   }
 
   // Renderiza o gráfico com base no histórico e tipo especificados usando Chart.js
@@ -107,12 +182,23 @@ export default class DashboardController {
   // Associa os eventos de clique aos botões de alternância de gráfico
   bindChartEvents(historico) {
     document.querySelectorAll('.btn-mudar-grafico').forEach(btn => {
+      // Evita duplicar listeners limpando e adicionando novamente
+      btn.replaceWith(btn.cloneNode(true));
+    });
+
+    document.querySelectorAll('.btn-mudar-grafico').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const novoTipo = e.currentTarget.getAttribute('data-tipo');
-        if (this.chart) {
-          this.renderChart(historico, novoTipo);
-        }
+        this.currentChartType = novoTipo;
+        this.renderChart(historico, novoTipo);
       });
     });
+  }
+
+  // Fecha o socket ao destruir/mudar de rota
+  destroy() {
+    if (this.socket) {
+      this.socket.disconnect();
+    }
   }
 }

@@ -6,10 +6,20 @@
   "scripts": {
     "dev": "concurrently \"vite --host\" \"cd ../Cerberus-Backend && python -m src.main\"",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:unit": "jest",
+    "test:e2e": "playwright test",
+    "test": "npm run test:unit && npm run test:e2e"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/preset-env": "^7.29.5",
+    "@playwright/test": "^1.60.0",
+    "babel-jest": "^30.4.1",
     "concurrently": "^9.2.1",
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1",
+    "jest-location-mock": "^3.0.0",
     "vite": "^8.0.10"
   },
   "dependencies": {
@@ -17,6 +27,7 @@
     "bootstrap": "^5.3.8",
     "chart.js": "^4.5.1",
     "lodash": "^4.18.1",
+    "socket.io-client": "^4.8.3",
     "sweetalert2": "^11.26.24"
   }
 }

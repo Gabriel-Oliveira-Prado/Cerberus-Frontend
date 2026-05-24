@@ -28,31 +28,7 @@
         </thead>
         <tbody>
           <tr>
-            <td data-label="Alvo" class="fw-bold">Main_Production_DB</td>
-            <td data-label="Status"><span class="badge bg-success-subtle text-success px-2 py-1">Saudável</span></td>
-            <td data-label="Última Checagem">há 2 min</td>
-            <td data-label="Checksum"><code class="small text-secondary">f82a...9b11</code></td>
-            <td data-label="Ações" class="text-end"><button
-                class="btn btn-link btn-sm text-danger text-decoration-none p-0 btn-acao-verificar">Inspecionar</button>
-            </td>
-          </tr>
-          <tr>
-            <td data-label="Alvo" class="fw-bold">Assets_Cloud_Bucket</td>
-            <td data-label="Status"><span class="badge bg-success-subtle text-success px-2 py-1">Saudável</span></td>
-            <td data-label="Última Checagem">há 15 min</td>
-            <td data-label="Checksum"><code class="small text-secondary">3d21...cc04</code></td>
-            <td data-label="Ações" class="text-end"><button
-                class="btn btn-link btn-sm text-danger text-decoration-none p-0 btn-acao-verificar">Inspecionar</button>
-            </td>
-          </tr>
-          <tr>
-            <td data-label="Alvo" class="fw-bold">User_Data_Encrypted</td>
-            <td data-label="Status"><span class="badge bg-warning-subtle text-warning px-2 py-1">Aviso</span></td>
-            <td data-label="Última Checagem">há 1 hora</td>
-            <td data-label="Checksum"><code class="small text-secondary">e192...77fa</code></td>
-            <td data-label="Ações" class="text-end"><button
-                class="btn btn-link btn-sm text-danger text-decoration-none p-0 btn-acao-verificar">Inspecionar</button>
-            </td>
+            <td colspan="5" class="text-center text-muted py-4">Aguardando dados reais...</td>
           </tr>
         </tbody>
       </table>
@@ -79,33 +55,9 @@
             <th class="border-0 text-end">Ações</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="backups-table-body">
           <tr>
-            <td data-label="Data / Hora">05/05/2026 03:00</td>
-            <td data-label="Arquivo" class="fw-bold">db_main_20260505_full.bak</td>
-            <td data-label="Tamanho">124.1 GB</td>
-            <td data-label="Retenção"><span
-                class="badge bg-secondary-subtle text-secondary px-2 py-1 border border-secondary">30 Dias</span></td>
-            <td data-label="Ações" class="text-end"><button
-                class="btn btn-link btn-sm text-primary text-decoration-none p-0 fw-semibold">Restaurar</button></td>
-          </tr>
-          <tr>
-            <td data-label="Data / Hora">04/05/2026 03:00</td>
-            <td data-label="Arquivo" class="fw-bold">db_main_20260504_full.bak</td>
-            <td data-label="Tamanho">123.8 GB</td>
-            <td data-label="Retenção"><span
-                class="badge bg-secondary-subtle text-secondary px-2 py-1 border border-secondary">30 Dias</span></td>
-            <td data-label="Ações" class="text-end"><button
-                class="btn btn-link btn-sm text-primary text-decoration-none p-0 fw-semibold">Restaurar</button></td>
-          </tr>
-          <tr>
-            <td data-label="Data / Hora">01/05/2026 03:00</td>
-            <td data-label="Arquivo" class="fw-bold">db_main_20260501_monthly.bak</td>
-            <td data-label="Tamanho">121.5 GB</td>
-            <td data-label="Retenção"><span
-                class="badge bg-primary-subtle text-primary px-2 py-1 border border-primary">1 Ano</span></td>
-            <td data-label="Ações" class="text-end"><button
-                class="btn btn-link btn-sm text-primary text-decoration-none p-0 fw-semibold">Restaurar</button></td>
+            <td colspan="5" class="text-center text-muted py-4">Aguardando dados reais...</td>
           </tr>
         </tbody>
       </table>
@@ -121,17 +73,9 @@
         <li><button class="dropdown-item small" type="button">Limpar Log</button></li>
       </ul>
     </div>
-    <div class="d-flex flex-column gap-2 font-monospace"
+    <div class="d-flex flex-column gap-2 font-monospace" id="backups-log-container"
       style="font-size: 0.85rem; overflow-wrap: break-word; word-break: break-word;">
-      <div class="text-muted"><span class="text-success">[17:45:01]</span> SUCESSO: Job 'DailyFull' concluído (124.5 GB)
-      </div>
-      <div class="text-muted"><span class="text-success">[17:30:12]</span> INFO: Snapshot criado
-        para'Main_Production_DB'</div>
-      <div class="text-muted"><span class="text-warning">[17:22:45]</span> RETENTIVA: Conexão perdida com
-        SRV-04,reestabelecendo...</div>
-      <div class="text-muted"><span class="text-success">[17:22:50]</span> INFO: Conexão reestabelecida com SRV-04</div>
-      <div class="text-muted"><span class="text-danger">[17:01:04]</span> ERRO: Falha na validação do checksum
-        para'Legacy_Archive'</div>
+      <div class="text-muted">Aguardando dados...</div>
     </div>
   </div>
 </div>

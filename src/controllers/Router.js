@@ -5,6 +5,7 @@ import ConfiguracoesController from './ConfiguracoesController.js';
 import LoginController from './LoginController.js';
 import ConectarController from './ConectarController.js';
 import CadastroController from './CadastroController.js';
+import EstruturaController from './EstruturaController.js';
 import { BASE_URL } from '../config/api.js';
 export class Router {
   constructor() {
@@ -60,6 +61,13 @@ export class Router {
       if (response.ok) {
         const data = await response.json();
         sessionStorage.setItem('authenticated', 'true');
+        if (data.db_connected) {
+          sessionStorage.setItem('db_connected', 'true');
+          sessionStorage.setItem('db_name', data.db_name || '');
+        } else {
+          sessionStorage.removeItem('db_connected');
+          sessionStorage.removeItem('db_name');
+        }
         
         // Atualiza a interface da barra lateral (nome, email e avatar)
         const nomeEl = document.getElementById('cerberus-usuario-nome');
@@ -89,10 +97,14 @@ export class Router {
         }
       } else {
         sessionStorage.removeItem('authenticated');
+        sessionStorage.removeItem('db_connected');
+        sessionStorage.removeItem('db_name');
       }
     } catch (error) {
       console.error('Erro ao verificar autenticação:', error);
       sessionStorage.removeItem('authenticated');
+      sessionStorage.removeItem('db_connected');
+      sessionStorage.removeItem('db_name');
     }
   }
 
@@ -226,10 +238,27 @@ export class Router {
         this.appContent.innerHTML = html;
         controller = new ConfiguracoesController();
         break;
+      case '/estrutura':
+        document.title = 'Cerberus - Estrutura do Banco';
+        if (this.tituloPagina) this.tituloPagina.textContent = 'Estrutura Física';
+        html = await this.fetchView('estrutura');
+        this.appContent.innerHTML = html;
+        controller = new EstruturaController();
+        break;
       default:
         if (this.tituloPagina) this.tituloPagina.textContent = 'Não Encontrado';
         this.appContent.innerHTML = '<h2>Página não encontrada</h2>';
     }
+
+    if (this.currentController && typeof this.currentController.destroy === 'function') {
+      try {
+        this.currentController.destroy();
+      } catch (err) {
+        console.error('Error destroying controller:', err);
+      }
+    }
+
+    this.currentController = controller;
 
     if (controller) {
       await controller.init();

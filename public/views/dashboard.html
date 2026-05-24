@@ -13,7 +13,7 @@
           <div class="text-muted small">Uptime do Banco</div>
         </div>
         <div class="h3 fw-bold text-success" id="dash-performance">--</div>
-        <div class="small text-muted mt-2">Sem interrupções</div>
+        <div class="small text-muted mt-2" id="dash-performance-sub">Carregando...</div>
       </div>
     </div>
     <div class="col-12 col-sm-6 col-xl-3">
@@ -25,11 +25,11 @@
           <li><button class="dropdown-item small rounded" type="button">Otimizar Memória</button></li>
         </ul>
         <div class="d-flex align-items-center mb-2">
-          <span class="icone-sucesso text-primary me-2"></span>
-          <div class="text-muted small">Cache Hit Ratio</div>
+          <span class="icone-disco-card text-primary me-2"></span>
+          <div class="text-muted small">Disk</div>
         </div>
-        <div class="h3 fw-bold text-primary" id="dash-sucesso">--%</div>
-        <div class="small text-success mt-2">↑ 0.5% hoje</div>
+        <div class="h3 fw-bold text-primary" id="dash-disco">--</div>
+        <div class="small text-muted mt-2" id="dash-disco-sub">Tamanho físico do banco</div>
       </div>
     </div>
     <div class="col-12 col-sm-6 col-xl-3">
@@ -45,7 +45,7 @@
           <div class="text-muted small">Conexões Ativas</div>
         </div>
         <div class="h3 fw-bold text-danger"><span id="dash-servidores">--</span></div>
-        <div class="small text-muted mt-2">Max. configurado: 500</div>
+        <div class="small text-muted mt-2" id="dash-servidores-sub">Max: --</div>
       </div>
     </div>
     <div class="col-12 col-sm-6 col-xl-3">
@@ -61,7 +61,7 @@
           <div class="text-muted small">Backups Realizados</div>
         </div>
         <div class="h3 fw-bold text-warning" id="dash-backups">--</div>
-        <div class="small text-muted mt-2">Armazenamento: 4.2 TB</div>
+        <div class="small text-muted mt-2" id="dash-backups-sub">Espaço: --</div>
       </div>
     </div>
   </div>
@@ -94,16 +94,10 @@
     <div class="col-12 col-lg-4">
       <div class="cartao h-100">
         <h3 class="h5 mb-4">Eventos do Banco de Dados</h3>
-        <div class="d-flex flex-column gap-3">
-          <div class="p-3 bg-danger bg-opacity-10 border-start border-danger border-3 rounded-end">
-            <div class="fw-bold small">Pico de Latência (I/O Wait)</div>
-            <div class="smaller text-muted" style="font-size: 0.75rem;">Operação pesada na tabela 'arquivos_log' elevou
-              a latência para 210ms.</div>
-          </div>
-          <div class="p-3 bg-warning bg-opacity-10 border-start border-warning border-3 rounded-end">
-            <div class="fw-bold small">Deadlock Detectado</div>
-            <div class="smaller text-muted" style="font-size: 0.75rem;">Processo 1492 encerrado devido a conflito de
-              transação mútua.</div>
+        <div class="d-flex flex-column gap-3" id="database-events-container">
+          <div class="p-3 bg-success bg-opacity-10 border-start border-success border-3 rounded-end">
+            <div class="fw-bold small">Conexão Estabelecida</div>
+            <div class="smaller text-muted" style="font-size: 0.75rem;">Aguardando primeiras atualizações do banco...</div>
           </div>
         </div>
       </div>
