@@ -121,7 +121,7 @@
           <span class="icone-pontos"></span>
         </div>
         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-          <li><button class="dropdown-item small text-primary" type="button" data-bs-toggle="modal" data-bs-target="#modal-create-role" id="btn-open-create-role">Criar Nova Role</button></li>
+          <li><button class="dropdown-item small text-primary" type="button" id="btn-export-roles">Exportar Permissões (CSV)</button></li>
         </ul>
       </div>
     </div>
@@ -147,38 +147,6 @@
           </tr>
         </tbody>
       </table>
-    </div>
-  </div>
-</div>
-
-<!-- Modal Criar Role -->
-<div class="modal fade" id="modal-create-role" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0" style="background-color: var(--cor-cartao);">
-      <div class="modal-header border-bottom-0 pb-0">
-        <h5 class="modal-title h6 fw-bold">Criar Novo Usuário (Role)</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body pt-3">
-        <form id="form-create-role">
-          <div class="mb-3">
-            <label class="form-label small text-muted fw-bold">Nome do Usuário</label>
-            <input type="text" class="form-control" id="new-role-name" required placeholder="Ex: readonly_user" style="background-color: rgba(0,0,0,0.02); border-color: var(--cor-borda);">
-          </div>
-          <div class="mb-3">
-            <label class="form-label small text-muted fw-bold">Senha de Login</label>
-            <input type="password" class="form-control" id="new-role-pass" required placeholder="Defina uma senha forte" style="background-color: rgba(0,0,0,0.02); border-color: var(--cor-borda);">
-          </div>
-          <div class="form-check form-switch mb-2">
-            <input class="form-check-input" type="checkbox" role="switch" id="new-role-super">
-            <label class="form-check-label small" for="new-role-super">Privilégios de Superusuário (CUIDADO!)</label>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer border-top-0 pt-0">
-        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary btn-sm" id="btn-save-role">Criar Usuário</button>
-      </div>
     </div>
   </div>
 </div>

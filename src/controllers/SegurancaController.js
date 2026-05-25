@@ -21,10 +21,26 @@ export default class SegurancaController {
 
   bindEvents() {
     const btnRefresh = document.getElementById('btn-refresh-sessions');
+    const btnRefreshMobile = document.getElementById('btn-refresh-sessions-mobile');
+    
+    const showRefreshSwal = () => {
+      if (this.socket) {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Dados atualizados!',
+          showConfirmButton: false,
+          timer: 1500
+        });
+      }
+    };
+
     if (btnRefresh) {
-      btnRefresh.addEventListener('click', () => {
-        if (this.socket) console.log('Solicitando atualização de segurança...');
-      });
+      btnRefresh.addEventListener('click', showRefreshSwal);
+    }
+    if (btnRefreshMobile) {
+      btnRefreshMobile.addEventListener('click', showRefreshSwal);
     }
 
     document.getElementById('btn-kill-idle')?.addEventListener('click', async () => {
@@ -75,45 +91,22 @@ export default class SegurancaController {
       window.URL.revokeObjectURL(url);
     });
 
-    document.getElementById('btn-save-role')?.addEventListener('click', async () => {
-      const rolename = document.getElementById('new-role-name').value;
-      const password = document.getElementById('new-role-pass').value;
-      const isSuper = document.getElementById('new-role-super').checked;
-
-      if(!rolename || !password) {
-        Swal.fire('Aviso', 'Nome e senha são obrigatórios!', 'warning');
+    document.getElementById('btn-export-roles')?.addEventListener('click', () => {
+      if(!this.lastRoles || this.lastRoles.length === 0) {
+        Swal.fire('Aviso', 'Não há roles (usuários) para exportar.', 'info');
         return;
       }
-
-      try {
-        const btn = document.getElementById('btn-save-role');
-        const oldText = btn.textContent;
-        btn.textContent = 'Salvando...';
-        btn.disabled = true;
-
-        const res = await fetch(`${BASE_URL}/api/security/create-role`, {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          credentials: 'include',
-          body: JSON.stringify({ rolename, password, is_superuser: isSuper })
-        });
-        const data = await res.json();
-        
-        btn.textContent = oldText;
-        btn.disabled = false;
-
-        if(data.success) {
-          Swal.fire('Sucesso!', 'Usuário criado com sucesso!', 'success');
-          const modalEl = document.getElementById('modal-create-role');
-          const modal = bootstrap.Modal.getInstance(modalEl);
-          if(modal) modal.hide();
-          document.getElementById('form-create-role').reset();
-        } else {
-          Swal.fire('Erro', data.message, 'error');
-        }
-      } catch(e) {
-        Swal.fire('Erro', 'Erro de conexão ao criar usuário.', 'error');
-      }
+      let csv = 'Nome do Usuário,Superuser,Criar Banco,Criar Role,Login Permitido,Limite de Conexões\\n';
+      this.lastRoles.forEach(r => {
+        csv += `"${r.rolname}","${r.rolsuper ? 'Sim' : 'Não'}","${r.rolcreatedb ? 'Sim' : 'Não'}","${r.rolcreaterole ? 'Sim' : 'Não'}","${r.rolcanlogin ? 'Sim' : 'Não'}","${r.rolconnlimit}"\\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `auditoria_roles_${new Date().getTime()}.csv`;
+      a.click();
+      window.URL.revokeObjectURL(url);
     });
   }
 
@@ -126,6 +119,7 @@ export default class SegurancaController {
 
     this.socket.on('security_update', (data) => {
       this.lastSessions = data.sessions || [];
+      this.lastRoles = data.roles || [];
       // Top Cards
       const rolesText = document.getElementById('sec-roles-text');
       if (rolesText) rolesText.textContent = data.roles_count || '--';
