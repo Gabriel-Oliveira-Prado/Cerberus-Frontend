@@ -22,13 +22,28 @@
 }
 
 
-.menu-opcoes-cartao {
+.cartao > .dropdown {
   position: absolute;
   top: 1rem;
   right: 1rem;
+  z-index: 10;
+}
+
+.menu-opcoes-cartao {
   cursor: pointer;
   color: var(--cor-texto-mutado);
-  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.menu-opcoes-cartao:hover {
+  color: var(--cor-texto-escuro);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .menu-opcoes-cartao-relativo {

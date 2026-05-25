@@ -453,9 +453,13 @@ export default class BackupsController {
           else if (ev.message.startsWith("ERRO:")) textClass = "text-danger";
           else if (ev.message.startsWith("INFO:")) textClass = "text-info";
           const colonIdx = ev.message.indexOf(":");
-          const level = ev.message.substring(0, colonIdx);
-          const content = ev.message.substring(colonIdx + 1).trim();
-          div.innerHTML = `<span class="text-secondary fw-semibold">[${ev.time}]</span> <span class="${textClass} fw-bold">${level}:</span> ${content}`;
+          let level = "INFO";
+          let content = ev.message;
+          if (colonIdx !== -1) {
+            level = ev.message.substring(0, colonIdx);
+            content = ev.message.substring(colonIdx + 1).trim();
+          }
+          div.innerHTML = `<span class="text-secondary fw-semibold">[${ev.time}]</span> <span class="${textClass} fw-bold">${level}${colonIdx !== -1 ? ':' : ''}</span> ${content}`;
           logContainer.appendChild(div);
         });
       }

@@ -133,6 +133,110 @@ export default class DashboardController {
     this.renderChart(inicialQPM, this.currentChartType);
     this.bindChartEvents(inicialQPM);
     this.bindStressTestEvent();
+    this.bindDropdownEvents();
+  }
+
+  bindDropdownEvents() {
+    // Salva referência das últimas métricas recebidas para uso nos modais
+    this.lastMetrics = {};
+    
+    // Armazena as métricas mais recentes recebidas pelo socket
+    this.socket.on('metrics_update', (data) => {
+      this.lastMetrics = data;
+    });
+
+    // Botão "Ver Log" - mostra um modal com os eventos
+    document.getElementById('btn-dash-ver-log')?.addEventListener('click', () => {
+      const container = document.getElementById('database-events-container');
+      if (container) {
+        Swal.fire({
+          title: 'Últimos Eventos',
+          html: `<div class="text-start" style="max-height: 400px; overflow-y: auto;">${container.innerHTML}</div>`,
+          icon: 'info',
+          confirmButtonColor: '#dc3545',
+          width: 600
+        });
+      }
+    });
+
+    // Botão "Ver Detalhes de Disco"
+    document.getElementById('btn-dash-ver-disco')?.addEventListener('click', () => {
+      const m = this.lastMetrics;
+      Swal.fire({
+        title: 'Detalhes de Armazenamento',
+        html: `
+          <div class="text-start">
+            <p><strong>Tamanho do Banco:</strong> ${m.db_size || '--'}</p>
+            <p><strong>Disco Total:</strong> ${m.disk_total || '--'}</p>
+            <p><strong>Disco Usado:</strong> ${m.disk_used || '--'} (${m.disk_pct || 0}%)</p>
+            <p><strong>Backups:</strong> ${m.backups_count || 0} arquivo(s) - ${m.backups_size || '0 KB'}</p>
+          </div>
+        `,
+        icon: 'info',
+        confirmButtonColor: '#dc3545'
+      });
+    });
+
+    // Botão "Derrubar Ociosas" 
+    document.getElementById('btn-dash-derrubar-ociosas')?.addEventListener('click', async () => {
+      const result = await Swal.fire({
+        title: 'Derrubar Conexões Ociosas?',
+        text: 'Todas as conexões dormindo no banco serão encerradas. Esta ação não pode ser desfeita.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sim, derrubar!'
+      });
+      if (result.isConfirmed) {
+        try {
+          const res = await fetch(`${BASE_URL}/api/security/kill-idle`, { method: 'POST', credentials: 'include' });
+          const data = await res.json();
+          if (data.success) Swal.fire('Sucesso!', data.message, 'success');
+          else Swal.fire('Erro', data.message, 'error');
+        } catch(e) { Swal.fire('Erro', 'Erro de conexão.', 'error'); }
+      }
+    });
+
+    // Botão "Histórico de Backups"
+    document.getElementById('btn-dash-historico-backups')?.addEventListener('click', async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/api/backups`, { credentials: 'include' });
+        const data = await res.json();
+        if (data.success && data.backups.length > 0) {
+          let html = '<div class="text-start"><table class="table table-sm"><thead><tr><th>Arquivo</th><th>Tamanho</th></tr></thead><tbody>';
+          data.backups.forEach(b => {
+            html += `<tr><td class="small">${b.filename}</td><td class="small">${b.size}</td></tr>`;
+          });
+          html += '</tbody></table></div>';
+          Swal.fire({ title: 'Histórico de Backups', html, confirmButtonColor: '#dc3545', width: 600 });
+        } else {
+          Swal.fire('Histórico', 'Nenhum backup encontrado ainda.', 'info');
+        }
+      } catch(e) { Swal.fire('Erro', 'Erro ao buscar histórico.', 'error'); }
+    });
+
+    // Botão "Exportar Dados" (no dropdown do gráfico QPM)
+    const btnExport = document.querySelector('#btn-stress-test')?.closest('ul')?.querySelector('.dropdown-item:nth-child(2)');
+    if (btnExport && !btnExport.id) {
+      btnExport.id = 'btn-dash-exportar-dados';
+      btnExport.addEventListener('click', () => {
+        const m = this.lastMetrics;
+        if (!m || !m.qpm) {
+          Swal.fire('Aviso', 'Nenhum dado disponível para exportar ainda.', 'info');
+          return;
+        }
+        let csv = 'Tempo,QPM\\n';
+        m.qpm.forEach(q => { csv += `${q.tempo},${q.qtd}\\n`; });
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `cerberus_qpm_${new Date().getTime()}.csv`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      });
+    }
   }
 
   bindStressTestEvent() {

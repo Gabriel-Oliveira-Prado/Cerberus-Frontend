@@ -2,12 +2,14 @@
   <div class="row g-4 mb-4 fade-in">
     <div class="col-12 col-sm-6 col-xl-3">
       <div class="cartao h-100">
-        <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
-          <span class="icone-pontos"></span>
+        <div class="dropdown">
+          <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="icone-pontos"></span>
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
+            <li><button class="dropdown-item small rounded" type="button" id="btn-dash-ver-log">Ver Log</button></li>
+          </ul>
         </div>
-        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
-          <li><button class="dropdown-item small rounded" type="button">Ver Log</button></li>
-        </ul>
         <div class="d-flex align-items-center mb-2">
           <span class="icone-performance text-success me-2"></span>
           <div class="text-muted small">Uptime do Banco</div>
@@ -18,12 +20,14 @@
     </div>
     <div class="col-12 col-sm-6 col-xl-3">
       <div class="cartao h-100">
-        <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
-          <span class="icone-pontos"></span>
+        <div class="dropdown">
+          <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="icone-pontos"></span>
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
+            <li><button class="dropdown-item small rounded" type="button" id="btn-dash-ver-disco">Ver Detalhes de Disco</button></li>
+          </ul>
         </div>
-        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
-          <li><button class="dropdown-item small rounded" type="button">Otimizar Memória</button></li>
-        </ul>
         <div class="d-flex align-items-center mb-2">
           <span class="icone-disco-card text-primary me-2"></span>
           <div class="text-muted small">Disk</div>
@@ -34,12 +38,14 @@
     </div>
     <div class="col-12 col-sm-6 col-xl-3">
       <div class="cartao h-100">
-        <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
-          <span class="icone-pontos"></span>
+        <div class="dropdown">
+          <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="icone-pontos"></span>
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
+            <li><button class="dropdown-item small rounded text-danger" type="button" id="btn-dash-derrubar-ociosas">Derrubar Ociosas</button></li>
+          </ul>
         </div>
-        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
-          <li><button class="dropdown-item small rounded" type="button">Derrubar Ociosas</button></li>
-        </ul>
         <div class="d-flex align-items-center mb-2">
           <span class="icone-ativos text-danger me-2"></span>
           <div class="text-muted small">Total de Conexões</div>
@@ -50,12 +56,14 @@
     </div>
     <div class="col-12 col-sm-6 col-xl-3">
       <div class="cartao h-100">
-        <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
-          <span class="icone-pontos"></span>
+        <div class="dropdown">
+          <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="icone-pontos"></span>
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
+            <li><button class="dropdown-item small rounded" type="button" id="btn-dash-historico-backups">Histórico</button></li>
+          </ul>
         </div>
-        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
-          <li><button class="dropdown-item small rounded" type="button">Histórico</button></li>
-        </ul>
         <div class="d-flex align-items-center mb-2">
           <span class="icone-arquivos text-warning me-2"></span>
           <div class="text-muted small">Backups Realizados</div>
@@ -70,22 +78,24 @@
       <div class="cartao h-100">
         <div class="d-flex justify-content-between align-items-center mb-4">
           <h3 class="h5 m-0">Volume de Consultas por Minuto (QPM)</h3>
-          <div class="menu-opcoes-cartao-relativo" data-bs-toggle="dropdown" aria-expanded="false">
-            <span class="icone-pontos"></span>
+          <div class="dropdown">
+            <div class="menu-opcoes-cartao-relativo" data-bs-toggle="dropdown" aria-expanded="false">
+              <span class="icone-pontos"></span>
+            </div>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2" style="min-width: 200px;">
+              <li><button class="dropdown-item small rounded mb-1 text-danger fw-semibold" type="button" id="btn-stress-test" title="Dispara 500 queries para forçar o pico no gráfico">Disparar Teste de Estresse</button></li>
+              <li><button class="dropdown-item small rounded mb-1" type="button">Exportar Dados</button></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><button class="dropdown-item small rounded btn-mudar-grafico" data-tipo="bar" type="button"
+                  title="Exibe dados em colunas verticais para comparação rápida">Gráfico de Barras</button></li>
+              <li><button class="dropdown-item small rounded btn-mudar-grafico" data-tipo="line" type="button"
+                  title="Exibe tendência de linha ao longo do tempo">Gráfico de Linhas</button></li>
+              <li><button class="dropdown-item small rounded btn-mudar-grafico" data-tipo="doughnut" type="button"
+                  title="Exibe em formato de rosca as proporções de cada item">Gráfico de Rosca</button></li>
+            </ul>
           </div>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2" style="min-width: 200px;">
-            <li><button class="dropdown-item small rounded mb-1 text-danger fw-semibold" type="button" id="btn-stress-test" title="Dispara 500 queries para forçar o pico no gráfico">Disparar Teste de Estresse</button></li>
-            <li><button class="dropdown-item small rounded mb-1" type="button">Exportar Dados</button></li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li><button class="dropdown-item small rounded btn-mudar-grafico" data-tipo="bar" type="button"
-                title="Exibe dados em colunas verticais para comparação rápida">Gráfico de Barras</button></li>
-            <li><button class="dropdown-item small rounded btn-mudar-grafico" data-tipo="line" type="button"
-                title="Exibe tendência de linha ao longo do tempo">Gráfico de Linhas</button></li>
-            <li><button class="dropdown-item small rounded btn-mudar-grafico" data-tipo="doughnut" type="button"
-                title="Exibe em formato de rosca as proporções de cada item">Gráfico de Rosca</button></li>
-          </ul>
         </div>
         <div style="height: 250px;">
           <canvas id="graficoDistribuicao"></canvas>

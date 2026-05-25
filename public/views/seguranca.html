@@ -3,12 +3,14 @@
     <!-- Top Cards (Padrão Cerberus - Dashboard Style) -->
     <div class="col-12 col-md-4">
       <div class="cartao h-100">
-        <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
-          <span class="icone-pontos"></span>
+        <div class="dropdown">
+          <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="icone-pontos"></span>
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
+            <li><button class="dropdown-item small rounded" type="button" id="btn-scroll-roles">Gerenciar Usuários</button></li>
+          </ul>
         </div>
-        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
-          <li><button class="dropdown-item small rounded" type="button" id="btn-scroll-roles">Gerenciar Usuários</button></li>
-        </ul>
         <div class="d-flex align-items-center mb-2">
           <span class="icone-perfil text-primary me-2"></span>
           <div class="text-muted small">Usuários (Roles)</div>
@@ -20,12 +22,14 @@
 
     <div class="col-12 col-md-4">
       <div class="cartao h-100">
-        <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
-          <span class="icone-pontos"></span>
+        <div class="dropdown">
+          <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="icone-pontos"></span>
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
+            <li><button class="dropdown-item small rounded" type="button" id="btn-scroll-sessions">Detalhes</button></li>
+          </ul>
         </div>
-        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
-          <li><button class="dropdown-item small rounded" type="button" id="btn-scroll-sessions">Detalhes</button></li>
-        </ul>
         <div class="d-flex align-items-center mb-2">
           <span class="icone-ativos text-success me-2"></span>
           <div class="text-muted small">Sessões Ativas</div>
@@ -40,12 +44,14 @@
 
     <div class="col-12 col-md-4">
       <div class="cartao h-100">
-        <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
-          <span class="icone-pontos"></span>
+        <div class="dropdown">
+          <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="icone-pontos"></span>
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
+            <li><button class="dropdown-item small rounded text-danger" type="button" id="btn-kill-idle">Matar Conexões</button></li>
+          </ul>
         </div>
-        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
-          <li><button class="dropdown-item small rounded text-danger" type="button" id="btn-kill-idle">Matar Conexões</button></li>
-        </ul>
         <div class="d-flex align-items-center mb-2">
           <span class="icone-database text-warning me-2"></span>
           <div class="text-muted small">Conexões Ociosas Totais</div>
@@ -67,12 +73,14 @@
       </h3>
       <div class="d-flex align-items-center gap-2">
         <button id="btn-refresh-sessions" class="btn btn-primary btn-sm px-3 d-none d-sm-block">Atualizar Dados</button>
-        <div class="menu-opcoes-cartao-relativo mt-1" data-bs-toggle="dropdown" aria-expanded="false">
-          <span class="icone-pontos"></span>
+        <div class="dropdown">
+          <div class="menu-opcoes-cartao-relativo mt-1" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="icone-pontos"></span>
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+            <li><button class="dropdown-item small" type="button" id="btn-export-sessions">Exportar Log de Sessões</button></li>
+          </ul>
         </div>
-        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-          <li><button class="dropdown-item small" type="button" id="btn-export-sessions">Exportar Log de Sessões</button></li>
-        </ul>
       </div>
     </div>
     <button id="btn-refresh-sessions-mobile" class="btn btn-primary btn-sm w-100 mb-4 d-block d-sm-none">Atualizar Dados</button>
@@ -108,12 +116,14 @@
         <span class="icone-escudo text-primary"></span>
         Segurança: Auditoria de Usuários (Roles)
       </h3>
-      <div class="menu-opcoes-cartao-relativo" data-bs-toggle="dropdown" aria-expanded="false">
-        <span class="icone-pontos"></span>
-      </div>
+      <div class="dropdown">
+        <div class="menu-opcoes-cartao-relativo" data-bs-toggle="dropdown" aria-expanded="false">
+          <span class="icone-pontos"></span>
+        </div>
         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
           <li><button class="dropdown-item small text-primary" type="button" data-bs-toggle="modal" data-bs-target="#modal-create-role" id="btn-open-create-role">Criar Nova Role</button></li>
         </ul>
+      </div>
     </div>
 
     <div class="table-responsive border rounded" style="max-height: 350px; overflow-y: auto;">

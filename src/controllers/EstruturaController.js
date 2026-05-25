@@ -16,6 +16,7 @@ export default class EstruturaController {
     if (iconContainer) {
       iconContainer.innerHTML = icones.database;
     }
+    document.querySelectorAll('.icone-pontos').forEach(el => el.innerHTML = icones.pontos);
   }
 
   async fetchSchemaAndRender() {
@@ -36,6 +37,15 @@ export default class EstruturaController {
 
       if (data.success) {
         this.totalTables = data.tables.length;
+
+        if (data.tables.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-5">
+              <h5 class="text-muted fw-semibold">Nenhuma tabela encontrada no banco de dados.</h5>
+            </div>
+          `;
+          return;
+        }
 
         let erMarkup = "erDiagram\n";
         
