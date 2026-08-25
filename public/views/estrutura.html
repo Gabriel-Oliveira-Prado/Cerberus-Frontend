@@ -1,42 +1,32 @@
-<div class="container-fluid pt-4">
-  <div class="cartao fade-in mb-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h3 class="h5 m-0 d-flex align-items-center gap-2">
-        <span class="icone-database-estrutura text-danger"></span>
-        Modelagem Física do Banco de Dados
-      </h3>
-      <div class="d-flex align-items-center gap-2">
-        <button id="btn-atualizar-estrutura" class="btn btn-primary btn-sm px-3">
-          Atualizar Diagrama
-        </button>
-        <div class="dropdown">
-          <div class="menu-opcoes-cartao-relativo mt-1" data-bs-toggle="dropdown" aria-expanded="false" title="Opções">
-            <span class="icone-pontos"></span>
-          </div>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-            <li>
-              <a class="dropdown-item d-flex align-items-center gap-2" href="#" id="btn-ver-total-tabelas">
-                Ver Total de Tabelas
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item d-flex align-items-center gap-2" href="#" id="btn-exportar-mermaid">
-                Exportar Código (Mermaid)
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
+<section class="cartao schema-workbench">
+  <div class="section-heading">
+    <div>
+      <h3>Estrutura do banco</h3>
+      <p>Explore tabelas, views, colunas, índices e relacionamentos consultados diretamente no catálogo.</p>
     </div>
-    <p class="text-muted small">
-      Diagrama Entidade-Relacionamento (DER) gerado dinamicamente a partir do banco de dados conectado (exibe dados fictícios se nenhuma conexão estiver ativa).
-    </p>
-
-    <!-- Div where Mermaid diagram will be rendered -->
-    <div id="mermaid-diagram-container" class="border rounded p-4 text-center bg-white shadow-sm d-flex align-items-center justify-content-center" style="overflow-x: auto; min-height: 450px; width: 100%;">
-      <div class="text-muted spinner-border text-danger" role="status">
-        <span class="visually-hidden">Carregando...</span>
-      </div>
+    <div class="dropdown">
+      <button class="action-menu-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir ações da estrutura"><i class="bi bi-three-dots-vertical" aria-hidden="true"></i></button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><button id="btn-atualizar-estrutura" class="dropdown-item" type="button">Atualizar catálogo</button></li>
+        <li><button id="btn-reorganizar-schema" class="dropdown-item" type="button">Reorganizar mapa</button></li>
+        <li><button id="btn-centralizar-schema" class="dropdown-item" type="button">Centralizar mapa</button></li>
+        <li><button id="btn-exportar-schema" class="dropdown-item" type="button">Baixar JSON</button></li>
+      </ul>
     </div>
   </div>
-</div>
+
+  <div class="schema-toolbar">
+    <div class="schema-view-switch" role="group" aria-label="Forma de apresentação">
+      <button type="button" class="active" data-schema-view="map" aria-pressed="true">Mapa relacional</button>
+      <button type="button" data-schema-view="catalog" aria-pressed="false">Catálogo</button>
+    </div>
+    <label class="schema-search">
+      <span>Filtrar estrutura</span>
+      <input type="search" class="form-control form-control-sm" id="schema-search-input" placeholder="Tabela, view ou coluna" autocomplete="off">
+    </label>
+  </div>
+
+  <div id="schema-explorer-container" aria-live="polite">
+    <div class="loading-state"><span class="loading-indicator" aria-hidden="true"></span>Consultando o catálogo</div>
+  </div>
+</section>

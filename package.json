@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"vite --host\" \"cd ../Cerberus-Backend && python -m src.main\"",
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "vite --host",
+    "dev:backend": "cd ../Cerberus-Backend && python -m src.main",
     "build": "vite build",
     "preview": "vite preview",
     "test:unit": "jest",
@@ -23,10 +25,10 @@
     "vite": "^8.0.10"
   },
   "dependencies": {
-    "axios": "^1.16.0",
     "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
     "chart.js": "^4.5.1",
-    "lodash": "^4.18.1",
+    "cytoscape": "^3.34.1",
     "socket.io-client": "^4.8.3",
     "sweetalert2": "^11.26.24"
   }

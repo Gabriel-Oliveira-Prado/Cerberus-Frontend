@@ -7,77 +7,136 @@ import ConectarController from './ConectarController.js';
 import CadastroController from './CadastroController.js';
 import EstruturaController from './EstruturaController.js';
 import { BASE_URL } from '../config/api.js';
+import { confirmLogout } from '../utils/confirmations.js';
+
+const PUBLIC_ROUTES = new Set(['/termos', '/privacidade']);
+const AUTH_ROUTES = new Set(['/login', '/cadastro']);
+
 export class Router {
   constructor() {
-    // Referências aos elementos principais da interface
     this.appContent = document.getElementById('app-content');
     this.tituloPagina = document.getElementById('titulo-pagina');
     this.navItems = document.querySelectorAll('.cerberus-nav-item');
     this.configButton = document.querySelector('.cerberus-conta-botao');
+    this.breadcrumbDatabase = document.getElementById('breadcrumb-database');
+    this.breadcrumbCurrent = document.getElementById('breadcrumb-current');
+    this.sidebarLogoutButton = document.getElementById('btn-sidebar-logout');
+    this.sidebarLogoutButton?.addEventListener('click', this.logout);
+    document.addEventListener('cerberus:profile-updated', this.handleProfileUpdated);
 
-    // Intercepta cliques em links com atributo data-route para navegação SPA
-    document.querySelectorAll('[data-route]').forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const path = new URL(link.href).pathname;
-        this.navigate(path);
+    document.addEventListener('click', (event) => {
+      const link = event.target.closest('a[data-route]');
+      if (!link || link.target === '_blank') return;
 
-        const barraLateral = document.querySelector('.cerberus-barra-lateral');
-        if (window.innerWidth <= 768 && barraLateral) {
-          barraLateral.classList.remove('colapsada');
-          document.body.classList.remove('sidebar-mobile-open');
-        }
-      });
+      const url = new URL(link.href, window.location.origin);
+      if (url.origin !== window.location.origin) return;
+
+      event.preventDefault();
+      this.navigate(url.pathname);
+
+      const sidebar = document.getElementById('barra-lateral');
+      sidebar?.classList.remove('aberta');
+      document.body.classList.remove('sidebar-mobile-open');
+      document.getElementById('btn-alternar-barra')?.setAttribute('aria-expanded', 'false');
     });
 
-    // Lida com a navegação pelo histórico do navegador (botões voltar/avançar)
     window.addEventListener('popstate', () => {
       this.route(window.location.pathname);
     });
   }
 
-  // Inicializa o roteador definindo a rota inicial
   async init() {
-    await this.checkAuthStatus();
-
-    const path = window.location.pathname === '/' || window.location.pathname === '/index.html'
+    const requestedPath = window.location.pathname === '/' || window.location.pathname === '/index.html'
       ? '/dashboard'
       : window.location.pathname;
 
-    if (window.location.pathname !== path) {
-      window.history.replaceState({}, '', path);
+    if (!PUBLIC_ROUTES.has(requestedPath) && !AUTH_ROUTES.has(requestedPath)) {
+      await this.checkAuthStatus();
     }
 
-    this.route(path);
+    if (window.location.pathname !== requestedPath) {
+      window.history.replaceState({}, '', requestedPath);
+    }
+
+    await this.route(requestedPath);
   }
 
-  // Atualiza a interface da barra lateral (nome, email e avatar)
-  renderProfile(nome, email) {
+  handleProfileUpdated = (event) => {
+    this.cacheAndRenderProfile(event.detail || {});
+  };
+
+  cacheAndRenderProfile(profile) {
+    if (profile.nome) sessionStorage.setItem('user_nome', profile.nome);
+    if (profile.email) sessionStorage.setItem('user_email', profile.email);
+    if (profile.avatar_url) sessionStorage.setItem('user_avatar_url', profile.avatar_url);
+    else sessionStorage.removeItem('user_avatar_url');
+    if (profile.avatar_version) sessionStorage.setItem('user_avatar_version', profile.avatar_version);
+    else sessionStorage.removeItem('user_avatar_version');
+    this.renderProfile(profile.nome, profile.email, profile.avatar_url, profile.avatar_version);
+  }
+
+  renderProfile(nome, email, avatarUrl = null, avatarVersion = null) {
     if (!nome || !email) return;
+
     const nomeEl = document.getElementById('cerberus-usuario-nome');
     const emailEl = document.getElementById('cerberus-usuario-email');
-    const avatarEl = document.getElementById('cerberus-usuario-avatar');
-    if (nomeEl && emailEl && avatarEl) {
-      nomeEl.title = nome;
-      emailEl.title = email;
-      const maxLength = 20;
-      nomeEl.textContent = nome.length > maxLength ? nome.substring(0, maxLength) + '...' : nome;
-      emailEl.textContent = email.length > maxLength ? email.substring(0, maxLength) + '...' : email;
-      
-      const palavras = nome.trim().split(' ').filter(p => p.length > 0);
-      let iniciais = palavras[0][0];
-      if (palavras.length > 1) iniciais += palavras[palavras.length - 1][0];
-      avatarEl.textContent = iniciais.toUpperCase();
+    const avatarImage = document.getElementById('cerberus-usuario-foto');
+    const avatarInitials = document.getElementById('cerberus-usuario-iniciais');
+    if (!nomeEl || !emailEl || !avatarImage || !avatarInitials) return;
+
+    nomeEl.title = nome;
+    emailEl.title = email;
+    nomeEl.textContent = nome;
+    emailEl.textContent = email;
+
+    const words = nome.trim().split(/\s+/).filter(Boolean);
+    const initials = words.length > 1
+      ? `${words[0][0]}${words.at(-1)[0]}`
+      : words[0]?.slice(0, 2) || '--';
+    avatarInitials.textContent = initials.toUpperCase();
+
+    avatarImage.onload = () => {
+      avatarImage.hidden = false;
+      avatarInitials.hidden = true;
+    };
+    avatarImage.onerror = () => {
+      avatarImage.hidden = true;
+      avatarInitials.hidden = false;
+      avatarImage.removeAttribute('src');
+    };
+
+    if (avatarUrl) {
+      const version = avatarVersion ? `?v=${encodeURIComponent(avatarVersion)}` : '';
+      avatarImage.src = `${BASE_URL}${avatarUrl}${version}`;
+    } else {
+      avatarImage.hidden = true;
+      avatarInitials.hidden = false;
+      avatarImage.removeAttribute('src');
     }
   }
 
-  // Verifica o status de autenticação via backend
+  clearSessionState() {
+    [
+      'authenticated',
+      'db_connected',
+      'db_name',
+      'user_nome',
+      'user_email',
+      'user_avatar_url',
+      'user_avatar_version'
+    ].forEach((key) => sessionStorage.removeItem(key));
+  }
+
   async checkAuthStatus() {
-    // Carrega do cache instantaneamente para evitar tela de 'Carregando...'
-    const cachedNome = sessionStorage.getItem('user_nome');
+    const cachedName = sessionStorage.getItem('user_nome');
     const cachedEmail = sessionStorage.getItem('user_email');
-    if (cachedNome && cachedEmail) {
-      this.renderProfile(cachedNome, cachedEmail);
+    if (cachedName && cachedEmail) {
+      this.renderProfile(
+        cachedName,
+        cachedEmail,
+        sessionStorage.getItem('user_avatar_url'),
+        sessionStorage.getItem('user_avatar_version')
+      );
     }
 
     try {
@@ -85,196 +144,174 @@ export class Router {
         method: 'GET',
         credentials: 'include'
       });
-      if (response.ok) {
-        const data = await response.json();
-        sessionStorage.setItem('authenticated', 'true');
-        if (data.db_connected) {
-          sessionStorage.setItem('db_connected', 'true');
-          sessionStorage.setItem('db_name', data.db_name || '');
-        } else {
-          sessionStorage.removeItem('db_connected');
-          sessionStorage.removeItem('db_name');
-        }
-        
-        if (data.nome && data.email) {
-          sessionStorage.setItem('user_nome', data.nome);
-          sessionStorage.setItem('user_email', data.email);
-          this.renderProfile(data.nome, data.email);
-        }
+
+      if (!response.ok) {
+        this.clearSessionState();
+        return;
+      }
+
+      const data = await response.json();
+      sessionStorage.setItem('authenticated', 'true');
+
+      if (data.db_connected) {
+        sessionStorage.setItem('db_connected', 'true');
+        sessionStorage.setItem('db_name', data.db_name || '');
       } else {
-        sessionStorage.removeItem('authenticated');
         sessionStorage.removeItem('db_connected');
         sessionStorage.removeItem('db_name');
       }
+
+      if (data.nome && data.email) this.cacheAndRenderProfile(data);
     } catch (error) {
-      console.error('Erro ao verificar autenticação:', error);
-      sessionStorage.removeItem('authenticated');
-      sessionStorage.removeItem('db_connected');
-      sessionStorage.removeItem('db_name');
+      console.error('Não foi possível verificar a sessão:', error);
+      this.clearSessionState();
     }
   }
 
-  // Adiciona a rota ao histórico e invoca o controlador de rotas
   navigate(path) {
     if (window.location.pathname !== path) {
       window.history.pushState({}, '', path);
     }
-    this.route(path);
+    return this.route(path);
   }
 
-  // Atualiza a interface da barra de navegação para refletir a aba ativa
   updateActiveNav(path) {
-    this.navItems.forEach(item => item.classList.remove('ativo'));
-    if (this.configButton) this.configButton.style.backgroundColor = 'rgba(255,255,255,0.1)';
+    this.navItems.forEach((item) => {
+      const isActive = item.getAttribute('href') === path;
+      item.classList.toggle('ativo', isActive);
+      if (isActive) item.setAttribute('aria-current', 'page');
+      else item.removeAttribute('aria-current');
+    });
 
-    const match = Array.from(this.navItems).find(item => item.getAttribute('href') === path);
-    if (match) {
-      match.classList.add('ativo');
-    } else if (path === '/configuracoes' && this.configButton) {
-      this.configButton.style.backgroundColor = '#dc3545';
-    }
+    const isConfig = path === '/configuracoes';
+    this.configButton?.classList.toggle('ativo', isConfig);
+    if (isConfig) this.configButton?.setAttribute('aria-current', 'page');
+    else this.configButton?.removeAttribute('aria-current');
   }
 
-  // Busca e retorna o conteúdo HTML de uma view específica
   async fetchView(viewName) {
-    try {
-      const response = await fetch(`/views/${viewName}.html`);
-      if (!response.ok) throw new Error('View não encontrada');
-      return await response.text();
-    } catch (e) {
-      return '<h2>Erro ao carregar a página</h2>';
-    }
+    const response = await fetch(`/views/${viewName}.html`);
+    if (!response.ok) throw new Error(`A tela ${viewName} não foi encontrada.`);
+    return response.text();
   }
 
-  // Lida com o roteamento, gerenciamento de estados (auth/db) e renderização das views
-  async route(path) {
-    const globalLoader = document.getElementById('global-loader');
-    if (globalLoader) globalLoader.classList.remove('hidden');
+  updateLayout(path) {
+    document.body.classList.toggle('is-auth-route', AUTH_ROUTES.has(path));
+    document.body.classList.toggle('is-public-route', PUBLIC_ROUTES.has(path));
+  }
+
+  updateNavigationVisibility(isConnected) {
+    document.querySelectorAll('.nav-protegida').forEach((element) => {
+      element.classList.toggle('d-none', !isConnected);
+    });
+    document.getElementById('nav-conectar')?.classList.toggle('d-none', isConnected);
+  }
+
+  updateBreadcrumb(path, label) {
+    if (this.breadcrumbCurrent) this.breadcrumbCurrent.textContent = label || 'Painel';
+    if (!this.breadcrumbDatabase) return;
+
+    const databaseName = sessionStorage.getItem('db_name');
+    const showDatabase = Boolean(databaseName) && path !== '/conectar';
+    this.breadcrumbDatabase.hidden = !showDatabase;
+    this.breadcrumbDatabase.textContent = showDatabase ? databaseName : '';
+  }
+
+  async route(requestedPath) {
+    const loader = document.getElementById('global-loader');
+    loader?.classList.remove('hidden');
+
+    if (this.currentController?.destroy) {
+      try {
+        this.currentController.destroy();
+      } catch (error) {
+        console.error('Falha ao encerrar a tela anterior:', error);
+      }
+    }
+    this.currentController = null;
 
     const isAuthenticated = sessionStorage.getItem('authenticated') === 'true';
     const isConnected = sessionStorage.getItem('db_connected') === 'true';
+    let path = requestedPath;
 
-    // Controle de acesso para rotas protegidas e configuração do banco
-    if (!isAuthenticated && path !== '/login' && path !== '/cadastro') {
-      window.history.replaceState({}, '', '/login');
-      path = '/login';
-    } else if (isAuthenticated && !isConnected && path !== '/login' && path !== '/cadastro' && path !== '/conectar' && path !== '/configuracoes') {
-      window.history.replaceState({}, '', '/conectar');
-      path = '/conectar';
-    }
-
-    const protegidas = document.querySelectorAll('.nav-protegida');
-    const navConectar = document.getElementById('nav-conectar');
-
-    if (isConnected) {
-      protegidas.forEach(el => el.classList.remove('d-none'));
-      if (navConectar) navConectar.classList.add('d-none');
-    } else {
-      protegidas.forEach(el => el.classList.add('d-none'));
-      if (navConectar) navConectar.classList.remove('d-none');
-    }
-
-    // Controla a exibição do badge de Sistema Online (apenas quando conectado e fora de conectar/configurações/auth)
-    const badge = document.getElementById('badge-sistema-online');
-    if (badge) {
-      if (isConnected && path !== '/conectar' && path !== '/configuracoes' && path !== '/login' && path !== '/cadastro') {
-        badge.classList.remove('d-none');
-      } else {
-        badge.classList.add('d-none');
+    if (!PUBLIC_ROUTES.has(path)) {
+      if (!isAuthenticated && !AUTH_ROUTES.has(path)) {
+        path = '/login';
+      } else if (
+        isAuthenticated &&
+        !isConnected &&
+        !AUTH_ROUTES.has(path) &&
+        path !== '/conectar' &&
+        path !== '/configuracoes'
+      ) {
+        path = '/conectar';
       }
     }
 
+    if (path !== requestedPath) {
+      window.history.replaceState({}, '', path);
+    }
 
+    this.updateLayout(path);
+    this.updateNavigationVisibility(isConnected);
     this.updateActiveNav(path);
+    this.appContent.replaceChildren();
 
-    // Configura layout específico para páginas de login/cadastro ou exibe skeleton de carregamento
-    if (path === '/login' || path === '/cadastro') {
-      document.body.classList.add('is-login-route');
-    } else {
-      document.body.classList.remove('is-login-route');
-      this.appContent.innerHTML = '<div class="esqueleto-carregando" style="height: 500px; width: 100%; border-radius: 8px;"></div>';
+    const routes = {
+      '/login': ['Cerberus | Login', null, 'login', LoginController],
+      '/cadastro': ['Cerberus | Cadastro', null, 'cadastro', CadastroController],
+      '/dashboard': ['Cerberus | Visão geral', 'Visão geral', 'dashboard', DashboardController],
+      '/backups': ['Cerberus | Backups', 'Backups', 'backups', BackupsController],
+      '/seguranca': ['Cerberus | Segurança', 'Segurança', 'seguranca', SegurancaController],
+      '/conectar': ['Cerberus | Conectar banco', 'Conectar banco', 'conectar', ConectarController],
+      '/configuracoes': ['Cerberus | Configurações', 'Configurações', 'configuracoes', ConfiguracoesController],
+      '/estrutura': ['Cerberus | Estrutura', 'Estrutura', 'estrutura', EstruturaController],
+      '/termos': ['Cerberus | Termos de uso', null, 'termos', null],
+      '/privacidade': ['Cerberus | Privacidade', null, 'privacidade', null]
+    };
+
+    const routeConfig = routes[path];
+    if (!routeConfig) {
+      document.title = 'Cerberus | Página não encontrada';
+      if (this.tituloPagina) this.tituloPagina.textContent = 'Página não encontrada';
+      this.updateBreadcrumb(path, 'Página não encontrada');
+      this.appContent.innerHTML = '<div class="error-state">A página solicitada não existe.</div>';
+      loader?.classList.add('hidden');
+      return;
     }
 
-    let html = '';
-    let controller = null;
+    const [title, heading, viewName, Controller] = routeConfig;
+    document.title = title;
+    if (heading && this.tituloPagina) this.tituloPagina.textContent = heading;
+    if (heading) this.updateBreadcrumb(path, heading);
 
-    switch (path) {
-      case '/login':
-        document.title = 'Cerberus - Login';
-        html = await this.fetchView('login');
-        this.appContent.innerHTML = html;
-        controller = new LoginController();
-        break;
-      case '/cadastro':
-        document.title = 'Cerberus - Cadastro';
-        html = await this.fetchView('cadastro');
-        this.appContent.innerHTML = html;
-        controller = new CadastroController();
-        break;
-      case '/dashboard':
-      case '/':
-        document.title = 'Cerberus - Dashboard';
-        if (this.tituloPagina) this.tituloPagina.textContent = 'Métricas do Banco';
-        html = await this.fetchView('dashboard');
-        this.appContent.innerHTML = html;
-        controller = new DashboardController();
-        break;
-      case '/backups':
-        document.title = 'Cerberus - Backups';
-        if (this.tituloPagina) this.tituloPagina.textContent = 'Backups';
-        html = await this.fetchView('backups');
-        this.appContent.innerHTML = html;
-        controller = new BackupsController();
-        break;
-      case '/seguranca':
-        document.title = 'Cerberus - Segurança e Sessões';
-        if (this.tituloPagina) this.tituloPagina.textContent = 'Segurança e Sessões';
-        html = await this.fetchView('seguranca');
-        this.appContent.innerHTML = html;
-        controller = new SegurancaController();
-        break;
-      case '/conectar':
-        document.title = 'Cerberus - Conectar Banco';
-        if (this.tituloPagina) this.tituloPagina.textContent = 'Conectar Banco';
-        html = await this.fetchView('conectar');
-        this.appContent.innerHTML = html;
-        controller = new ConectarController();
-        break;
-      case '/configuracoes':
-        document.title = 'Cerberus - Configurações';
-        if (this.tituloPagina) this.tituloPagina.textContent = 'Configurações';
-        html = await this.fetchView('configuracoes');
-        this.appContent.innerHTML = html;
-        controller = new ConfiguracoesController();
-        break;
-      case '/estrutura':
-        document.title = 'Cerberus - Estrutura do Banco';
-        if (this.tituloPagina) this.tituloPagina.textContent = 'Estrutura Física';
-        html = await this.fetchView('estrutura');
-        this.appContent.innerHTML = html;
-        controller = new EstruturaController();
-        break;
-      default:
-        if (this.tituloPagina) this.tituloPagina.textContent = 'Não Encontrado';
-        this.appContent.innerHTML = '<h2>Página não encontrada</h2>';
-    }
-
-    if (this.currentController && typeof this.currentController.destroy === 'function') {
-      try {
-        this.currentController.destroy();
-      } catch (err) {
-        console.error('Error destroying controller:', err);
+    try {
+      this.appContent.innerHTML = await this.fetchView(viewName);
+      if (Controller) {
+        this.currentController = new Controller();
+        await this.currentController.init();
       }
-    }
-
-    this.currentController = controller;
-
-    if (controller) {
-      await controller.init();
-    }
-
-    if (globalLoader) {
-      setTimeout(() => globalLoader.classList.add('hidden'), 300);
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    } catch (error) {
+      console.error('Falha ao abrir a tela:', error);
+      this.appContent.innerHTML = '<div class="error-state">Não foi possível abrir esta tela. Tente novamente.</div>';
+    } finally {
+      loader?.classList.add('hidden');
     }
   }
+
+  logout = async () => {
+    if (!await confirmLogout()) return;
+
+    try {
+      await fetch(`${BASE_URL}/api/logout`, {
+        method: 'POST',
+        credentials: 'include'
+      });
+    } catch (error) {
+      console.error('O backend não confirmou o logout:', error);
+    }
+    this.clearSessionState();
+    this.navigate('/login');
+  };
 }

@@ -1,40 +1,45 @@
-<div class="container-fluid p-0">
-  <div class="pagina-login fade-in">
-    <div class="login-imagem-area">
-      <link rel="shortcut icon" href="/logo-nova-cerberus.png" type="image/x-icon">
-    </div>
-    <div class="login-formulario-area">
-      <div class="login-caixa w-100" style="max-width: 400px; margin: 0 auto;">
-        <div class="text-center mb-5">
-          <img src="/logo-nova-cerberus.png" alt="Cerberus Logo" class="img-acima-login">
-          <h1 class="h2 text-danger mb-1 fonte-titulo">Cerberus</h1>
-          <p class="text-muted small text-uppercase fw-bold">Guardião do Banco de Dados</p>
-        </div>
-        <form id="formulario-login">
-          <div class="mb-3">
-            <label class="form-label small fw-semibold text-muted">E-mail</label>
-            <input type="email" id="email" class="form-control" placeholder="usuario@cerberus.com.br" maxlength="150" required>
-          </div>
-          <div class="mb-4">
-            <label class="form-label small fw-semibold text-muted">Senha</label>
-            <input type="password" id="senha" class="form-control" placeholder="••••••••" maxlength="100" required>
-          </div>
-          <div class="d-flex align-items-center justify-content-between mb-4">
-            <div class="form-check">
-              <input type="checkbox" class="form-check-input" id="lembrarMim">
-              <label class="form-check-label small" for="lembrarMim">Lembre-me</label>
-            </div>
-            <button type="button" id="btn-recuperar"
-              class="btn btn-link btn-sm p-0 text-danger text-decoration-none">Recuperar senha</button>
-          </div>
-          <button type="submit" class="btn btn-primary w-100 py-3 mt-2">Entrar</button>
-          <div class="text-center mt-4">
-            <span class="small text-muted">Ainda não tem conta?</span>
-            <a href="/cadastro" class="small fw-bold text-danger text-decoration-none" data-route>Cadastre-se</a>
-          </div>
-        </form>
+<div class="pagina-login">
+  <section class="login-marca-area" aria-label="Sobre o Cerberus">
+    <div class="login-brand">
+      <img src="/logo-nova-cerberus.png" alt="Símbolo do Cerberus">
+      <div>
+        <h1>Cerberus</h1>
+        <p>Monitoramento de bancos de dados</p>
       </div>
     </div>
-  </div>
+    <div class="login-copy">
+      <h2>Dados operacionais sem distrações.</h2>
+      <p>Acompanhe métricas, sessões, permissões, estrutura e backups do banco conectado a partir de uma única área de trabalho.</p>
+    </div>
+    <div class="login-marca-rodape">PostgreSQL e MySQL</div>
+  </section>
+
+  <main class="login-formulario-area">
+    <div class="login-caixa">
+      <h2>Acessar conta</h2>
+      <p class="login-caixa-intro">Use as credenciais cadastradas no Cerberus.</p>
+      <form id="formulario-login" novalidate>
+        <div class="mb-3">
+          <label class="form-label" for="email">E-mail</label>
+          <input type="email" id="email" class="form-control" placeholder="usuario@empresa.com.br" maxlength="150" autocomplete="email" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="senha">Senha</label>
+          <input type="password" id="senha" class="form-control" placeholder="Informe sua senha" maxlength="100" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 py-2">Entrar</button>
+        <div class="login-auxiliar">
+          <span>Sem acesso? Contate o administrador da instalação.</span>
+        </div>
+        <div class="text-center">
+          <span class="small text-muted">Ainda não tem conta?</span>
+          <a href="/cadastro" class="small fw-bold text-danger" data-route>Cadastre-se</a>
+        </div>
+      </form>
+      <nav class="login-legal" aria-label="Informações legais">
+        <a href="/termos" data-route>Termos de uso</a>
+        <a href="/privacidade" data-route>Privacidade</a>
+      </nav>
+    </div>
+  </main>
 </div>
-<script src="../../src/js/login.js" defer></script>

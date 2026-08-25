@@ -1,342 +1,263 @@
 import Swal from 'sweetalert2';
 import Chart from 'chart.js/auto';
-import _ from 'lodash';
 import { io } from 'socket.io-client';
 import { BASE_URL } from '../config/api.js';
-import { icones } from '../js/utils.js';
 
 export default class DashboardController {
   async init() {
-    this.injectIcons();
-    this.currentChartType = 'bar';
+    this.currentChartType = 'line';
+    this.lastMetrics = null;
+    this.lastQpm = [];
+    this.bindEvents();
+    this.renderChart([]);
     this.connectSocket();
-    await this.loadInitialData();
-  }
-
-  injectIcons() {
-    document.querySelectorAll('.icone-pontos').forEach(el => el.innerHTML = icones.pontos);
-    document.querySelectorAll('.icone-performance').forEach(el => el.innerHTML = icones.performance);
-    document.querySelectorAll('.icone-disco-card').forEach(el => el.innerHTML = icones.database);
-    document.querySelectorAll('.icone-ativos').forEach(el => el.innerHTML = icones.ativos);
-    document.querySelectorAll('.icone-arquivos').forEach(el => el.innerHTML = icones.arquivos);
   }
 
   connectSocket() {
-    this.socket = io(BASE_URL, { withCredentials: true, transports: ['polling'] });
-    
+    if (this.socket) {
+      this.socket.removeAllListeners();
+      this.socket.disconnect();
+    }
+
+    this.socket = io(BASE_URL, {
+      withCredentials: true,
+      transports: ['polling']
+    });
+
     this.socket.on('connect', () => {
-      console.log('Dashboard connected to backend WebSockets');
-    });
-
-    this.socket.on('metrics_update', (data) => {
-      // Atualiza os cartões de estatísticas no DOM dinamicamente
-      const perfEl = document.getElementById('dash-performance');
-      if (perfEl) perfEl.textContent = data.uptime;
-
-      const perfSubEl = document.getElementById('dash-performance-sub');
-      if (perfSubEl && data.db_version) perfSubEl.textContent = data.db_version;
-
-      const discoEl = document.getElementById('dash-disco');
-      if (discoEl) discoEl.textContent = data.db_size;
-
-      const connEl = document.getElementById('dash-servidores');
-      if (connEl) connEl.textContent = data.conns;
-
-      const connSubEl = document.getElementById('dash-servidores-sub');
-      if (connSubEl) connSubEl.textContent = `Max: ${data.max_conns || 100}`;
-
-      const backupsEl = document.getElementById('dash-backups');
-      if (backupsEl) backupsEl.textContent = data.backups_count;
-
-      const backupsSubEl = document.getElementById('dash-backups-sub');
-      if (backupsSubEl) backupsSubEl.textContent = `Espaço: ${data.backups_size || '0.00 KB'}`;
-
-      // Popula os eventos do banco de dados dinamicamente com base no histórico de eventos reais do backend
-      const eventsContainer = document.getElementById('database-events-container');
-      if (eventsContainer) {
-        eventsContainer.innerHTML = '';
-        if (data.event_history && data.event_history.length > 0) {
-          // Exibe do mais recente para o mais antigo no container lateral do dashboard
-          const reversedEvents = [...data.event_history].reverse();
-          reversedEvents.forEach(ev => {
-            const evDiv = document.createElement('div');
-            
-            let borderClass = 'border-primary';
-            let bgClass = 'bg-primary';
-            let title = 'Informação';
-            let cleanMsg = ev.message;
-            
-            if (ev.message.startsWith('SUCESSO:')) {
-              borderClass = 'border-success';
-              bgClass = 'bg-success';
-              title = 'Sucesso';
-              cleanMsg = ev.message.replace('SUCESSO:', '').trim();
-            } else if (ev.message.startsWith('INFO:')) {
-              borderClass = 'border-info';
-              bgClass = 'bg-info';
-              title = 'Info';
-              cleanMsg = ev.message.replace('INFO:', '').trim();
-            } else if (ev.message.startsWith('AVISO:')) {
-              borderClass = 'border-warning';
-              bgClass = 'bg-warning';
-              title = 'Aviso';
-              cleanMsg = ev.message.replace('AVISO:', '').trim();
-            } else if (ev.message.startsWith('ERRO:')) {
-              borderClass = 'border-danger';
-              bgClass = 'bg-danger';
-              title = 'Erro';
-              cleanMsg = ev.message.replace('ERRO:', '').trim();
-            }
-            
-            evDiv.className = `p-3 ${bgClass} bg-opacity-10 border-start ${borderClass} border-3 rounded-end`;
-            evDiv.innerHTML = `
-              <div class="fw-bold small d-flex justify-content-between">
-                <span>${title}</span>
-                <span class="text-muted smaller fw-normal" style="font-size: 0.7rem;">${ev.time}</span>
-              </div>
-              <div class="smaller text-muted mt-1" style="font-size: 0.75rem;">${cleanMsg}</div>
-            `;
-            eventsContainer.appendChild(evDiv);
-          });
-        } else {
-          eventsContainer.innerHTML = `
-            <div class="p-3 bg-secondary bg-opacity-10 border-start border-secondary border-3 rounded-end">
-              <div class="fw-bold small">Nenhum Evento</div>
-              <div class="smaller text-muted" style="font-size: 0.75rem;">Aguardando novos eventos do banco...</div>
-            </div>
-          `;
-        }
+      const button = document.getElementById('btn-dashboard-reconectar');
+      if (button) {
+        button.disabled = false;
+        button.textContent = 'Atualizar dados';
       }
-
-      // Renderiza o gráfico dinamicamente com base no QPM atual
-      this.renderChart(data.qpm, this.currentChartType);
-      this.bindChartEvents(data.qpm);
     });
-  }
 
-  async loadInitialData() {
-    // Exibe dados estáticos iniciais enquanto aguarda a primeira emissão do Socket.IO
-    const inicialQPM = [
-      { tempo: '--', qtd: 0 },
-      { tempo: '--', qtd: 0 },
-      { tempo: '--', qtd: 0 },
-      { tempo: '--', qtd: 0 },
-      { tempo: '--', qtd: 0 }
-    ];
+    this.socket.on('connect_error', () => {
+      const description = document.getElementById('dash-chart-description');
+      if (description) description.textContent = 'Não foi possível atualizar a série de consultas agora.';
+    });
 
-    document.getElementById('dash-performance').textContent = '--';
-    const discoEl = document.getElementById('dash-disco');
-    if (discoEl) discoEl.textContent = '--';
-    document.getElementById('dash-servidores').textContent = '--';
-    document.getElementById('dash-backups').textContent = '--';
-
-    this.renderChart(inicialQPM, this.currentChartType);
-    this.bindChartEvents(inicialQPM);
-    this.bindStressTestEvent();
-    this.bindDropdownEvents();
-  }
-
-  bindDropdownEvents() {
-    // Salva referência das últimas métricas recebidas para uso nos modais
-    this.lastMetrics = {};
-    
-    // Armazena as métricas mais recentes recebidas pelo socket
     this.socket.on('metrics_update', (data) => {
       this.lastMetrics = data;
+      this.lastQpm = Array.isArray(data.qpm) ? data.qpm : [];
+      this.updateMetrics(data);
+      this.renderEvents(data.event_history || []);
+      this.renderChart(this.lastQpm);
     });
+  }
 
-    // Botão "Ver Log" - mostra um modal com os eventos
-    document.getElementById('btn-dash-ver-log')?.addEventListener('click', () => {
-      const container = document.getElementById('database-events-container');
-      if (container) {
-        Swal.fire({
-          title: 'Últimos Eventos',
-          html: `<div class="text-start" style="max-height: 400px; overflow-y: auto;">${container.innerHTML}</div>`,
-          icon: 'info',
-          confirmButtonColor: '#dc3545',
-          width: 600
-        });
-      }
+  updateMetrics(data) {
+    this.setText('dash-performance', data.uptime || 'Indisponível');
+    this.setText('dash-performance-sub', data.db_version || 'Versão não informada');
+    this.setText('dash-disco', data.db_size || 'Indisponível');
+    this.setText('dash-disco-sub', 'Tamanho físico informado pelo banco');
+    this.setText('dash-servidores', data.conns ?? 'Indisponível');
+    this.setText('dash-servidores-sub', `Limite: ${data.max_conns ?? 'não informado'}`);
+    this.setText('dash-backups', data.backups_count ?? 0);
+    this.setText('dash-backups-sub', `Espaço: ${data.backups_size || '0 KB'}`);
+
+    const description = document.getElementById('dash-chart-description');
+    if (description) {
+      description.textContent = this.lastQpm.length
+        ? 'Série temporal da coleta mais recente.'
+        : 'Ainda não há uma janela completa de consultas.';
+    }
+  }
+
+  setText(id, value) {
+    const element = document.getElementById(id);
+    if (element) element.textContent = String(value);
+  }
+
+  renderEvents(events) {
+    const container = document.getElementById('database-events-container');
+    if (!container) return;
+    container.replaceChildren();
+
+    if (!events.length) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-state';
+      empty.textContent = 'Nenhum evento foi informado pelo banco.';
+      container.appendChild(empty);
+      return;
+    }
+
+    [...events].reverse().forEach((event) => {
+      const item = document.createElement('div');
+      item.className = 'activity-item';
+
+      const parsed = this.parseEvent(event.message || '');
+      const level = document.createElement('span');
+      level.className = 'activity-level';
+      level.dataset.level = parsed.level;
+      level.textContent = parsed.label;
+
+      const message = document.createElement('span');
+      message.className = 'activity-message';
+      message.textContent = parsed.message;
+
+      const time = document.createElement('time');
+      time.className = 'activity-time';
+      time.textContent = event.time || '';
+
+      item.append(level, message, time);
+      container.appendChild(item);
     });
+  }
 
-    // Botão "Ver Detalhes de Disco"
-    document.getElementById('btn-dash-ver-disco')?.addEventListener('click', () => {
-      const m = this.lastMetrics;
-      Swal.fire({
-        title: 'Detalhes de Armazenamento',
-        html: `
-          <div class="text-start">
-            <p><strong>Tamanho do Banco:</strong> ${m.db_size || '--'}</p>
-            <p><strong>Disco Total:</strong> ${m.disk_total || '--'}</p>
-            <p><strong>Disco Usado:</strong> ${m.disk_used || '--'} (${m.disk_pct || 0}%)</p>
-            <p><strong>Backups:</strong> ${m.backups_count || 0} arquivo(s) - ${m.backups_size || '0 KB'}</p>
-          </div>
-        `,
+  parseEvent(rawMessage) {
+    const match = rawMessage.match(/^(SUCESSO|INFO|AVISO|ERRO):\s*(.*)$/i);
+    if (!match) return { level: 'info', label: 'Info', message: rawMessage };
+
+    const levelMap = {
+      SUCESSO: ['sucesso', 'Sucesso'],
+      INFO: ['info', 'Info'],
+      AVISO: ['aviso', 'Aviso'],
+      ERRO: ['erro', 'Erro']
+    };
+    const [level, label] = levelMap[match[1].toUpperCase()];
+    return { level, label, message: match[2] };
+  }
+
+  bindEvents() {
+    document.getElementById('btn-dash-ver-disco')?.addEventListener('click', this.showDiskDetails);
+    document.getElementById('btn-dash-abrir-sessoes')?.addEventListener('click', () => this.navigate('/seguranca'));
+    document.getElementById('btn-dash-historico-backups')?.addEventListener('click', () => this.navigate('/backups'));
+    document.getElementById('btn-dash-exportar-dados')?.addEventListener('click', this.exportQpm);
+    document.getElementById('btn-dashboard-reconectar')?.addEventListener('click', this.reconnect);
+    document.getElementById('select-chart-type')?.addEventListener('change', this.changeChartType);
+  }
+
+  showDiskDetails = async () => {
+    if (!this.lastMetrics) {
+      await Swal.fire({
+        title: 'Dados ainda não recebidos',
+        text: 'Aguarde a primeira leitura do banco.',
         icon: 'info',
         confirmButtonColor: '#dc3545'
       });
-    });
+      return;
+    }
 
-    // Botão "Derrubar Ociosas" 
-    document.getElementById('btn-dash-derrubar-ociosas')?.addEventListener('click', async () => {
-      const result = await Swal.fire({
-        title: 'Derrubar Conexões Ociosas?',
-        text: 'Todas as conexões dormindo no banco serão encerradas. Esta ação não pode ser desfeita.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#dc3545',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Sim, derrubar!'
+    const metrics = this.lastMetrics;
+    const lines = [
+      `Banco: ${metrics.db_size || 'não informado'}`,
+      `Disco total: ${metrics.disk_total || 'não informado'}`,
+      `Disco usado: ${metrics.disk_used || 'não informado'}`,
+      `Uso percentual: ${metrics.disk_pct ?? 'não informado'}%`,
+      `Backups: ${metrics.backups_count ?? 0} arquivo(s), ${metrics.backups_size || '0 KB'}`
+    ];
+
+    await Swal.fire({
+      title: 'Armazenamento',
+      text: lines.join('\n'),
+      icon: 'info',
+      confirmButtonColor: '#dc3545'
+    });
+  };
+
+  navigate(path) {
+    window.history.pushState({}, '', path);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  }
+
+  exportQpm = async () => {
+    if (!this.lastQpm.length) {
+      await Swal.fire({
+        title: 'Sem dados para exportar',
+        text: 'Aguarde o recebimento da série de consultas.',
+        icon: 'info',
+        confirmButtonColor: '#dc3545'
       });
-      if (result.isConfirmed) {
-        try {
-          const res = await fetch(`${BASE_URL}/api/security/kill-idle`, { method: 'POST', credentials: 'include' });
-          const data = await res.json();
-          if (data.success) Swal.fire('Sucesso!', data.message, 'success');
-          else Swal.fire('Erro', data.message, 'error');
-        } catch(e) { Swal.fire('Erro', 'Erro de conexão.', 'error'); }
+      return;
+    }
+
+    const rows = ['Tempo;Consultas por minuto'];
+    this.lastQpm.forEach((point) => {
+      rows.push(`${this.csvValue(point.tempo)};${this.csvValue(point.qtd)}`);
+    });
+    this.downloadText(rows.join('\n'), `cerberus-qpm-${Date.now()}.csv`, 'text/csv;charset=utf-8');
+  };
+
+  csvValue(value) {
+    return `"${String(value ?? '').replace(/"/g, '""')}"`;
+  }
+
+  downloadText(content, filename, type) {
+    const blob = new Blob(['\ufeff', content], { type });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  reconnect = () => {
+    const button = document.getElementById('btn-dashboard-reconectar');
+    if (button) {
+      button.disabled = true;
+      button.textContent = 'Reconectando';
+    }
+    this.connectSocket();
+  };
+
+  changeChartType = (event) => {
+    this.currentChartType = event.target.value === 'bar' ? 'bar' : 'line';
+    this.renderChart(this.lastQpm);
+  };
+
+  renderChart(history) {
+    const canvas = document.getElementById('graficoDistribuicao');
+    if (!canvas) return;
+
+    this.chart?.destroy();
+
+    const labels = history.map((point) => point.tempo);
+    const values = history.map((point) => Number(point.qtd) || 0);
+
+    this.chart = new Chart(canvas, {
+      type: this.currentChartType,
+      data: {
+        labels,
+        datasets: [{
+          label: 'Consultas por minuto',
+          data: values,
+          backgroundColor: '#dc3545',
+          borderColor: '#dc3545',
+          borderWidth: 2,
+          pointRadius: this.currentChartType === 'line' ? 2 : 0,
+          tension: 0,
+          fill: false,
+          borderRadius: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: history.length > 0 }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { color: '#5f6b7a' }
+          },
+          y: {
+            beginAtZero: true,
+            grid: { color: '#cbd3dc' },
+            ticks: { color: '#5f6b7a', precision: 0 }
+          }
+        }
       }
     });
-
-    // Botão "Histórico de Backups"
-    document.getElementById('btn-dash-historico-backups')?.addEventListener('click', async () => {
-      try {
-        const res = await fetch(`${BASE_URL}/api/backups`, { credentials: 'include' });
-        const data = await res.json();
-        if (data.success && data.backups.length > 0) {
-          let html = '<div class="text-start"><table class="table table-sm"><thead><tr><th>Arquivo</th><th>Tamanho</th></tr></thead><tbody>';
-          data.backups.forEach(b => {
-            html += `<tr><td class="small">${b.filename}</td><td class="small">${b.size}</td></tr>`;
-          });
-          html += '</tbody></table></div>';
-          Swal.fire({ title: 'Histórico de Backups', html, confirmButtonColor: '#dc3545', width: 600 });
-        } else {
-          Swal.fire('Histórico', 'Nenhum backup encontrado ainda.', 'info');
-        }
-      } catch(e) { Swal.fire('Erro', 'Erro ao buscar histórico.', 'error'); }
-    });
-
-    // Botão "Exportar Dados" (no dropdown do gráfico QPM)
-    const btnExport = document.querySelector('#btn-stress-test')?.closest('ul')?.querySelector('.dropdown-item:nth-child(2)');
-    if (btnExport && !btnExport.id) {
-      btnExport.id = 'btn-dash-exportar-dados';
-      btnExport.addEventListener('click', () => {
-        const m = this.lastMetrics;
-        if (!m || !m.qpm) {
-          Swal.fire('Aviso', 'Nenhum dado disponível para exportar ainda.', 'info');
-          return;
-        }
-        let csv = 'Tempo,QPM\\n';
-        m.qpm.forEach(q => { csv += `${q.tempo},${q.qtd}\\n`; });
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `cerberus_qpm_${new Date().getTime()}.csv`;
-        a.click();
-        window.URL.revokeObjectURL(url);
-      });
-    }
   }
 
-  bindStressTestEvent() {
-    const btnStress = document.getElementById('btn-stress-test');
-    if (btnStress) {
-      btnStress.addEventListener('click', async () => {
-        const originalText = btnStress.innerHTML;
-        btnStress.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Disparando...';
-        btnStress.disabled = true;
-
-        try {
-          const res = await fetch(`${BASE_URL}/api/stress-test`, { method: 'POST', credentials: 'include' });
-          const data = await res.json();
-          if(data.success) {
-            Swal.fire({
-              title: 'Tiroteio Finalizado!',
-              text: '500 queries foram disparadas no banco. Aguarde alguns segundos para ver o gráfico subir (QPM atualiza a cada minuto).',
-              icon: 'success',
-              timer: 3000,
-              showConfirmButton: false
-            });
-          } else {
-            Swal.fire('Erro', data.message || 'Falha no teste', 'error');
-          }
-        } catch(e) {
-          Swal.fire('Erro', 'Erro de conexão no teste de estresse.', 'error');
-        } finally {
-          btnStress.innerHTML = originalText;
-          btnStress.disabled = false;
-        }
-      });
-    }
-  }
-
-  // Renderiza o gráfico com base no histórico e tipo especificados usando Chart.js
-  renderChart(historico, type) {
-    const labelsGrafico = _.map(historico, 'tempo');
-    const dadosGrafico = _.map(historico, 'qtd');
-
-    const ctx = document.getElementById('graficoDistribuicao');
-    if (ctx) {
-      if (this.chart) this.chart.destroy();
-      
-      const config = {
-        type: type,
-        data: {
-          labels: labelsGrafico,
-          datasets: [{
-            label: 'Consultas/minuto',
-            data: dadosGrafico,
-            backgroundColor: ['#dc3545', '#e11d48', '#be123c', '#9f1239', '#881337'],
-            borderColor: '#dc3545',
-            tension: 0.3,
-            fill: type === 'line' ? true : false,
-            borderRadius: type === 'bar' ? 4 : 0
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
-          scales: {
-            y: { 
-              beginAtZero: true, 
-              grid: { display: false },
-              display: type !== 'doughnut'
-            },
-            x: { 
-              grid: { display: false },
-              display: type !== 'doughnut'
-            }
-          }
-        }
-      };
-      this.chart = new Chart(ctx, config);
-    }
-  }
-
-  // Associa os eventos de clique aos botões de alternância de gráfico
-  bindChartEvents(historico) {
-    document.querySelectorAll('.btn-mudar-grafico').forEach(btn => {
-      // Evita duplicar listeners limpando e adicionando novamente
-      btn.replaceWith(btn.cloneNode(true));
-    });
-
-    document.querySelectorAll('.btn-mudar-grafico').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const novoTipo = e.currentTarget.getAttribute('data-tipo');
-        this.currentChartType = novoTipo;
-        this.renderChart(historico, novoTipo);
-      });
-    });
-  }
-
-  // Fecha o socket ao destruir/mudar de rota
   destroy() {
-    if (this.socket) {
-      this.socket.disconnect();
-    }
+    this.socket?.removeAllListeners();
+    this.socket?.disconnect();
+    this.chart?.destroy();
   }
 }

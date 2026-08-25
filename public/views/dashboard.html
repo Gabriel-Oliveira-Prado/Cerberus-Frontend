@@ -1,117 +1,64 @@
-<div class="container-fluid pt-4">
-  <div class="row g-4 mb-4 fade-in">
-    <div class="col-12 col-sm-6 col-xl-3">
-      <div class="cartao h-100">
+<section class="metric-strip" aria-label="Resumo do banco">
+  <article class="metric-item">
+    <span class="metric-label">Tempo em operação</span>
+    <strong class="metric-value" id="dash-performance">Aguardando</strong>
+    <span class="metric-detail" id="dash-performance-sub">Aguardando primeira leitura</span>
+  </article>
+  <article class="metric-item">
+    <span class="metric-label">Tamanho do banco</span>
+    <strong class="metric-value" id="dash-disco">Aguardando</strong>
+    <span class="metric-detail" id="dash-disco-sub">Uso físico informado pelo servidor</span>
+  </article>
+  <article class="metric-item">
+    <span class="metric-label">Conexões</span>
+    <strong class="metric-value" id="dash-servidores">Aguardando</strong>
+    <span class="metric-detail" id="dash-servidores-sub">Limite ainda não recebido</span>
+  </article>
+  <article class="metric-item">
+    <span class="metric-label">Backups disponíveis</span>
+    <strong class="metric-value" id="dash-backups">Aguardando</strong>
+    <span class="metric-detail" id="dash-backups-sub">Espaço ainda não recebido</span>
+  </article>
+</section>
+
+<div class="dashboard-columns">
+  <section class="cartao">
+    <div class="section-heading">
+      <div>
+        <h3>Consultas por minuto</h3>
+        <p id="dash-chart-description">Série temporal recebida do banco conectado.</p>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <select class="form-select form-select-sm" id="select-chart-type" aria-label="Tipo do gráfico">
+          <option value="line" selected>Linha</option>
+          <option value="bar">Barras</option>
+        </select>
         <div class="dropdown">
-          <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
-            <span class="icone-pontos"></span>
-          </div>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
-            <li><button class="dropdown-item small rounded" type="button" id="btn-dash-ver-log">Ver Log</button></li>
+          <button class="action-menu-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir ações da visão geral"><i class="bi bi-three-dots-vertical" aria-hidden="true"></i></button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><button class="dropdown-item" type="button" id="btn-dash-exportar-dados">Exportar consultas</button></li>
+            <li><button class="dropdown-item" type="button" id="btn-dash-ver-disco">Detalhes de armazenamento</button></li>
+            <li><button class="dropdown-item" type="button" id="btn-dash-abrir-sessoes">Abrir sessões</button></li>
+            <li><button class="dropdown-item" type="button" id="btn-dash-historico-backups">Abrir backups</button></li>
+            <li><button class="dropdown-item" type="button" id="btn-dashboard-reconectar">Atualizar dados</button></li>
           </ul>
         </div>
-        <div class="d-flex align-items-center mb-2">
-          <span class="icone-performance text-success me-2"></span>
-          <div class="text-muted small">Uptime do Banco</div>
-        </div>
-        <div class="h3 fw-bold text-success" id="dash-performance">--</div>
-        <div class="small text-muted mt-2" id="dash-performance-sub">Carregando...</div>
       </div>
     </div>
-    <div class="col-12 col-sm-6 col-xl-3">
-      <div class="cartao h-100">
-        <div class="dropdown">
-          <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
-            <span class="icone-pontos"></span>
-          </div>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
-            <li><button class="dropdown-item small rounded" type="button" id="btn-dash-ver-disco">Ver Detalhes de Disco</button></li>
-          </ul>
-        </div>
-        <div class="d-flex align-items-center mb-2">
-          <span class="icone-disco-card text-primary me-2"></span>
-          <div class="text-muted small">Disk</div>
-        </div>
-        <div class="h3 fw-bold text-primary" id="dash-disco">--</div>
-        <div class="small text-muted mt-2" id="dash-disco-sub">Tamanho físico do banco</div>
+    <div class="chart-frame">
+      <canvas id="graficoDistribuicao" aria-label="Gráfico de consultas por minuto" role="img"></canvas>
+    </div>
+  </section>
+
+  <section class="cartao">
+    <div class="section-heading">
+      <div>
+        <h3>Atividade recente</h3>
+        <p>Eventos registrados nas leituras recentes do banco.</p>
       </div>
     </div>
-    <div class="col-12 col-sm-6 col-xl-3">
-      <div class="cartao h-100">
-        <div class="dropdown">
-          <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
-            <span class="icone-pontos"></span>
-          </div>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
-            <li><button class="dropdown-item small rounded text-danger" type="button" id="btn-dash-derrubar-ociosas">Derrubar Ociosas</button></li>
-          </ul>
-        </div>
-        <div class="d-flex align-items-center mb-2">
-          <span class="icone-ativos text-danger me-2"></span>
-          <div class="text-muted small">Total de Conexões</div>
-        </div>
-        <div class="h3 fw-bold text-danger"><span id="dash-servidores">--</span></div>
-        <div class="small text-muted mt-2" id="dash-servidores-sub">Max: --</div>
-      </div>
+    <div class="activity-list" id="database-events-container" aria-live="polite">
+      <div class="loading-state"><span class="loading-indicator" aria-hidden="true"></span>Aguardando eventos</div>
     </div>
-    <div class="col-12 col-sm-6 col-xl-3">
-      <div class="cartao h-100">
-        <div class="dropdown">
-          <div class="menu-opcoes-cartao" data-bs-toggle="dropdown" aria-expanded="false">
-            <span class="icone-pontos"></span>
-          </div>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2">
-            <li><button class="dropdown-item small rounded" type="button" id="btn-dash-historico-backups">Histórico</button></li>
-          </ul>
-        </div>
-        <div class="d-flex align-items-center mb-2">
-          <span class="icone-arquivos text-warning me-2"></span>
-          <div class="text-muted small">Backups Realizados</div>
-        </div>
-        <div class="h3 fw-bold text-warning" id="dash-backups">--</div>
-        <div class="small text-muted mt-2" id="dash-backups-sub">Espaço: --</div>
-      </div>
-    </div>
-  </div>
-  <div class="row g-4 fade-in">
-    <div class="col-12 col-lg-8">
-      <div class="cartao h-100">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-          <h3 class="h5 m-0">Volume de Consultas por Minuto (QPM)</h3>
-          <div class="dropdown">
-            <div class="menu-opcoes-cartao-relativo" data-bs-toggle="dropdown" aria-expanded="false">
-              <span class="icone-pontos"></span>
-            </div>
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-2" style="min-width: 200px;">
-              <li><button class="dropdown-item small rounded mb-1 text-danger fw-semibold" type="button" id="btn-stress-test" title="Dispara 500 queries para forçar o pico no gráfico">Disparar Teste de Estresse</button></li>
-              <li><button class="dropdown-item small rounded mb-1" type="button">Exportar Dados</button></li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              <li><button class="dropdown-item small rounded btn-mudar-grafico" data-tipo="bar" type="button"
-                  title="Exibe dados em colunas verticais para comparação rápida">Gráfico de Barras</button></li>
-              <li><button class="dropdown-item small rounded btn-mudar-grafico" data-tipo="line" type="button"
-                  title="Exibe tendência de linha ao longo do tempo">Gráfico de Linhas</button></li>
-              <li><button class="dropdown-item small rounded btn-mudar-grafico" data-tipo="doughnut" type="button"
-                  title="Exibe em formato de rosca as proporções de cada item">Gráfico de Rosca</button></li>
-            </ul>
-          </div>
-        </div>
-        <div style="height: 250px;">
-          <canvas id="graficoDistribuicao"></canvas>
-        </div>
-      </div>
-    </div>
-    <div class="col-12 col-lg-4">
-      <div class="cartao h-100">
-        <h3 class="h5 mb-4">Eventos do Banco de Dados</h3>
-        <div class="d-flex flex-column gap-3" id="database-events-container" style="max-height: 250px; overflow-y: auto;">
-          <div class="p-3 bg-success bg-opacity-10 border-start border-success border-3 rounded-end">
-            <div class="fw-bold small">Conexão Estabelecida</div>
-            <div class="smaller text-muted" style="font-size: 0.75rem;">Aguardando primeiras atualizações do banco...</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  </section>
 </div>

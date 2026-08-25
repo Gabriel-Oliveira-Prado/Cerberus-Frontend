@@ -1,235 +1,296 @@
 import Swal from 'sweetalert2';
 import { io } from 'socket.io-client';
 import { BASE_URL } from '../config/api.js';
-import { icones } from '../js/utils.js';
 
 export default class SegurancaController {
   async init() {
-    this.injectIcons();
-    this.connectSocket();
+    this.sessions = [];
+    this.roles = [];
     this.bindEvents();
-  }
-
-  injectIcons() {
-    document.querySelectorAll('.icone-pontos').forEach(el => el.innerHTML = icones.pontos);
-    document.querySelectorAll('.icone-database').forEach(el => el.innerHTML = icones.database);
-    document.querySelectorAll('.icone-perfil').forEach(el => el.innerHTML = icones.perfil);
-    document.querySelectorAll('.icone-ativos').forEach(el => el.innerHTML = icones.ativos);
-    document.querySelectorAll('.icone-sino').forEach(el => el.innerHTML = icones.sino);
-    document.querySelectorAll('.icone-escudo').forEach(el => el.innerHTML = icones.escudo);
+    this.connectSocket();
   }
 
   bindEvents() {
-    const btnRefresh = document.getElementById('btn-refresh-sessions');
-    const btnRefreshMobile = document.getElementById('btn-refresh-sessions-mobile');
-    
-    const showRefreshSwal = () => {
-      if (this.socket) {
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'success',
-          title: 'Dados atualizados!',
-          showConfirmButton: false,
-          timer: 1500
-        });
-      }
-    };
-
-    if (btnRefresh) {
-      btnRefresh.addEventListener('click', showRefreshSwal);
-    }
-    if (btnRefreshMobile) {
-      btnRefreshMobile.addEventListener('click', showRefreshSwal);
-    }
-
-    document.getElementById('btn-kill-idle')?.addEventListener('click', async () => {
-      Swal.fire({
-        title: 'Matar Conexões Ociosas?',
-        text: 'Tem certeza que deseja matar TODAS as conexões ociosas? Esta ação derrubará processos dormindo e não pode ser desfeita!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#dc3545',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Sim, matar!'
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          try {
-            const res = await fetch(`${BASE_URL}/api/security/kill-idle`, { method: 'POST', credentials: 'include' });
-            const data = await res.json();
-            if(data.success) Swal.fire('Sucesso!', data.message, 'success');
-            else Swal.fire('Erro', data.message, 'error');
-          } catch(e) { Swal.fire('Erro', 'Erro de conexão.', 'error'); }
-        }
-      });
-    });
-
-    document.getElementById('btn-scroll-roles')?.addEventListener('click', () => {
-      document.getElementById('sec-roles-body')?.scrollIntoView({ behavior: 'smooth' });
-    });
-    
-    document.getElementById('btn-scroll-sessions')?.addEventListener('click', () => {
-      document.getElementById('sec-sessions-body')?.scrollIntoView({ behavior: 'smooth' });
-    });
-
-    document.getElementById('btn-export-sessions')?.addEventListener('click', () => {
-      if(!this.lastSessions || this.lastSessions.length === 0) {
-        Swal.fire('Aviso', 'Não há sessões ativas para exportar.', 'info');
-        return;
-      }
-      let csv = 'PID,Usuário,IP Origem,Aplicação,Status,Início,Query\\n';
-      this.lastSessions.forEach(s => {
-        const q = (s.query || '').replace(/"/g, '""');
-        csv += `"${s.pid}","${s.usename || ''}","${s.client_addr || ''}","${s.application_name || ''}","${s.state || ''}","${s.backend_start || ''}","${q}"\\n`;
-      });
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `sessoes_ativas_${new Date().getTime()}.csv`;
-      a.click();
-      window.URL.revokeObjectURL(url);
-    });
-
-    document.getElementById('btn-export-roles')?.addEventListener('click', () => {
-      if(!this.lastRoles || this.lastRoles.length === 0) {
-        Swal.fire('Aviso', 'Não há roles (usuários) para exportar.', 'info');
-        return;
-      }
-      let csv = 'Nome do Usuário,Superuser,Criar Banco,Criar Role,Login Permitido,Limite de Conexões\\n';
-      this.lastRoles.forEach(r => {
-        csv += `"${r.rolname}","${r.rolsuper ? 'Sim' : 'Não'}","${r.rolcreatedb ? 'Sim' : 'Não'}","${r.rolcreaterole ? 'Sim' : 'Não'}","${r.rolcanlogin ? 'Sim' : 'Não'}","${r.rolconnlimit}"\\n`;
-      });
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `auditoria_roles_${new Date().getTime()}.csv`;
-      a.click();
-      window.URL.revokeObjectURL(url);
-    });
+    document.getElementById('btn-refresh-sessions')?.addEventListener('click', this.reconnect);
+    document.getElementById('btn-kill-idle')?.addEventListener('click', this.killIdleConnections);
+    document.getElementById('btn-export-sessions')?.addEventListener('click', this.exportSessions);
+    document.getElementById('btn-export-roles')?.addEventListener('click', this.exportRoles);
   }
 
   connectSocket() {
-    this.socket = io(BASE_URL, { withCredentials: true, transports: ['polling'] });
+    if (this.socket) {
+      this.socket.removeAllListeners();
+      this.socket.disconnect();
+    }
+
+    this.socket = io(BASE_URL, {
+      withCredentials: true,
+      transports: ['polling']
+    });
 
     this.socket.on('connect', () => {
-      console.log('Segurança connected to backend WebSockets');
+      const button = document.getElementById('btn-refresh-sessions');
+      if (button) {
+        button.disabled = false;
+        button.textContent = 'Atualizar sessões';
+      }
+    });
+
+    this.socket.on('connect_error', () => {
+      this.renderSocketError();
     });
 
     this.socket.on('security_update', (data) => {
-      this.lastSessions = data.sessions || [];
-      this.lastRoles = data.roles || [];
-      // Top Cards
-      const rolesText = document.getElementById('sec-roles-text');
-      if (rolesText) rolesText.textContent = data.roles_count || '--';
-
-      // Calcula as ativas vs ociosas
-      // Usando os dados reais absolutos do backend (não mais limitados aos 15 da tabela)
-      const maxConn = data.max_connections || 100;
-      const reaisAtivas = data.real_active !== undefined ? data.real_active : 0;
-      const reaisOciosas = data.real_idle !== undefined ? data.real_idle : 0;
-      const reaisOciosasTx = data.real_idle_in_tx !== undefined ? data.real_idle_in_tx : 0;
-
-      const sessionsText = document.getElementById('sec-sessions-text');
-      if (sessionsText) {
-        sessionsText.innerHTML = `${reaisAtivas} <span class="fs-6 text-muted fw-normal">/ ${maxConn} max</span>`;
-      }
-      
-      const progresso = document.getElementById('sec-sessions-progress');
-      if (progresso) {
-        let pct = (reaisAtivas / maxConn) * 100;
-        if (pct > 100) pct = 100;
-        progresso.style.width = `${pct}%`;
-        if (pct > 80) progresso.classList.replace('bg-success', 'bg-danger');
-        else progresso.classList.replace('bg-danger', 'bg-success');
-      }
-
-      const idleText = document.getElementById('sec-idle-text');
-      if (idleText) idleText.textContent = reaisOciosas;
-
-      const txBadge = document.getElementById('sec-idle-tx-badge');
-      if (txBadge) {
-        if (reaisOciosasTx > 0) {
-          txBadge.textContent = `${reaisOciosasTx} em transação!`;
-          txBadge.classList.remove('d-none');
-        } else {
-          txBadge.classList.add('d-none');
-        }
-      }
-
-      // Tabela de Sessões Ativas
-      const sessionsBody = document.getElementById('sec-sessions-body');
-      if (sessionsBody && data.sessions) {
-        sessionsBody.innerHTML = '';
-        if (data.sessions.length === 0) {
-          sessionsBody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">Nenhuma sessão ativa encontrada.</td></tr>`;
-        } else {
-          data.sessions.forEach(s => {
-            const tr = document.createElement('tr');
-            
-            // Formatando o badge de status
-            let statusBadge = `<span class="badge bg-secondary">${s.state}</span>`;
-            if (s.state === 'active') statusBadge = `<span class="badge bg-success">Ativa</span>`;
-            else if (s.state === 'idle') statusBadge = `<span class="badge bg-warning text-dark">Ociosa</span>`;
-            else if (s.state === 'idle in transaction') statusBadge = `<span class="badge bg-danger">Ociosa em Transação</span>`;
-
-            // Formatando a data
-            let dataInicio = 'Desconhecido';
-            if (s.backend_start) {
-              const d = new Date(s.backend_start);
-              dataInicio = d.toLocaleString('pt-BR');
-            }
-
-            tr.innerHTML = `
-              <td class="px-3 text-muted small">${s.pid}</td>
-              <td class="fw-bold">${s.usename || 'N/A'}</td>
-              <td class="text-muted">${s.client_addr || 'Local/Interno'}</td>
-              <td class="small">${s.application_name || 'Desconhecido'}</td>
-              <td>${statusBadge}</td>
-              <td class="small text-muted">${dataInicio}</td>
-              <td class="w-25">
-                <div class="p-1 bg-light rounded text-truncate user-select-all" style="font-family: monospace; font-size: 0.75rem; max-width: 250px;" title="${s.query || ''}">
-                  ${s.query || 'Nenhuma query rodando'}
-                </div>
-              </td>
-            `;
-            sessionsBody.appendChild(tr);
-          });
-        }
-      }
-
-      // Tabela de Roles (Auditoria)
-      const rolesBody = document.getElementById('sec-roles-body');
-      if (rolesBody && data.roles) {
-        rolesBody.innerHTML = '';
-        if (data.roles.length === 0) {
-          rolesBody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">Nenhum usuário encontrado.</td></tr>`;
-        } else {
-          data.roles.forEach(r => {
-            const tr = document.createElement('tr');
-            
-            const checkIcon = `<span class="text-success fw-bold">✓ Sim</span>`;
-            const crossIcon = `<span class="text-muted">✗ Não</span>`;
-
-            tr.innerHTML = `
-              <td class="px-3 fw-bold text-primary">${r.rolname}</td>
-              <td class="text-center">${r.rolsuper ? checkIcon : crossIcon}</td>
-              <td class="text-center">${r.rolcreatedb ? checkIcon : crossIcon}</td>
-              <td class="text-center">${r.rolcreaterole ? checkIcon : crossIcon}</td>
-              <td class="text-center">${r.rolcanlogin ? checkIcon : crossIcon}</td>
-              <td class="text-center text-muted">${r.rolconnlimit === -1 ? 'Ilimitado' : r.rolconnlimit}</td>
-            `;
-            rolesBody.appendChild(tr);
-          });
-        }
-      }
+      this.sessions = Array.isArray(data.sessions) ? data.sessions : [];
+      this.roles = Array.isArray(data.roles) ? data.roles : [];
+      this.updateSummary(data);
+      this.renderSessions(this.sessions);
+      this.renderRoles(this.roles);
     });
   }
 
-  destroy() {
-    if (this.socket) {
-      this.socket.disconnect();
+  updateSummary(data) {
+    this.setText('sec-roles-text', data.roles_count ?? this.roles.length);
+    this.setText('sec-sessions-text', data.real_active ?? 0);
+    this.setText('sec-idle-text', data.real_idle ?? 0);
+
+    const sessionDescription = document.getElementById('sec-sessions-desc');
+    if (sessionDescription) {
+      sessionDescription.textContent = `Limite: ${data.max_connections ?? 'não informado'}`;
     }
+
+    const idleInTransaction = Number(data.real_idle_in_tx) || 0;
+    const idleDescription = document.getElementById('sec-idle-desc');
+    if (idleDescription) {
+      idleDescription.textContent = idleInTransaction > 0
+        ? `${idleInTransaction} em transação`
+        : 'Conexões sem atividade';
+    }
+  }
+
+  setText(id, value) {
+    const element = document.getElementById(id);
+    if (element) element.textContent = String(value);
+  }
+
+  renderSessions(sessions) {
+    const tbody = document.getElementById('sec-sessions-body');
+    if (!tbody) return;
+    tbody.replaceChildren();
+
+    if (!sessions.length) {
+      this.appendEmptyRow(tbody, 7, 'Nenhuma sessão foi informada pelo banco.');
+      return;
+    }
+
+    sessions.forEach((session) => {
+      const row = document.createElement('tr');
+      row.append(
+        this.createCell(session.pid, 'PID'),
+        this.createCell(session.usename || session.user, 'Usuário', 'fw-semibold'),
+        this.createCell(session.client_addr || 'Local', 'IP de origem'),
+        this.createCell(session.application_name || 'Não informada', 'Aplicação'),
+        this.createCell(this.translateState(session.state), 'Status'),
+        this.createCell(session.backend_start || 'Não informado', 'Início'),
+        this.createCell(session.query || 'Nenhuma consulta em execução', 'Consulta atual')
+      );
+      tbody.appendChild(row);
+    });
+  }
+
+  renderRoles(roles) {
+    const tbody = document.getElementById('sec-roles-body');
+    if (!tbody) return;
+    tbody.replaceChildren();
+
+    if (!roles.length) {
+      this.appendEmptyRow(tbody, 6, 'Nenhum usuário foi informado pelo banco.');
+      return;
+    }
+
+    roles.forEach((role) => {
+      const row = document.createElement('tr');
+      row.append(
+        this.createCell(role.rolname, 'Usuário', 'fw-semibold'),
+        this.createCell(this.permissionText(role.rolsuper), 'Superusuário', 'text-center'),
+        this.createCell(this.permissionText(role.rolcreatedb), 'Criar banco', 'text-center'),
+        this.createCell(this.permissionText(role.rolcreaterole), 'Criar função', 'text-center'),
+        this.createCell(this.permissionText(role.rolcanlogin), 'Login', 'text-center'),
+        this.createCell(role.rolconnlimit === -1 ? 'Sem limite' : role.rolconnlimit, 'Limite de conexões', 'text-center')
+      );
+      tbody.appendChild(row);
+    });
+  }
+
+  permissionText(allowed) {
+    return allowed ? 'Permitido' : 'Não permitido';
+  }
+
+  translateState(state) {
+    const normalized = String(state || '').toLowerCase();
+    const labels = {
+      active: 'Ativa',
+      idle: 'Ociosa',
+      'idle in transaction': 'Ociosa em transação',
+      sleep: 'Ociosa'
+    };
+    return labels[normalized] || state || 'Não informado';
+  }
+
+  createCell(value, label, className = '') {
+    const cell = document.createElement('td');
+    cell.dataset.label = label;
+    cell.className = className;
+    cell.textContent = value ?? '';
+    return cell;
+  }
+
+  appendEmptyRow(tbody, colspan, message) {
+    const row = document.createElement('tr');
+    const cell = document.createElement('td');
+    cell.colSpan = colspan;
+    cell.className = 'empty-state';
+    cell.textContent = message;
+    row.appendChild(cell);
+    tbody.appendChild(row);
+  }
+
+  renderSocketError() {
+    const sessionsBody = document.getElementById('sec-sessions-body');
+    const rolesBody = document.getElementById('sec-roles-body');
+    if (sessionsBody) {
+      sessionsBody.replaceChildren();
+      this.appendEmptyRow(sessionsBody, 7, 'Não foi possível atualizar as sessões agora.');
+    }
+    if (rolesBody) {
+      rolesBody.replaceChildren();
+      this.appendEmptyRow(rolesBody, 6, 'A auditoria será atualizada na próxima tentativa.');
+    }
+  }
+
+  reconnect = () => {
+    const button = document.getElementById('btn-refresh-sessions');
+    if (button) {
+      button.disabled = true;
+      button.textContent = 'Reconectando';
+    }
+    this.connectSocket();
+  };
+
+  killIdleConnections = async () => {
+    const result = await Swal.fire({
+      title: 'Encerrar sessões ociosas?',
+      text: 'O banco encerrará conexões ociosas do usuário atual. Transações ociosas também podem ser finalizadas.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Encerrar sessões',
+      cancelButtonText: 'Cancelar'
+    });
+    if (!result.isConfirmed) return;
+
+    const button = document.getElementById('btn-kill-idle');
+    button.disabled = true;
+
+    try {
+      const response = await fetch(`${BASE_URL}/api/security/kill-idle`, {
+        method: 'POST',
+        credentials: 'include'
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'As sessões não foram encerradas.');
+      }
+
+      await Swal.fire({
+        title: 'Operação concluída',
+        text: data.message,
+        icon: 'success',
+        confirmButtonColor: '#dc3545'
+      });
+    } catch (error) {
+      await Swal.fire({
+        title: 'Operação não concluída',
+        text: error instanceof TypeError ? 'O servidor está indisponível.' : error.message,
+        icon: 'error',
+        confirmButtonColor: '#dc3545'
+      });
+    } finally {
+      button.disabled = false;
+    }
+  };
+
+  exportSessions = async () => {
+    if (!this.sessions.length) {
+      await this.showEmptyExportMessage('sessões');
+      return;
+    }
+
+    const rows = ['PID;Usuário;IP de origem;Aplicação;Status;Início;Consulta'];
+    this.sessions.forEach((session) => {
+      rows.push([
+        session.pid,
+        session.usename || session.user,
+        session.client_addr || 'Local',
+        session.application_name || '',
+        session.state || '',
+        session.backend_start || '',
+        session.query || ''
+      ].map(this.csvValue).join(';'));
+    });
+
+    this.downloadCsv(rows, `cerberus-sessoes-${Date.now()}.csv`);
+  };
+
+  exportRoles = async () => {
+    if (!this.roles.length) {
+      await this.showEmptyExportMessage('usuários');
+      return;
+    }
+
+    const rows = ['Usuário;Superusuário;Criar banco;Criar função;Login;Limite de conexões'];
+    this.roles.forEach((role) => {
+      rows.push([
+        role.rolname,
+        this.permissionText(role.rolsuper),
+        this.permissionText(role.rolcreatedb),
+        this.permissionText(role.rolcreaterole),
+        this.permissionText(role.rolcanlogin),
+        role.rolconnlimit === -1 ? 'Sem limite' : role.rolconnlimit
+      ].map(this.csvValue).join(';'));
+    });
+
+    this.downloadCsv(rows, `cerberus-permissoes-${Date.now()}.csv`);
+  };
+
+  showEmptyExportMessage(subject) {
+    return Swal.fire({
+      title: 'Sem dados para exportar',
+      text: `O banco ainda não informou ${subject}.`,
+      icon: 'info',
+      confirmButtonColor: '#dc3545'
+    });
+  }
+
+  csvValue(value) {
+    return `"${String(value ?? '').replace(/"/g, '""')}"`;
+  }
+
+  downloadCsv(rows, filename) {
+    const blob = new Blob(['\ufeff', rows.join('\n')], {
+      type: 'text/csv;charset=utf-8'
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  destroy() {
+    this.socket?.removeAllListeners();
+    this.socket?.disconnect();
   }
 }

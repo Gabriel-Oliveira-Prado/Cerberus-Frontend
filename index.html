@@ -1,133 +1,136 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cerberus: monitoramento operacional, auditoria e backups de bancos PostgreSQL e MySQL.">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="color-scheme" content="light dark">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Cerberus | Monitoramento de bancos de dados">
+    <meta property="og:description" content="Métricas, sessões, estrutura e backups do banco em uma interface operacional.">
+    <meta property="og:image" content="/logo-nova-cerberus.png">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Cerberus | Monitoramento de bancos de dados">
+    <meta name="twitter:description" content="Métricas, sessões, estrutura e backups do banco em uma interface operacional.">
+    <meta name="twitter:image" content="/logo-nova-cerberus.png">
+    <title>Cerberus</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="manifest" href="/site.webmanifest">
+    <script>
+      (() => {
+        const darkMode = document.cookie
+          .split(';')
+          .map((cookie) => cookie.trim())
+          .some((cookie) => cookie === 'modo-escuro=true');
+        document.documentElement.setAttribute('data-bs-theme', darkMode ? 'dark' : 'light');
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#app-content">Ir para o conteúdo principal</a>
+    <div id="global-loader" class="global-loader" role="status" aria-live="polite">
+      <img src="/logo-nova-cerberus.png" alt="" class="global-loader-mark">
+      <div class="global-loader-texto">Carregando Cerberus</div>
+    </div>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cerberus</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-  <script>
-    (function () {
-      const cookies = document.cookie.split(';');
-      let theme = 'light';
-      for (let i = 0; i < cookies.length; i++) {
-        const c = cookies[i].trim();
-        if (c.startsWith('modo-escuro=')) {
-          if (c.substring('modo-escuro='.length) === 'true') {
-            theme = 'dark';
-          }
-          break;
-        }
-      }
-      document.documentElement.setAttribute('data-bs-theme', theme);
-    })();
-  </script>
-</head>
-
-<body>
-  <!-- Tela de Carregamento Global -->
-  <div id="global-loader" class="global-loader">
-    <div class="global-loader-spinner"></div>
-    <div class="global-loader-texto">Cerberus</div>
-  </div>
-
-  <div class="painel-app">
-    <aside class="cerberus-barra-lateral">
-      <header class="cerberus-painel-lateral cerberus-marca d-flex align-items-center gap-2">
-        <img src="/logo-nova-cerberus.png" alt="Cerberus Logo" class="cerberus-hexagono-marca"
-          style="width: 80px; height: 80px; flex-shrink: 0;">
-        <h1 class="cerberus-titulo-marca" style="margin: 0;">Cerberus</h1>
-      </header>
-      <link rel="shortcut icon" href="/Cerberus-Frontend/public/" type="image/x-icon">
-      <section class="cerberus-painel-lateral cerberus-nav-painel">
-        <div class="cerberus-nav-lista">
-          <a href="/conectar" class="cerberus-nav-item d-none" id="nav-conectar" data-route>
-            <span class="icone-nav" style="margin-bottom: 0.25rem;">
-              <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
-                stroke-linecap="round" stroke-linejoin="round">
-                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
-                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
-              </svg>
-            </span>
-            <span class="cerberus-nav-rotulo">Conectar Banco</span>
-            <span class="cerberus-nav-descricao">Estabelecer conexão</span>
-          </a>
-          <a href="/dashboard" class="cerberus-nav-item nav-protegida d-none" data-route>
-            <span id="icone-nav-dashboard"></span>
-            <span class="cerberus-nav-rotulo">Dashboard</span>
-            <span class="cerberus-nav-descricao">Visão geral operacional</span>
-          </a>
-          <a href="/backups" class="cerberus-nav-item nav-protegida d-none" data-route>
-            <span id="icone-nav-backups"></span>
-            <span class="cerberus-nav-rotulo">Backups</span>
-            <span class="cerberus-nav-descricao">Jobs e integridade</span>
-          </a>
-          <a href="/seguranca" class="cerberus-nav-item nav-protegida d-none" data-route>
-            <span id="icone-nav-seguranca"></span>
-            <span class="cerberus-nav-rotulo">Segurança</span>
-            <span class="cerberus-nav-descricao">Sessões e auditoria</span>
-          </a>
-          <a href="/estrutura" class="cerberus-nav-item nav-protegida d-none" data-route>
-            <span id="icone-nav-estrutura"></span>
-            <span class="cerberus-nav-rotulo">Estrutura</span>
-            <span class="cerberus-nav-descricao">Diagrama ER do banco</span>
-          </a>
-        </div>
-      </section>
-      <section class="cerberus-painel-lateral cerberus-conta-painel">
-        <p class="cerberus-rotulo-secao">Conta Operacional</p>
-        <div class="cerberus-conta-linha mb-3" style="display: flex; align-items: center; gap: 10px; overflow: hidden;">
-          <div class="cerberus-avatar" id="cerberus-usuario-avatar" style="flex-shrink: 0;">--</div>
-          <div style="min-width: 0; flex-grow: 1;">
-            <div class="cerberus-conta-nome" id="cerberus-usuario-nome"
-              style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="Nome do Usuário">
-              Carregando...</div>
-            <div class="cerberus-conta-cargo" id="cerberus-usuario-email"
-              style="text-transform: none; font-size: 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
-              title="Email do Usuário">carregando...</div>
-          </div>
-        </div>
-        <a href="/configuracoes" class="cerberus-conta-botao text-decoration-none" data-route>
-          <span id="icone-nav-config"></span>
-          <span>Configurações</span>
-        </a>
-      </section>
-    </aside>
-    <main class="painel-conteudo-principal">
-      <div class="area-conteudo">
-        <header class="d-flex justify-content-between align-items-center mb-5">
-          <div class="d-flex align-items-center gap-3">
-            <button id="btn-alternar-barra" class="btn-alternar-menu">
-              <span id="icone-menu-toggle"></span>
-            </button>
-            <h2 id="titulo-pagina" class="h3 m-0 fonte-titulo">Painel</h2>
-          </div>
-          <div id="badge-sistema-online"
-            class="badge bg-white text-dark border p-2 px-3 rounded-pill fw-normal shadow-sm d-none">
-            <span class="text-success me-1">●</span> Sistema Online
+    <div class="painel-app">
+      <aside class="cerberus-barra-lateral" id="barra-lateral" aria-label="Navegação principal">
+        <header class="cerberus-marca">
+          <img src="/logo-nova-cerberus.png" alt="Símbolo do Cerberus" class="cerberus-hexagono-marca">
+          <div>
+            <h1 class="cerberus-titulo-marca">Cerberus</h1>
+            <p class="cerberus-marca-descricao">Confiabilidade de dados</p>
           </div>
         </header>
-        <div id="app-content"></div>
-      </div>
-      <footer class="rodape">
-        <div class="container-fluid">
-          &copy; 2026 Cerberus Enterprise. Todos os direitos reservados.
-        </div>
-      </footer>
-    </main>
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <script>
-    if (typeof mermaid !== 'undefined') {
-      mermaid.initialize({ startOnLoad: false, theme: 'dark' });
-    }
-  </script>
-  <script type="module" src="/src/main.js"></script>
-</body>
 
+        <nav class="cerberus-nav-painel" aria-label="Módulos">
+          <div class="cerberus-nav-lista">
+            <a href="/conectar" class="cerberus-nav-item d-none" id="nav-conectar" data-route>
+              <i class="bi bi-plug cerberus-nav-icone" aria-hidden="true"></i>
+              <span class="cerberus-nav-rotulo">Conectar banco</span>
+              <span class="cerberus-nav-descricao">Credenciais e acesso</span>
+            </a>
+            <a href="/dashboard" class="cerberus-nav-item nav-protegida d-none" data-route>
+              <i class="bi bi-speedometer2 cerberus-nav-icone" aria-hidden="true"></i>
+              <span class="cerberus-nav-rotulo">Visão geral</span>
+              <span class="cerberus-nav-descricao">Métricas e atividade</span>
+            </a>
+            <a href="/estrutura" class="cerberus-nav-item nav-protegida d-none" data-route>
+              <i class="bi bi-diagram-3 cerberus-nav-icone" aria-hidden="true"></i>
+              <span class="cerberus-nav-rotulo">Estrutura</span>
+              <span class="cerberus-nav-descricao">Catálogo e mapa relacional</span>
+            </a>
+            <a href="/seguranca" class="cerberus-nav-item nav-protegida d-none" data-route>
+              <i class="bi bi-shield-check cerberus-nav-icone" aria-hidden="true"></i>
+              <span class="cerberus-nav-rotulo">Segurança</span>
+              <span class="cerberus-nav-descricao">Sessões e permissões</span>
+            </a>
+            <a href="/backups" class="cerberus-nav-item nav-protegida d-none" data-route>
+              <i class="bi bi-database-down cerberus-nav-icone" aria-hidden="true"></i>
+              <span class="cerberus-nav-rotulo">Backups</span>
+              <span class="cerberus-nav-descricao">Arquivos e integridade</span>
+            </a>
+          </div>
+        </nav>
+
+        <section class="cerberus-conta-painel" aria-label="Conta">
+          <div class="cerberus-conta-linha">
+            <div class="cerberus-avatar" id="cerberus-usuario-avatar">
+              <img id="cerberus-usuario-foto" alt="" hidden>
+              <span id="cerberus-usuario-iniciais" aria-hidden="true">--</span>
+            </div>
+            <div class="cerberus-conta-identidade">
+              <div class="cerberus-conta-nome" id="cerberus-usuario-nome">Carregando</div>
+              <div class="cerberus-conta-cargo" id="cerberus-usuario-email">carregando</div>
+            </div>
+            <div class="dropdown">
+              <button class="action-menu-button action-menu-button-dark" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir ações da conta"><i class="bi bi-three-dots-vertical" aria-hidden="true"></i></button>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="/configuracoes" data-route><i class="bi bi-person-gear" aria-hidden="true"></i> Editar perfil</a></li>
+                <li><button class="dropdown-item text-danger" id="btn-sidebar-logout" type="button"><i class="bi bi-box-arrow-right" aria-hidden="true"></i> Sair</button></li>
+              </ul>
+            </div>
+          </div>
+          <a href="/configuracoes" class="cerberus-conta-botao" data-route><i class="bi bi-gear" aria-hidden="true"></i><span>Configurações</span></a>
+        </section>
+      </aside>
+
+      <main class="painel-conteudo-principal">
+        <div class="area-conteudo">
+          <header class="cabecalho-pagina">
+            <div class="cabecalho-pagina-titulo">
+              <button id="btn-alternar-barra" class="btn-alternar-menu" type="button" aria-controls="barra-lateral" aria-expanded="false">
+                <span class="visually-hidden">Abrir navegação</span>
+                <i class="bi bi-list" aria-hidden="true"></i>
+              </button>
+              <div>
+                <nav class="cerberus-breadcrumb" aria-label="Navegação estrutural">
+                  <ol>
+                    <li><a href="/dashboard" data-route><i class="bi bi-house" aria-hidden="true"></i><span>Painel</span></a></li>
+                    <li id="breadcrumb-database" hidden></li>
+                    <li id="breadcrumb-current" aria-current="page">Visão geral</li>
+                  </ol>
+                </nav>
+                <h2 id="titulo-pagina">Painel</h2>
+              </div>
+            </div>
+          </header>
+          <div id="app-content" tabindex="-1"></div>
+        </div>
+
+        <footer class="rodape">
+          <span>© 2026 Cerberus</span>
+          <nav aria-label="Informações legais">
+            <a href="/termos" data-route>Termos de uso</a>
+            <a href="/privacidade" data-route>Privacidade</a>
+          </nav>
+        </footer>
+      </main>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>

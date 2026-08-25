@@ -1,49 +1,42 @@
-<div class="container-fluid pt-4">
-  <div class="row justify-content-center fade-in">
-    <div class="col-12 col-md-10 col-lg-8">
-      <div class="card shadow-sm border-0 text-center py-5" style="border-radius: 12px;">
-        <span class="icone-banco text-danger mb-3 d-block" style="font-size: 3rem;">
-          <svg viewBox="0 0 24 24" width="64" height="64" stroke="currentColor" stroke-width="2" fill="none"
-            stroke-linecap="round" stroke-linejoin="round">
-            <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
-            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
-          </svg>
-        </span>
-        <h2 class="h4 mb-3 fonte-titulo">Conectar ao Banco de Dados</h2>
-        <p class="text-muted mb-4">Para acessar os módulos de Dashboard, Backups e Servidores, você precisa estabelecer
-          uma conexão com o banco de dados monitorado.</p>
-        <form id="form-conectar-banco" class="text-start px-md-4">
-          <div class="mb-3">
-            <label class="form-label small fw-semibold text-muted">Host</label>
-            <input type="text" id="db-host" class="form-control" placeholder="localhost" required>
-          </div>
-          <div class="row">
-            <div class="col-md-8 mb-3">
-              <label class="form-label small fw-semibold text-muted">Banco de Dados (Nome)</label>
-              <input type="text" id="db-name" class="form-control" placeholder="cerberus_db" required>
-            </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label small fw-semibold text-muted">Porta</label>
-              <input type="number" id="db-port" class="form-control" placeholder="5432" required>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label small fw-semibold text-muted">Usuário</label>
-              <input type="text" id="db-user" class="form-control" placeholder="postgres" required>
-            </div>
-            <div class="col-md-6 mb-4">
-              <label class="form-label small fw-semibold text-muted">Senha</label>
-              <input type="password" id="db-pass" class="form-control" placeholder="••••••••">
-            </div>
-          </div>
-          <button type="submit" class="btn btn-primary w-100" id="btn-conectar">
-            Testar e Conectar
-          </button>
-        </form>
-      </div>
+<div class="cartao">
+  <div class="section-heading">
+    <div>
+      <h3>Conectar banco de dados</h3>
+      <p>As credenciais serão testadas antes de serem salvas na instalação do Cerberus.</p>
     </div>
   </div>
+
+  <form id="form-conectar-banco" class="row g-3" novalidate>
+    <div class="col-12 col-md-4">
+      <label class="form-label" for="db-engine">Tecnologia</label>
+      <select id="db-engine" class="form-select" required>
+        <option value="postgresql" selected>PostgreSQL</option>
+        <option value="mysql">MySQL</option>
+      </select>
+    </div>
+    <div class="col-12 col-md-5">
+      <label class="form-label" for="db-host">Host</label>
+      <input type="text" id="db-host" class="form-control" placeholder="localhost" maxlength="255" autocomplete="off" required>
+    </div>
+    <div class="col-12 col-md-3">
+      <label class="form-label" for="db-port">Porta</label>
+      <input type="number" id="db-port" class="form-control" value="5432" min="1" max="65535" inputmode="numeric" required>
+    </div>
+    <div class="col-12 col-md-6">
+      <label class="form-label" for="db-name">Nome do banco</label>
+      <input type="text" id="db-name" class="form-control" placeholder="database" maxlength="100" autocomplete="off" required>
+    </div>
+    <div class="col-12 col-md-6">
+      <label class="form-label" for="db-user">Usuário</label>
+      <input type="text" id="db-user" class="form-control" placeholder="postgres" maxlength="100" autocomplete="username" required>
+    </div>
+    <div class="col-12">
+      <label class="form-label" for="db-pass">Senha do banco</label>
+      <input type="password" id="db-pass" class="form-control" placeholder="Informe a senha, se houver" maxlength="255" autocomplete="current-password">
+      <div class="form-text">O Cerberus precisa dessa credencial para consultar métricas e executar as operações solicitadas.</div>
+    </div>
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary" id="btn-conectar">Testar e conectar</button>
+    </div>
+  </form>
 </div>
-<script src="../../src/js/conectar.js" defer></script>

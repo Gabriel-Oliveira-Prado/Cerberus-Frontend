@@ -1,74 +1,84 @@
-import { Router } from './Router.js';
 import Swal from 'sweetalert2';
 import { BASE_URL } from '../config/api.js';
 
 export default class ConectarController {
-  // Inicializa o controlador e configura referências do DOM e eventos
   async init() {
     this.form = document.getElementById('form-conectar-banco');
-    this.btn = document.getElementById('btn-conectar');
+    this.button = document.getElementById('btn-conectar');
+    this.engineSelect = document.getElementById('db-engine');
 
-    if (this.form) {
-      this.form.addEventListener('submit', this.handleConnect.bind(this));
-    }
+    this.form?.addEventListener('submit', this.handleConnect);
+    this.engineSelect?.addEventListener('change', this.handleEngineChange);
   }
 
-  // Processa a submissão do formulário de conexão com o banco de dados
-  async handleConnect(e) {
-    e.preventDefault();
+  handleEngineChange = (event) => {
+    const port = document.getElementById('db-port');
+    if (port) port.value = event.target.value === 'mysql' ? '3306' : '5432';
+  };
 
-    // Feedback visual de carregamento
-    this.btn.disabled = true;
-    this.btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Conectando...';
+  handleConnect = async (event) => {
+    event.preventDefault();
+    if (!this.form?.reportValidity()) return;
 
-    // Coleta os dados informados no formulário
-    const host = document.getElementById('db-host').value;
-    const dbname = document.getElementById('db-name').value;
-    const port = document.getElementById('db-port').value;
-    const dbuser = document.getElementById('db-user').value;
-    const dbpassword = document.getElementById('db-pass').value;
+    const port = Number(document.getElementById('db-port').value);
+    if (!Number.isInteger(port) || port < 1 || port > 65535) {
+      await Swal.fire({
+        title: 'Porta inválida',
+        text: 'Informe um número entre 1 e 65535.',
+        icon: 'warning',
+        confirmButtonColor: '#dc3545'
+      });
+      return;
+    }
 
-    const dadosFormulario = {
-      host: host,
-      port: port,
-      dbname: dbname,
-      dbuser: dbuser,
-      dbpassword: dbpassword
+    const payload = {
+      engine: this.engineSelect.value,
+      host: document.getElementById('db-host').value.trim(),
+      port,
+      dbname: document.getElementById('db-name').value.trim(),
+      dbuser: document.getElementById('db-user').value.trim(),
+      dbpassword: document.getElementById('db-pass').value
     };
 
+    const originalText = this.button.textContent;
+    this.button.disabled = true;
+    this.button.textContent = 'Testando conexão';
+
     try {
-      // Faz requisição à API para testar/estabelecer a conexão
       const response = await fetch(`${BASE_URL}/api/conectar`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dadosFormulario)
+        body: JSON.stringify(payload)
       });
-
       const data = await response.json();
 
-      if (response.ok && data.success) {
-        // Salva estado de conexão no sessionStorage
-        sessionStorage.setItem('db_connected', 'true');
-        sessionStorage.setItem('db_name', dbname);
-
-        // Redireciona para o dashboard
-        const router = new Router();
-        router.navigate('/dashboard');
-      } else {
-        throw new Error(data.message || 'Falha de autenticação ou host não encontrado.');
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'O banco recusou a conexão.');
       }
+
+      sessionStorage.setItem('db_connected', 'true');
+      sessionStorage.setItem('db_name', payload.dbname);
+      window.history.pushState({}, '', '/dashboard');
+      window.dispatchEvent(new PopStateEvent('popstate'));
     } catch (error) {
-      Swal.fire({
-        title: 'Falha na Conexão',
-        text: error.message || 'Falha ao conectar no banco de dados',
+      await Swal.fire({
+        title: error instanceof TypeError ? 'Servidor indisponível' : 'Conexão não estabelecida',
+        text: error instanceof TypeError
+          ? 'Não foi possível acessar a API do Cerberus.'
+          : error.message,
         icon: 'error',
         confirmButtonColor: '#dc3545'
       });
-      this.btn.disabled = false;
-      this.btn.innerHTML = 'Testar e Conectar';
+    } finally {
+      this.button.disabled = false;
+      this.button.textContent = originalText;
     }
+  };
+
+  destroy() {
+    this.form?.removeEventListener('submit', this.handleConnect);
+    this.engineSelect?.removeEventListener('change', this.handleEngineChange);
   }
 }
-
 

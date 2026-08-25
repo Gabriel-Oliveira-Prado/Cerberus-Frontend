@@ -1,174 +1,82 @@
-<div class="container-fluid pt-4">
-  <!-- Status de Integridade -->
-  <div class="cartao mb-4 fade-in">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h3 class="h5 m-0">Status de Integridade</h3>
-      <div class="d-flex align-items-center gap-2">
-        <button
-          id="btn-verificar"
-          class="btn btn-primary btn-sm px-3 d-none d-sm-block"
-        >
-          Executar Verificação
-        </button>
-        <div class="dropdown">
-          <div
-            class="menu-opcoes-cartao-relativo"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            style="cursor: pointer"
-          >
-            <span class="icone-pontos"></span>
-          </div>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-            <li>
-              <button
-                id="menu-exportar-log"
-                class="dropdown-item small"
-                type="button"
-              >
-                <i class="bi bi-download me-2"></i>Exportar Log
-              </button>
-            </li>
-            <li><hr class="dropdown-divider my-1" /></li>
-            <li>
-              <button
-                id="menu-detalhes-integridade"
-                class="dropdown-item small"
-                type="button"
-              >
-                <i class="bi bi-info-circle me-2"></i>Ver Detalhes
-              </button>
-            </li>
-          </ul>
-        </div>
-      </div>
+<section class="cartao mb-3">
+  <div class="section-heading">
+    <div>
+      <h3>Integridade do banco</h3>
+      <p>A verificação consulta a estrutura real do banco e calcula uma assinatura do esquema.</p>
     </div>
-    <button
-      id="btn-verificar-mobile"
-      class="btn btn-primary btn-sm w-100 mb-4 d-block d-sm-none"
-    >
-      Executar Verificação
-    </button>
-    <div class="table-responsive">
-      <table class="table table-hover align-middle">
-        <thead class="bg-light">
-          <tr class="text-muted small">
-            <th class="border-0">Alvo</th>
-            <th class="border-0">Status</th>
-            <th class="border-0">Última Checagem</th>
-            <th class="border-0">Checksum</th>
-            <th class="border-0 text-end">Ações</th>
-          </tr>
-        </thead>
-        <tbody id="integrity-tbody">
-          <tr>
-            <td colspan="5" class="text-center text-muted py-4">
-              Clique em "Executar Verificação" para checar a integridade do
-              banco.
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="dropdown">
+      <button class="action-menu-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir ações de integridade"><i class="bi bi-three-dots-vertical" aria-hidden="true"></i></button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><button id="btn-verificar" class="dropdown-item" type="button">Executar verificação</button></li>
+      </ul>
     </div>
   </div>
+  <div class="table-responsive table-shell">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>Alvo</th>
+          <th>Status</th>
+          <th>Última checagem</th>
+          <th>Assinatura do esquema</th>
+          <th class="text-end">Ação</th>
+        </tr>
+      </thead>
+      <tbody id="integrity-tbody">
+        <tr><td colspan="5" class="empty-state">A verificação ainda não foi executada.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
 
-  <!-- Histórico de Backups -->
-  <div class="cartao fade-in mb-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h3 class="h5 m-0">Histórico de Backups</h3>
-      <div class="dropdown">
-        <div
-          class="menu-opcoes-cartao-relativo"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-          style="cursor: pointer"
-        >
-          <span class="icone-pontos"></span>
-        </div>
-        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-          <li>
-            <button
-              id="menu-exportar-csv"
-              class="dropdown-item small"
-              type="button"
-            >
-              <i class="bi bi-filetype-csv me-2"></i>Exportar CSV
-            </button>
-          </li>
-          <li><hr class="dropdown-divider my-1" /></li>
-          <li>
-            <button
-              id="menu-novo-backup"
-              class="dropdown-item small"
-              type="button"
-            >
-              <i class="bi bi-cloud-upload me-2"></i>Novo Backup
-            </button>
-          </li>
-        </ul>
-      </div>
+<section class="cartao mb-3">
+  <div class="section-heading">
+    <div>
+      <h3>Arquivos de backup</h3>
+      <p>Gere, baixe ou exclua cópias criadas pelo Cerberus.</p>
     </div>
-    <div class="table-responsive">
-      <table class="table table-hover align-middle border rounded">
-        <thead class="bg-light">
-          <tr class="text-muted small">
-            <th class="border-0">Data / Hora</th>
-            <th class="border-0">Arquivo / Identificador</th>
-            <th class="border-0">Tamanho</th>
-            <th class="border-0">Regra de Retenção</th>
-            <th class="border-0 text-end">Ações</th>
-          </tr>
-        </thead>
-        <tbody id="backups-table-body">
-          <tr>
-            <td colspan="5" class="text-center text-muted py-4">
-              Carregando backups...
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="dropdown">
+      <button class="action-menu-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir ações de backup"><i class="bi bi-three-dots-vertical" aria-hidden="true"></i></button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><button id="menu-novo-backup" class="dropdown-item" type="button">Criar backup</button></li>
+        <li><button id="menu-exportar-csv" class="dropdown-item" type="button">Exportar lista</button></li>
+      </ul>
     </div>
   </div>
+  <div class="table-responsive table-shell">
+    <table class="table table-hover align-middle">
+      <thead>
+        <tr>
+          <th>Data e hora</th>
+          <th>Arquivo</th>
+          <th>Tamanho</th>
+          <th>Retenção</th>
+          <th class="text-end">Ações</th>
+        </tr>
+      </thead>
+      <tbody id="backups-table-body">
+        <tr><td colspan="5" class="loading-state"><span class="loading-indicator" aria-hidden="true"></span>Buscando backups</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
 
-  <!-- Log de Eventos -->
-  <div class="cartao fade-in">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h3 class="h5 m-0">Log de Eventos</h3>
-      <div class="dropdown">
-        <div
-          class="menu-opcoes-cartao-relativo"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-          style="cursor: pointer"
-        >
-          <span class="icone-pontos"></span>
-        </div>
-        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-          <li>
-            <button
-              id="menu-copiar-log"
-              class="dropdown-item small"
-              type="button"
-            >
-              <i class="bi bi-clipboard me-2"></i>Copiar Log
-            </button>
-          </li>
-          <li><hr class="dropdown-divider my-1" /></li>
-          <li>
-            <button
-              id="menu-limpar-log"
-              class="dropdown-item small text-danger"
-              type="button"
-            >
-              <i class="bi bi-trash me-2"></i>Limpar Log
-            </button>
-          </li>
-        </ul>
-      </div>
+<section class="cartao">
+  <div class="section-heading">
+    <div>
+      <h3>Atividade de backup</h3>
+      <p>Mensagens recebidas durante verificações e geração de arquivos.</p>
     </div>
-    <div class="d-flex flex-column gap-2 font-monospace" id="backups-log-container"
-      style="font-size: 0.85rem; overflow-wrap: break-word; word-break: break-word; max-height: 250px; overflow-y: auto;">
-      <div class="text-muted">Aguardando eventos do banco de dados...</div>
+    <div class="dropdown">
+      <button class="action-menu-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir ações da atividade"><i class="bi bi-three-dots-vertical" aria-hidden="true"></i></button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><button id="menu-copiar-log" class="dropdown-item" type="button">Copiar atividade</button></li>
+        <li><button id="menu-exportar-log" class="dropdown-item" type="button">Baixar texto</button></li>
+        <li><button id="menu-limpar-log" class="dropdown-item text-danger" type="button">Limpar atividade</button></li>
+      </ul>
     </div>
   </div>
-</div>
+  <div class="activity-list" id="backups-log-container" aria-live="polite">
+    <div class="empty-state">Nenhuma atividade registrada nesta sessão.</div>
+  </div>
+</section>
